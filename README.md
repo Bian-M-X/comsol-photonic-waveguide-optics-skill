@@ -305,6 +305,7 @@ Short version:
 - Any references to those marks are used only to identify compatible third-party software environments.
 - Users must provide and comply with their own valid software licenses.
 - This repository does not include proprietary solver binaries, official documentation, official images, official model files, examples, logos, license files, or vendor-owned datasets.
+- All simulation results should be independently verified. The author assumes no responsibility for any errors or losses arising from the use of this tool.
 
 ## License
 
