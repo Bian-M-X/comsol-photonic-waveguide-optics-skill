@@ -1,0 +1,10 @@
+Thumbs.db
+.DS_Store
+*.log
+*.class
+*.mph
+*.mphbin
+*.mphstatus
+*.csv.tmp
+__pycache__/
+*.pyc
