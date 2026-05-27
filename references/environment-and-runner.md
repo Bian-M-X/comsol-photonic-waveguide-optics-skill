@@ -1,23 +1,12 @@
 # Environment and Batch Runner
 
-Use this reference when a task needs local solver paths, Java API automation, batch execution, or runtime-directory setup.
+Use this reference when a task needs local solver-path setup, Java API automation, batch execution, runtime-directory control, or privacy-safe command previews.
 
-## Local Solver Environment
+## Core Principle
 
-This workflow can be used with a licensed COMSOL&reg; Multiphysics&reg; simulation software installation. The user must provide and comply with their own valid software license.
+The skill must not hard-code the author's local installation path. Each user supplies their own licensed solver root through either `-SolverRoot` or `PHOTONIC_SOLVER_ROOT`.
 
-Do not hard-code the author's local installation path in reusable skills, examples, logs, or reports. Each user should configure their own machine-specific paths with parameters or environment variables.
-
-Recommended environment variables:
-
-```powershell
-$env:PHOTONIC_SOLVER_ROOT = 'C:\Path\To\LicensedSolverRoot'
-$env:PHOTONIC_SOLVER_PREFS = Join-Path $env:TEMP 'photonic-waveguide-solver\prefs'
-$env:PHOTONIC_SOLVER_CONFIG = Join-Path $env:TEMP 'photonic-waveguide-solver\config'
-$env:PHOTONIC_SOLVER_TMP = Join-Path $env:TEMP 'photonic-waveguide-solver\tmp'
-```
-
-The solver root is expected to contain the vendor-provided batch executable, bundled Java compiler, and plugin jars. On Windows, common relative locations under the solver root are:
+Expected Windows relative files under the solver root:
 
 ```text
 bin\win64\comsolbatch.exe
@@ -25,11 +14,72 @@ java\win64\jre\bin\javac.exe
 plugins\*.jar
 ```
 
-These executable names are compatibility references only; the repository does not include those files.
+These are compatibility references only. This repository does not include solver binaries, plugins, license files, or proprietary documentation.
 
-Run batch jobs sequentially when they share runtime directories. For parallel sweeps, create separate runtime directories per worker to avoid lock-file and cache collisions.
+## Configure A Local Solver Root
 
-## Reliable Compile Pattern
+For the current PowerShell session:
+
+```powershell
+$env:PHOTONIC_SOLVER_ROOT = 'C:\Path\To\LicensedSolverRoot'
+```
+
+For a persistent user-level variable:
+
+```powershell
+setx PHOTONIC_SOLVER_ROOT "C:\Path\To\LicensedSolverRoot"
+```
+
+Optional runtime directories:
+
+```powershell
+$env:PHOTONIC_SOLVER_PREFS = Join-Path $env:TEMP 'photonic-waveguide-solver\prefs'
+$env:PHOTONIC_SOLVER_CONFIG = Join-Path $env:TEMP 'photonic-waveguide-solver\config'
+$env:PHOTONIC_SOLVER_TMP = Join-Path $env:TEMP 'photonic-waveguide-solver\tmp'
+```
+
+For parallel sweeps, use separate runtime directories per worker:
+
+```powershell
+$worker = 'worker-001'
+$env:PHOTONIC_SOLVER_PREFS = Join-Path $env:TEMP "photonic-waveguide-solver\$worker\prefs"
+$env:PHOTONIC_SOLVER_CONFIG = Join-Path $env:TEMP "photonic-waveguide-solver\$worker\config"
+$env:PHOTONIC_SOLVER_TMP = Join-Path $env:TEMP "photonic-waveguide-solver\$worker\tmp"
+```
+
+## Verify The Installation
+
+Run these checks after setting `PHOTONIC_SOLVER_ROOT`:
+
+```powershell
+$root = $env:PHOTONIC_SOLVER_ROOT
+Test-Path (Join-Path $root 'bin\win64\comsolbatch.exe')
+Test-Path (Join-Path $root 'java\win64\jre\bin\javac.exe')
+Test-Path (Join-Path $root 'plugins')
+```
+
+Expected result: all three commands return `True`.
+
+If any check returns `False`, ask the user to provide the correct solver root. Do not guess by publishing local machine paths. If searching the machine is necessary, keep results local and do not commit them.
+
+## Preferred Automation Route
+
+Use Java API plus batch execution:
+
+1. Generate or patch a Java source file.
+2. Compile it with the solver-bundled `javac.exe`.
+3. Run the compiled `.class` with `comsolbatch.exe`.
+4. Save the `.mph` model inside the solver-side Java run.
+5. Print key metrics to stdout or write CSV/TXT outputs.
+6. Use Python or PowerShell outside the solver for aggregation, plotting, and reporting.
+
+Avoid these as first choices:
+
+- `mphserver`, unless the user explicitly needs an interactive service.
+- Running standalone Java outside the solver batch runtime.
+- Large external config reads inside solver-side Java. Prefer generated source or small embedded parameters.
+
+## Compile Pattern
 
 ```powershell
 $solverRoot = $env:PHOTONIC_SOLVER_ROOT
@@ -38,12 +88,13 @@ if (-not $solverRoot) { throw 'Set PHOTONIC_SOLVER_ROOT first.' }
 $plugins = Join-Path $solverRoot 'plugins'
 $javac = Join-Path $solverRoot 'java\win64\jre\bin\javac.exe'
 $cp = (Get-ChildItem -LiteralPath $plugins -Filter '*.jar' | ForEach-Object { $_.FullName }) -join ';'
+
 & $javac -proc:none -cp $cp 'C:\Path\To\ModelSource.java'
 ```
 
-`-proc:none` avoids annotation-processing noise and has been more reliable in local batch workflows.
+`-proc:none` avoids annotation-processing noise and should be kept unless there is a clear reason to remove it.
 
-## Reliable Batch Pattern
+## Batch Pattern
 
 ```powershell
 $solverRoot = $env:PHOTONIC_SOLVER_ROOT
@@ -63,7 +114,7 @@ $batch = Join-Path $solverRoot 'bin\win64\comsolbatch.exe'
 
 ## Helper Script
 
-Use the bundled helper with explicit paths or environment variables:
+Use the bundled wrapper for repeatable compile-and-run:
 
 ```powershell
 .\scripts\invoke-waveguide-java-batch.ps1 `
@@ -73,7 +124,7 @@ Use the bundled helper with explicit paths or environment variables:
   -BatchLog 'C:\Path\To\BatchLog.log'
 ```
 
-For a privacy-safe command preview:
+Privacy-safe preview:
 
 ```powershell
 .\scripts\invoke-waveguide-java-batch.ps1 `
@@ -84,35 +135,37 @@ For a privacy-safe command preview:
   -DryRun
 ```
 
-`-DryRun` hides the full plugin classpath by default. Add `-ShowFullPaths` only for local debugging, not for public logs.
-
-## File I/O Guardrails
-
-Inside solver-side Java, arbitrary local file reads can be restricted by security policy. Prefer:
-
-- embedding small configs into generated Java source
-- printing metrics to stdout
-- saving `.mph` from inside the solver
-- writing normal CSV/TXT outputs outside the solver orchestration layer
-
-Do not depend on solver-side Java reading arbitrary text files unless that exact path has been validated.
-
-## Local-Data Safety
-
-Before publishing a repository, scan for:
-
-- absolute paths from the author's machine
-- user names and home directories
-- license server names, tokens, or license files
-- private paper PDFs or downloaded vendor documentation
-- `.mph`, `.class`, `.log`, temporary sweep output, and solver cache files
-- institution/project names that should not be public
-
-Keep reusable workflow instructions public; keep local models, logs, credentials, and license details private unless they were intentionally cleared for release.
+`-DryRun` hides the full plugin classpath by default. Use `-ShowFullPaths` only in private local debugging.
 
 ## Long-Run Discipline
 
-- Start with a single-wavelength solve.
-- Then run a small sweep.
-- Then run dense sweeps only after model features and expressions are validated.
-- If a foreground command times out, inspect the output directory, log file, and partial artifacts before declaring failure.
+- Start with a single wavelength.
+- Then run a small wavelength sweep.
+- Then run dense sweeps only after geometry, materials, ports, expressions, and datasets are validated.
+- If a command times out, inspect output files and the batch log before declaring failure.
+- Save summaries for restartability: candidate id, parameters, metrics, output model path, log path, and status.
+
+## Failure Triage
+
+| Symptom | Likely cause | First action |
+|---|---|---|
+| `Set PHOTONIC_SOLVER_ROOT first` | no solver root configured | set env var or pass `-SolverRoot` |
+| `javac not found` | wrong solver root or different install layout | verify `java\win64\jre\bin\javac.exe` |
+| `batch executable not found` | wrong solver root or missing batch tool | verify `bin\win64\comsolbatch.exe` |
+| no plugin jars | wrong solver root | verify `plugins` directory |
+| solver-side file read fails | Java security or path policy | embed small config in source or write outputs externally |
+| parallel jobs corrupt runtime state | shared prefs/config/tmp | use per-worker runtime dirs |
+| public logs expose local machine data | full classpath or absolute paths printed | use `-DryRun` without `-ShowFullPaths` |
+
+## Files That Should Not Be Published By Default
+
+- `.mph`
+- `.class`
+- `.log`
+- solver cache directories
+- license files or license-server details
+- local path manifests
+- private paper PDFs or vendor documentation
+- generated plots/data containing confidential project names
+
+Keep reusable workflow instructions public; keep local models, logs, credentials, and license details private unless explicitly cleared for release.

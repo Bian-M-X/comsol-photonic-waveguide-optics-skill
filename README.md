@@ -9,10 +9,13 @@ This project is intentionally named without any commercial solver trademark. In 
 Use this skill when you want Codex to help build, debug, automate, or report optical simulations for integrated photonics, especially:
 
 - SOI strip or rib waveguides
+- bends, tapers, transitions, and mode converters
 - 2D effective-index top-view models
 - port-based frequency-domain wave-optics models
-- directional couplers and 3 dB coupler calibration
+- directional couplers, MMI couplers, Y-branches, and splitters
+- ring resonators, Bragg gratings, periodic filters, and grating couplers
 - conventional MZI, asymmetric MZI, and loop-terminated asymmetric MZI devices
+- sensors, modulators, and inverse-design regions
 - wavelength sweeps, S-parameters, FSR extraction, insertion loss, and extinction-ratio checks
 - external parameter sweeps and reproducible model-quality reports
 
@@ -76,6 +79,15 @@ plugins\*.jar
 ```
 
 Only the paths are referenced. These binaries and plugin jars are not included in this repository.
+
+## Which Reference Should I Read?
+
+- New user or environment setup: `references/environment-and-runner.md`.
+- General wave-optics model setup: `references/wave-optics-port-models.md`.
+- Non-MZI device families such as tapers, splitters, rings, Bragg gratings, grating couplers, sensors, or modulators: `references/device-family-workflows.md`.
+- MZI/aMZI/LT-aMZI-specific topology and FSR checks: `references/interferometer-workflows.md`.
+- Sweeps, optimization, 2D-to-3D progression, and report writing: `references/optimization-and-reporting.md`.
+- Public release, trademark, and local-data checks: `references/legal-and-trademark-notes.md`.
 
 ## Configure Your Local Solver Path
 
@@ -169,6 +181,24 @@ For directional coupler calibration:
 Use $photonic-waveguide-optics to build a standalone 2x2 directional coupler, sweep coupling length and gap, find the 3 dB point at 1550 nm, and export a calibration table.
 ```
 
+For a general splitter or MMI:
+
+```text
+Use $photonic-waveguide-optics to build a standalone 1x2 MMI splitter, verify material and port selections, sweep MMI length, report split ratio, excess loss, S11, and wavelength tolerance.
+```
+
+For a ring resonator:
+
+```text
+Use $photonic-waveguide-optics to model a bus-coupled ring resonator, sweep wavelength with sufficient resolution, extract resonance wavelengths, FSR, extinction ratio, and estimate loaded Q.
+```
+
+For a Bragg grating or periodic reflector:
+
+```text
+Use $photonic-waveguide-optics to create a 2D effective-index Bragg grating model, sweep wavelength, extract stopband center/width, reflection, transmission, and compare with the Bragg condition.
+```
+
 For MZI or LT-aMZI reproduction:
 
 ```text
@@ -195,10 +225,10 @@ Recommended order:
 
 1. Straight waveguide validation.
 2. Standalone port and boundary-mode validation.
-3. Standalone directional coupler or splitter calibration.
-4. Conventional MZI or asymmetric MZI verification.
-5. Final target topology, such as LT-aMZI.
-6. Wavelength sweep and metric extraction.
+3. Elementary device validation, such as bend, taper, coupler, splitter, ring, grating section, or MMI.
+4. Functional block validation, such as conventional MZI, add-drop ring, full splitter, or sensor baseline.
+5. Final target topology, such as LT-aMZI, filter bank, grating coupler, modulator, or inverse-designed splitter.
+6. Wavelength, geometry, material, or drive-variable sweep.
 7. Mesh refinement and sensitivity checks.
 8. Report and reproducibility package.
 
@@ -217,6 +247,7 @@ photonic-waveguide-optics-skill/
   references/
     environment-and-runner.md
     wave-optics-port-models.md
+    device-family-workflows.md
     interferometer-workflows.md
     optimization-and-reporting.md
     legal-and-trademark-notes.md
@@ -228,6 +259,7 @@ Use `SKILL.md` as the router. It tells Codex which reference file to load for ea
 
 - `references/environment-and-runner.md`: local solver path configuration, batch execution, helper script usage, and privacy-safe dry runs.
 - `references/wave-optics-port-models.md`: materials, ports, boundary mode analysis, mesh, datasets, and S-parameter expressions.
+- `references/device-family-workflows.md`: general workflows for waveguides, bends, tapers, splitters, MMIs, rings, Bragg gratings, grating couplers, sensors, modulators, and inverse-design regions.
 - `references/interferometer-workflows.md`: directional coupler, MZI, aMZI, and LT-aMZI construction and acceptance checks.
 - `references/optimization-and-reporting.md`: sweeps, diagnostics, optimization loops, exported data, and reporting.
 - `references/legal-and-trademark-notes.md`: publication, trademark, license, and local-data safety guardrails.

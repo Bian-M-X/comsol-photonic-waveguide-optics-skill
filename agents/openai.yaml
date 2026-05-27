@@ -1,3 +1,3 @@
 display_name: Photonic Waveguide Optics
-short_description: Build and debug optical waveguide, coupler, and MZI simulation workflows.
-default_prompt: Use $photonic-waveguide-optics to build, debug, optimize, or report an integrated photonic waveguide simulation workflow.
+short_description: Build and debug integrated photonic device simulation workflows.
+default_prompt: Use $photonic-waveguide-optics to build, debug, optimize, or report an integrated photonic waveguide or on-chip optical device simulation workflow.

@@ -1,4 +1,4 @@
-# Legal and Trademark Notes
+# Legal, Trademark, and Release Notes
 
 This reference is a practical publication checklist, not legal advice.
 
@@ -6,16 +6,14 @@ This reference is a practical publication checklist, not legal advice.
 
 Reduce risk when publishing this skill project by ensuring it:
 
-- does not use commercial solver trademarks in the project or skill name
+- does not use commercial solver trademarks in the repository, project, folder, or skill name
 - does not imply affiliation, authorization, sponsorship, or endorsement
-- does not redistribute proprietary software, official docs, model files, screenshots, logos, or license files
+- does not redistribute proprietary software, official docs, official examples, screenshots, logos, license files, or vendor-owned datasets
 - uses trademarks only to identify compatible third-party software environments
-- states that users must supply their own valid licenses
+- states that users must supply and comply with their own valid licenses
 - avoids publishing local machine paths, user names, license details, model outputs, and private project files
 
-## Trademark-Safe Wording
-
-Project names, repository names, folders, and skill names should avoid third-party trademarks.
+## Naming Rules
 
 Acceptable project-style names:
 
@@ -23,9 +21,11 @@ Acceptable project-style names:
 - `integrated-photonics-simulation-skill`
 - `waveguide-interferometer-skill`
 
-Avoid names that incorporate third-party marks.
+Avoid repository, folder, or skill names that incorporate third-party marks.
 
-In body text, refer to third-party software only when needed for compatibility. In Markdown, `&reg;` may be used to render the registered-trademark symbol while keeping the source file ASCII-safe:
+## Compatibility Wording
+
+Use third-party software names only when necessary for compatibility. Prefer wording like:
 
 ```text
 compatible with licensed COMSOL&reg; Multiphysics&reg; simulation software installations
@@ -43,22 +43,31 @@ Include non-affiliation:
 This project is independent and is not affiliated with, endorsed by, sponsored by, or authorized by COMSOL AB.
 ```
 
-## Content Guardrails
+Do not write copy that suggests official certification, endorsement, bundled access, or redistributed functionality.
+
+## Content That Must Not Be Included
 
 Do not include:
 
+- solver installers
+- solver binaries
+- plugin jars
+- license files
+- license server names
+- access tokens or credentials
 - official product logos or brand artwork
 - official screenshots
 - official example model files
 - copied official manual text
-- license files
-- installer files or binaries
+- downloaded vendor documentation
+- private paper PDFs
+- local `.mph` models unless explicitly cleared
+- generated logs that reveal local paths or license details
 - generated project names that contain third-party marks
-- local absolute paths, license-server details, private paper PDFs, or confidential project data
 
 Self-authored workflow notes, original scripts, and compatibility instructions are acceptable when they do not copy proprietary materials and do not imply endorsement.
 
-## Publication Checklist
+## Public Release Checklist
 
 Before publishing:
 
@@ -66,12 +75,31 @@ Before publishing:
 - [x] `SKILL.md` skill name contains no third-party solver trademark.
 - [x] `README.md` includes non-affiliation language.
 - [x] `NOTICE.md` includes trademark attribution.
-- [x] No logos, screenshots, manuals, official examples, or binaries are included.
+- [x] No logos, screenshots, manuals, official examples, installers, or binaries are included.
 - [x] Users are told to provide their own valid licenses.
-- [x] MIT or other license is clearly limited to this repository's original text/scripts.
-- [x] Any software references are compatibility statements, not endorsement claims.
-- [x] No author-specific absolute installation paths or local project paths are included.
+- [x] MIT license is limited to this repository's original text/scripts.
+- [x] Software references are compatibility statements, not endorsement claims.
 - [x] Helper scripts require `-SolverRoot` or `PHOTONIC_SOLVER_ROOT` instead of hard-coded local paths.
+
+Run a local scan before pushing. Customize the path patterns to match your machine and keep any real paths or secrets out of committed documentation:
+
+```powershell
+rg -n "<custom-sensitive-patterns>|\.mph|\.class|\.log" .
+```
+
+Review any matches manually. Some examples such as `C:\Path\To\...` are safe placeholders; real local paths or secrets are not.
+
+## Git Author Hygiene
+
+Public commits should use the real repository owner or a deliberate project identity. Do not publish commits authored by temporary automation names.
+
+Check authors:
+
+```powershell
+git log --format="%h | author=%an <%ae> | committer=%cn <%ce> | %s"
+```
+
+If a wrong author was pushed, fix it before broad sharing. Prefer a clean rewrite with `--force-with-lease` only when the repository owner understands the effect and the branch has not been collaboratively updated.
 
 ## Official Sources Consulted
 

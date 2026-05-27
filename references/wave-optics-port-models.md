@@ -1,19 +1,18 @@
 # Wave-Optics Port Models
 
-Use this reference for 2D effective-index models, material selections, numeric ports, boundary mode analysis, mesh, datasets, and postprocessing.
+Use this reference for 2D effective-index models, materials, geometry selections, numeric ports, boundary mode analysis, scattering/PML boundaries, mesh strategy, datasets, S-parameter expressions, and energy diagnostics.
 
-## 2D Effective-Index Model
+## Model Scope Decision
 
-2D top-view models represent vertical waveguide confinement through an effective refractive index. They are useful for:
+Before building geometry, state the model class:
 
-- planar topology validation
-- coupling trends
-- MZI/aMZI/LT-aMZI FSR checks
-- fast parameter sweeps
+- `2D EIM`: top-view effective-index approximation for topology, coupling trends, phase, FSR, and fast sweeps.
+- `3D submodel`: straight waveguide, bend, directional coupler, or short cell validation.
+- `full 3D`: expensive final validation, not the default first step.
 
-They are not final 3D fabrication sign-off models.
+2D EIM is not a final fabrication sign-off. It is useful for fast physical reasoning and parameter ranking.
 
-Common parameters:
+## Common Global Parameters
 
 ```text
 lambda0 = 1.55[um]
@@ -27,51 +26,113 @@ mu_r = 1
 sigma = 0
 ```
 
-If a paper uses a `500 nm x 220 nm` SOI strip waveguide, ideally perform a separate mode analysis to extract `n_eff(lambda)` and `n_g(lambda)`, then use those values in the 2D model.
+For a paper using a `500 nm x 220 nm` SOI strip waveguide, prefer a separate cross-section mode analysis to extract:
 
-## Material Selections
+- `n_eff(lambda)`
+- `n_g(lambda)`
+- single-mode or multimode behavior
+- wavelength dispersion
+- approximate mode-field extent for port sizing
 
-Keep at least two explicit material domains:
+If mode analysis is not available, use paper values or an engineering estimate, and label the result as an approximation.
 
-- background/cladding material, such as `mat_bg`
-- waveguide effective-core material, such as `mat_wg`
+## Material Selection Audit
 
-After geometry booleans or rebuilds, audit that each waveguide still belongs to the waveguide material selection.
+Keep explicit selections:
+
+- `sel_bg`: all background/cladding domains.
+- `sel_wg`: all waveguide effective-core domains.
+- optional `sel_dc_gap`: coupler-gap refinement region.
+- optional `sel_bends`: bend refinement regions.
+- optional `sel_ports`: port boundaries.
+
+Assign materials:
+
+- `mat_bg`: `epsilonr = epsr_bg`, `mur = 1`, `sigma = 0`.
+- `mat_wg`: `epsilonr = epsr_wg`, `mur = 1`, `sigma = 0`.
+
+Audit after every geometry rebuild:
+
+- no waveguide domain is left in background material
+- no background island is assigned waveguide material
+- booleans did not destroy selections
+- design-region material does not overwrite fixed waveguides
+
+## Geometry Rules
+
+Build from centerlines when possible:
+
+- centerline length defines phase and `DeltaL`
+- waveguide width is applied from `w`
+- bend radius is measured at centerline
+- do not use x-coordinate distance as a path-length proxy
+
+For bends and transitions:
+
+- avoid sharp 90-degree corners
+- use arcs, S-bends, fillets, or rounded polylines
+- keep `R_bend >= 5[um]` as a cautious 2D EIM starting point for 500 nm-class SOI strips
+- sweep `R_bend = 5, 7.5, 10[um]` when bend loss matters
+- keep non-port waveguides at least several microns away from outer boundaries
+
+For port approach sections:
+
+- local guide must be straight
+- port boundary must be perpendicular to propagation direction
+- keep `5-10 um` straight section before the port
 
 ## Numeric Port Setup
 
-For port-based frequency-domain models:
+For port-based frequency-domain simulations:
 
 1. Put ports on exterior computational boundaries.
-2. Make port boundaries perpendicular to local straight waveguide direction.
-3. Include at least `5-10 um` of straight waveguide before each port.
-4. Create one boundary mode analysis step per numeric port.
-5. Bind each port to its matching mode-analysis step.
-6. Run the final frequency-domain or wavelength-domain study after the port modes are available.
+2. Make each port boundary perpendicular to a local straight waveguide.
+3. Ensure the port boundary cuts through the full waveguide and enough surrounding background for the mode.
+4. Create one boundary mode analysis step per numeric port when numeric ports are used.
+5. Bind each port to the correct boundary mode analysis result.
+6. Run final frequency-domain or wavelength-domain study after port modes are available.
+
+Port mistakes are common. Check:
+
+- selected boundary id is correct
+- port orientation is correct
+- excitation is enabled only on the intended input port
+- non-excited output ports are terminated, not excited
+- scattering/radiation boundary does not include port boundaries
+- final study uses the port mode solution, not a stale or missing mode
 
 ## Boundary Conditions
 
-Scattering/radiation boundaries are good first-pass boundaries, but engineering models should compare them with PML or larger background margins.
+Start with scattering/radiation boundaries for quick models. For engineering claims, compare:
 
-Critical rule: do not include port boundaries in the scattering/radiation boundary selection.
+- larger background margin
+- PML
+- scattering boundary
+- mesh refinement near boundaries
 
-If port variables are undefined, flat zero, or physically meaningless, check:
+Critical rule: do not include port boundaries in scattering/radiation selections.
 
-- port boundary selection
-- scattering boundary selection
-- boundary-mode step binding
-- final solution dataset
+If S parameters are undefined, zero, or flat:
+
+1. Confirm physics tag, for example `emw` or `ewfd`.
+2. Confirm final solution dataset.
+3. Confirm port boundaries are excluded from scattering/PML selections.
+4. Confirm boundary mode analysis completed.
+5. Confirm port feature references the correct mode step.
 
 ## Mesh Strategy
 
-Start with a robust predefined mesh if custom mesh settings prevent meshing or solving. Then add local refinement:
+Start with a robust predefined mesh if custom mesh prevents meshing or solving. After the first successful solve, add local mesh controls.
 
-- waveguide core: enough elements across waveguide width
-- directional-coupler gap: enough elements across the gap
-- bend region: same or finer than core mesh
-- far background: coarse mesh to reduce cost
+Rules of thumb:
 
-For 2D effective-index waveguide starts:
+- waveguide core: at least `8-10` elements across width
+- DC gap: at least `5` elements across the gap
+- bend region: same or finer than waveguide core
+- far background: coarse mesh to save memory
+- port boundaries: enough resolution to represent the port mode
+
+2D EIM starting values:
 
 ```text
 waveguide max element: 0.05-0.08 um
@@ -79,6 +140,14 @@ coupler gap max element: 0.02-0.04 um
 bend max element: 0.05-0.08 um
 far background max element: 0.2-0.4 um
 ```
+
+Mesh refinement order:
+
+1. predefined mesh to get a working solve
+2. local waveguide refinement
+3. local coupler-gap refinement
+4. local bend refinement
+5. convergence check on key metrics
 
 ## Postprocessing Expressions
 
@@ -96,6 +165,58 @@ If the physics tag is `ewfd`, use:
 ```text
 comp1.ewfd.normE^2
 abs(comp1.ewfd.S21)^2
+10*log10(abs(comp1.ewfd.S21)^2)
+abs(comp1.ewfd.S11)^2
 ```
 
-Always verify that the selected dataset is the final driven solution, not a boundary-mode dataset.
+Do not mix `emw` and `ewfd`; inspect the model's actual physics tag first.
+
+## Dataset Rules
+
+Choose the correct dataset:
+
+- field plot: final driven frequency-domain solution
+- sweep plot: final parametric or wavelength sweep solution
+- S-parameter table: final driven solution
+- mode profile: boundary mode analysis dataset
+
+Do not evaluate final S parameters on a boundary-mode dataset.
+
+Debug order for plotting:
+
+1. Add `comp1.` prefix.
+2. Verify physics tag.
+3. Select final solution dataset.
+4. Evaluate one expression at a time.
+5. Only then build derived plots or reports.
+
+## Energy Diagnostics
+
+For a two-port reflected-output model:
+
+```text
+T21 = abs(S21)^2
+R11 = abs(S11)^2
+Ssum = T21 + R11
+radiation_or_uncollected = 1 - Ssum
+```
+
+Interpretation:
+
+- correct FSR and low peak T21: interference exists, but coupling/ports/boundaries/bends/mesh may be poor
+- high S11: reflection, port mismatch, or round-trip coupler mismatch
+- low Ssum: radiation, boundary absorption, bend loss, or uncollected output
+- single-wavelength T21 is insufficient for interferometer validation
+
+## Straight Waveguide Smoke Test
+
+Before building a complex device:
+
+1. Build one straight waveguide with two numeric ports.
+2. Assign `mat_wg` and `mat_bg`.
+3. Run boundary mode analysis and frequency-domain solve at `lambda0`.
+4. Confirm high `abs(S21)^2`.
+5. Confirm low `abs(S11)^2`.
+6. Plot `comp1.<tag>.normE^2`.
+
+Only proceed to couplers and MZI devices after this passes.
