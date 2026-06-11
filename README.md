@@ -179,6 +179,8 @@ Additional reusable helper scripts:
 - `scripts/parse-comsol-sweep.py`: parse COMSOL sweep tables and summarize peaks, valleys, FSR-like spacings, `S11`, `T21`, and `S11+T21`.
 - `scripts/audit-simulation-artifacts.ps1`: scan a project folder before publication or commit for large/proprietary artifacts and obvious sensitive local paths.
 - `scripts/emit-analytic-bend-java-helper.py`: emit a Java helper skeleton for analytic annular-sector bends.
+- `scripts/mcp_photonic_server.py`: dependency-free stdio MCP-style prototype for resource discovery, safe project tools, and sweep parsing.
+- `scripts/test_mcp_photonic_server.py`: protocol-level smoke test for the MCP prototype.
 
 ## How To Prompt Codex
 

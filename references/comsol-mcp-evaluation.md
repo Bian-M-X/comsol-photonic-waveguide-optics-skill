@@ -8,9 +8,40 @@ Use this reference when deciding whether to run COMSOL through Java batch, an in
 |---|---|---|---|
 | Java API source + `javac` + `comsolbatch` | Stable local default | First choice | Reproducible, scriptable, easy to log, good for long runs and CI-like workflows |
 | `mphserver` / LiveLink-style interactive control | Useful but stateful | Backup or exploratory | Good for interactive inspection, but more fragile for unattended runs and environment setup |
-| Custom MCP server bridge around the batch runner | Buildable prototype path | Experimental backup after validation | Promising for tool discovery and structured resources, but must be narrow, allowlisted, and auditable |
+| Custom MCP server bridge around the batch runner | Phase 1/2 prototype tested | Experimental backup after validation | Resource discovery, artifact audit, scaffold creation, and sweep parsing are feasible; solver execution still needs a separate safety gate |
 
 As of the 2026-06 skill update, no verified, project-ready, off-the-shelf COMSOL MCP server was adopted. Treat MCP as an integration layer around the already reliable batch route, not as a replacement for the solver workflow.
+
+## Local Prototype Test Status
+
+A dependency-free stdio JSON-RPC prototype is provided in:
+
+- `scripts/mcp_photonic_server.py`
+- `scripts/test_mcp_photonic_server.py`
+
+Tested MCP-style calls:
+
+- `initialize`
+- `resources/list`
+- `resources/read` for `photonic://server/manifest`
+- `tools/list`
+- `tools/call` for `parse_sweep_table`
+- `tools/call` for `create_project_scaffold`
+- `tools/call` for `audit_project_artifacts`
+
+Smoke-test result on an existing LT-aMZI true-smooth sweep table:
+
+```text
+resource_count = 15
+tools = list_allowed_roots, create_project_scaffold, audit_project_artifacts, parse_sweep_table
+row_count = 31
+max_T21 = 0.3255039699650145
+max_lambda_nm = 1520.4
+S11_at_max = 0.42635136264708123
+audit_finding_count = 0
+```
+
+Verdict: Phase 1 and Phase 2 are practically feasible. Phase 3, the controlled `comsolbatch` execution tool, should be added only after a second test round with dry-run rendering, approval prompts, redaction, timeout, and direct-batch equality checks.
 
 ## Why Batch Remains First Choice
 
@@ -66,6 +97,8 @@ Add tools that do not launch COMSOL:
 
 Acceptance test: the tools create or parse only inside the allowlisted project root and return structured JSON plus file links.
 
+Prototype status: passed for scaffold creation, artifact audit, and sweep-table parsing.
+
 ### Phase 3: Batch Execution Tool
 
 Add one controlled execution tool:
@@ -82,6 +115,8 @@ Required behavior:
 - return `compile_status`, `run_status`, `output_files`, `key_stdout_rows`, and `errors`.
 
 Acceptance test: run a straight-waveguide or analytic-bend smoke model and compare the generated summary with the direct PowerShell route.
+
+Prototype status: not implemented yet. Keep direct batch as the only solver execution route until this gate is tested.
 
 ### Phase 4: Comparison Against Existing Routes
 
