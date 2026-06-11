@@ -45,7 +45,7 @@ Recommended PowerShell install command:
 
 ```powershell
 New-Item -ItemType Directory -Force "$env:USERPROFILE\.codex\skills" | Out-Null
-git clone https://github.com/Bian-M-X/photonic-waveguide-optics-skill.git "$env:USERPROFILE\.codex\skills\photonic-waveguide-optics-skill"
+git clone https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill.git "$env:USERPROFILE\.codex\skills\photonic-waveguide-optics-skill"
 ```
 
 If the folder already exists and you only want to update it:
@@ -179,8 +179,46 @@ Additional reusable helper scripts:
 - `scripts/parse-comsol-sweep.py`: parse COMSOL sweep tables and summarize peaks, valleys, FSR-like spacings, `S11`, `T21`, and `S11+T21`.
 - `scripts/audit-simulation-artifacts.ps1`: scan a project folder before publication or commit for large/proprietary artifacts and obvious sensitive local paths.
 - `scripts/emit-analytic-bend-java-helper.py`: emit a Java helper skeleton for analytic annular-sector bends.
-- `scripts/mcp_photonic_server.py`: dependency-free stdio MCP-style prototype for resource discovery, safe project tools, and sweep parsing.
+- `scripts/mcp_photonic_server.py`: dependency-free stdio MCP-style prototype for resource discovery, safe project tools, sweep parsing, and redacted batch dry-run planning.
 - `scripts/test_mcp_photonic_server.py`: protocol-level smoke test for the MCP prototype.
+
+## Current Validation Status
+
+The skill now includes the workflow lessons from true-smooth LT-aMZI geometry conversion, subagent-style audit roles, and a local MCP feasibility prototype.
+
+Validated locally as of the 2026-06 update:
+
+- true smooth bend guidance: use analytic circular/annular-sector geometry when possible, then preserve centerline path length explicitly;
+- Design4-style LT-aMZI comparison pattern: hold `DeltaL` fixed, compare `T21`, `S11`, `S11+T21`, peak spacing, weak/strong peak ratio, and energy collection;
+- MCP prototype Phase 1/2: resource listing, skill reference reading, project scaffold creation, artifact audit, and sweep-table parsing;
+- MCP prototype Phase 3 dry-run: `run_java_batch` renders a redacted command plan with `will_execute=false` and does not reveal the raw solver root;
+- release audit: helper scripts and docs avoid bundling proprietary solver binaries, plugin jars, license files, `.mph` models, logs, or private local paths.
+
+The current route ranking is:
+
+1. Direct Java API source plus batch runner for trusted solver execution.
+2. MCP wrapper for structured project discovery, parsing, audit, and dry-run planning.
+3. Interactive server or LiveLink-style workflows only for special inspection/debugging cases.
+
+## LT-aMZI `R_bend` Optimization Template
+
+For the next `R_bend` optimization round, use the latest true-smooth baseline rather than the old polygonal-arc geometry.
+
+Recommended sequence:
+
+1. Freeze the optical baseline: `gap_dc`, `Lc1`, `Lc2`, wavelength window, materials, ports, mesh policy, and target `DeltaL`.
+2. For each radius, regenerate the geometry and re-solve the detour depth so the centerline path difference remains fixed.
+3. Start with a small radius set such as `R_bend = 5, 7.5, 10 um`.
+4. Run one single-wavelength smoke point near the known passband peak before launching a dense sweep.
+5. Run the same local dense sweep for every passing candidate.
+6. Compare `max_T21`, `S11_at_max`, `S11+T21_at_max`, `min_T21`, peak spacing, weak/strong peak ratio, and any path-length error.
+7. If larger `R_bend` does not improve transmission or collected energy, shift effort toward directional-coupler calibration, boundary clearance, mesh convergence, or 2D effective-index limitations instead of continuing radius-only tuning.
+
+Suggested handoff prompt for a new Codex conversation:
+
+```text
+Use $photonic-waveguide-optics. Continue the LT-aMZI Design4 true-smooth geometry workflow. First read the local true-smooth baseline summary and comparison table. Then generate a small R_bend sweep, preserving DeltaL for every variant, and compare max_T21, S11_at_max, S11+T21, peak spacing, and weak/strong peak ratio before recommending any larger optimization.
+```
 
 ## How To Prompt Codex
 
