@@ -56,7 +56,7 @@ plugins\*.jar
 - `references/legal-and-trademark-notes.md`: 商标、许可、公开发布风险。
 
 2026-06 扩展参考：
-- `references/smooth-bend-geometry.md`: 解析圆弧/环形扇区弯曲、中心线长度守恒、真光滑弯曲与多段折线近似的比较方法。
+- `references/smooth-bend-geometry.md`: 解析圆弧/环形扇区弯曲、`InterpolationCurve type=solid` 光滑 Euler bend、中心线长度守恒、真光滑弯曲与多段折线近似的比较方法。
 - `references/subagent-orchestration.md`: 计划、几何、执行、代码审计、模型审计、结果审计、数据处理等 subagent 的分工与调用约束。
 - `references/comsol-mcp-evaluation.md`: Java batch、mphserver/LiveLink、潜在 MCP server 桥接方案的优先级评估。
 - `references/quantum-photonic-knowledge-base.md`: 面向片上量子光学仿真的基础器件、门、MZI 网格、验证指标和关键文献入口。
@@ -225,6 +225,8 @@ SOI strip 波导若来自 `500 nm x 220 nm` 结构，推荐先做截面 mode ana
 - port 前保留足够长的 straight section。
 - SOI 500 nm 级 2D EIM 初值可用 `R_bend >= 5[um]`。
 - 更稳健工程扫描可用 `R_bend = 5, 7.5, 10[um]`。
+- 如果用户要求完全光滑 Euler bend，不要用 `Polygon`、`Polyline` 或短线段链条冒充光滑弯曲。可用 Euler 边界采样点约束 COMSOL `InterpolationCurve type=solid, rtol=0`，并把实际几何表述为 smooth interpolation-curve solid。
+- Euler bend 的切回距离通常大于同半径圆弧切回距离；例如 90 度、`R=5[um]` 的对称 Euler bend 切回约 `9.35048[um]`。改变 bend 模型后必须逐段检查 routing clearance，并重新求解 `DeltaL`。
 
 弯角不稳定时，不要先怪端口；先检查：
 

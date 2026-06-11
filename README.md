@@ -175,7 +175,7 @@ Use `SKILL.md` as the router. Load detailed references only when needed.
 | `references/device-family-workflows.md` | General workflows for waveguides, bends, tapers, splitters, rings, gratings, sensors, modulators, and inverse-design regions. |
 | `references/interferometer-workflows.md` | MZI, aMZI, LT-aMZI topology, directional coupler calibration, FSR checks, and common failure modes. |
 | `references/optimization-and-reporting.md` | Sweeps, objective functions, diagnostics, result tables, reports, and reproducibility packages. |
-| `references/smooth-bend-geometry.md` | True smooth bends, analytic circular arcs, annular sectors, centerline length preservation, and bend-radius scans. |
+| `references/smooth-bend-geometry.md` | True smooth bends, analytic circular arcs, smooth Euler bends via `InterpolationCurve type=solid`, centerline length preservation, and bend-radius scans. |
 | `references/subagent-orchestration.md` | Planning, execution, geometry, audit, result review, and data-processing subagent patterns. |
 | `references/comsol-mcp-evaluation.md` | Direct batch vs interactive server vs MCP wrapper route selection and adoption gates. |
 | `references/quantum-photonic-knowledge-base.md` | Quantum photonic chip basics, MZI meshes, phase shifters, Hadamard/CNOT-style building blocks, and literature entry points. |
@@ -256,6 +256,12 @@ True-smooth bend or `R_bend` optimization:
 Use $photonic-waveguide-optics to convert polygonal bends to true smooth circular/annular-sector bends, preserve centerline DeltaL, then sweep R_bend and compare max_T21, S11_at_max, S11+T21, peak spacing, weak/strong peak ratio, and path-length error.
 ```
 
+Fully smooth Euler bend:
+
+```text
+Use $photonic-waveguide-optics to replace routed bends with smooth Euler bends. Do not use short-line or Polygon approximations for the bend boundary; build each Euler bend as a COMSOL InterpolationCurve type=solid, audit the Euler cutback clearance, preserve DeltaL, and compare against a same-clearance circular-bend control.
+```
+
 Report writing:
 
 ```text
@@ -271,6 +277,7 @@ Use $photonic-waveguide-optics to write a model-quality report that separates pa
 - For LT-aMZI, use `FSR = lambda^2 / (2*n_g*DeltaL)`.
 - Check `S11`, `T21`, `S11+T21`, and uncollected energy; do not optimize only peak transmission.
 - Use true smooth bend geometry when possible, then preserve path length explicitly.
+- If the user asks for fully smooth Euler bends, do not implement the bend as many short straight segments. Use a smooth solid-domain primitive such as `InterpolationCurve type=solid`, and report the cutback and centerline-length audit.
 - Treat 2D effective-index models as fast topology and trend tools, not final 3D fabrication sign-off.
 - Run expensive solver jobs sequentially unless runtime directories and memory pressure are known to be isolated.
 
