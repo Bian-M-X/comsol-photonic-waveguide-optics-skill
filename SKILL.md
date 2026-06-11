@@ -55,6 +55,16 @@ plugins\*.jar
 - `references/optimization-and-reporting.md`: 参数扫描、能量诊断、优化、报告。
 - `references/legal-and-trademark-notes.md`: 商标、许可、公开发布风险。
 
+2026-06 扩展参考：
+- `references/smooth-bend-geometry.md`: 解析圆弧/环形扇区弯曲、中心线长度守恒、真光滑弯曲与多段折线近似的比较方法。
+- `references/subagent-orchestration.md`: 计划、几何、执行、代码审计、模型审计、结果审计、数据处理等 subagent 的分工与调用约束。
+- `references/comsol-mcp-evaluation.md`: Java batch、mphserver/LiveLink、潜在 MCP server 桥接方案的优先级评估。
+- `references/quantum-photonic-knowledge-base.md`: 面向片上量子光学仿真的基础器件、门、MZI 网格、验证指标和关键文献入口。
+- `references/project-structure-and-git.md`: 新工程目录、命名、artifact 管理、git 仓库策略和交接规范。
+- `references/source-notes.md`: 官方文档、MCP 规范和量子光学论文入口；开始新研究阶段前应刷新。
+
+当任务明确要求 subagent、并行审计或 delegated simulation work 时，先读 `references/subagent-orchestration.md`，再只读取匹配的 `agents/*.md` 角色文件。subagent 默认不得接触许可证、私有 solver 路径、`.mph` 大文件或未脱敏日志，除非用户明确授权。
+
 ## 1. Environment And Execution
 
 优先使用 Java API + batch 自动化：

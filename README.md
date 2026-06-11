@@ -88,6 +88,12 @@ Only the paths are referenced. These binaries and plugin jars are not included i
 - MZI/aMZI/LT-aMZI-specific topology and FSR checks: `references/interferometer-workflows.md`.
 - Sweeps, optimization, 2D-to-3D progression, and report writing: `references/optimization-and-reporting.md`.
 - Public release, trademark, and local-data checks: `references/legal-and-trademark-notes.md`.
+- True smooth bend construction and length-preserving routing: `references/smooth-bend-geometry.md`.
+- Multi-agent planning/execution/audit workflow: `references/subagent-orchestration.md` plus the matching `agents/*.md` role file.
+- COMSOL automation route selection and MCP bridge evaluation: `references/comsol-mcp-evaluation.md`.
+- Quantum photonic chip knowledge base: `references/quantum-photonic-knowledge-base.md`.
+- New project folder and git policy: `references/project-structure-and-git.md`.
+- Source index for official docs, MCP specs, and paper entry points: `references/source-notes.md`.
 
 ## Configure Your Local Solver Path
 
@@ -166,6 +172,13 @@ The bundled helper script performs steps 2 and 3:
   -OutputFile 'C:\Path\To\OutputModel.mph' `
   -BatchLog 'C:\Path\To\BatchLog.log'
 ```
+
+Additional reusable helper scripts:
+
+- `scripts/new-photonic-project.ps1`: create a standard simulation project folder scaffold.
+- `scripts/parse-comsol-sweep.py`: parse COMSOL sweep tables and summarize peaks, valleys, FSR-like spacings, `S11`, `T21`, and `S11+T21`.
+- `scripts/audit-simulation-artifacts.ps1`: scan a project folder before publication or commit for large/proprietary artifacts and obvious sensitive local paths.
+- `scripts/emit-analytic-bend-java-helper.py`: emit a Java helper skeleton for analytic annular-sector bends.
 
 ## How To Prompt Codex
 
