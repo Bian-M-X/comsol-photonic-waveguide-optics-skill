@@ -8,7 +8,7 @@ Use this reference when deciding whether to run COMSOL through Java batch, an in
 |---|---|---|---|
 | Java API source + `javac` + `comsolbatch` | Stable local default | First choice | Reproducible, scriptable, easy to log, good for long runs and CI-like workflows |
 | `mphserver` / LiveLink-style interactive control | Useful but stateful | Backup or exploratory | Good for interactive inspection, but more fragile for unattended runs and environment setup |
-| Custom MCP server bridge around the batch runner | Phase 1/2 prototype tested | Experimental backup after validation | Resource discovery, artifact audit, scaffold creation, and sweep parsing are feasible; solver execution still needs a separate safety gate |
+| Custom MCP server bridge around the batch runner | Phase 1/2 tested; Phase 3 dry-run tested | Experimental backup after validation | Resource discovery, artifact audit, scaffold creation, sweep parsing, and redacted batch-plan rendering are feasible; solver execution still needs direct-batch equality tests |
 
 As of the 2026-06 skill update, no verified, project-ready, off-the-shelf COMSOL MCP server was adopted. Treat MCP as an integration layer around the already reliable batch route, not as a replacement for the solver workflow.
 
@@ -28,20 +28,24 @@ Tested MCP-style calls:
 - `tools/call` for `parse_sweep_table`
 - `tools/call` for `create_project_scaffold`
 - `tools/call` for `audit_project_artifacts`
+- `tools/call` for `run_java_batch` in dry-run mode only
 
 Smoke-test result on an existing LT-aMZI true-smooth sweep table:
 
 ```text
 resource_count = 15
-tools = list_allowed_roots, create_project_scaffold, audit_project_artifacts, parse_sweep_table
+tools = list_allowed_roots, create_project_scaffold, audit_project_artifacts, parse_sweep_table, run_java_batch
 row_count = 31
 max_T21 = 0.3255039699650145
 max_lambda_nm = 1520.4
 S11_at_max = 0.42635136264708123
 audit_finding_count = 0
+run_java_batch dry_run = true
+run_java_batch will_execute = false
+raw_solver_root_returned = false
 ```
 
-Verdict: Phase 1 and Phase 2 are practically feasible. Phase 3, the controlled `comsolbatch` execution tool, should be added only after a second test round with dry-run rendering, approval prompts, redaction, timeout, and direct-batch equality checks.
+Verdict: Phase 1 and Phase 2 are practically feasible. Phase 3 dry-run rendering is practically feasible and now validates allowlisted paths, redacted solver-root display, timeout input, runtime directory shape, and refusal to execute. Keep real solver execution outside MCP until approval prompts, redaction audit, timeout behavior, failure-mode handling, and direct-batch equality checks pass.
 
 ## Why Batch Remains First Choice
 
@@ -116,7 +120,7 @@ Required behavior:
 
 Acceptance test: run a straight-waveguide or analytic-bend smoke model and compare the generated summary with the direct PowerShell route.
 
-Prototype status: not implemented yet. Keep direct batch as the only solver execution route until this gate is tested.
+Prototype status: dry-run command rendering is implemented and smoke-tested. Non-dry-run execution remains intentionally disabled in the prototype. Keep direct batch as the only solver execution route until this gate is tested against a straight-waveguide or analytic-bend smoke model.
 
 ### Phase 4: Comparison Against Existing Routes
 

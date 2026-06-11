@@ -191,10 +191,86 @@ def create_project_scaffold(project_root: Path, device_family: str) -> dict[str,
     return {"project_root": str(project_root), "device_family": device_family, "created_folders": folders}
 
 
+def read_bool(value: Any, default: bool) -> bool:
+    if value is None:
+        return default
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in {"1", "true", "yes", "y", "on"}
+    return bool(value)
+
+
+def build_java_batch_plan(
+    java_file: Path,
+    output_mph: Path,
+    batch_log: Path,
+    runtime_dir: Path,
+    timeout_s: int,
+    solver_root_source: str,
+    execution_enabled: bool,
+) -> dict[str, Any]:
+    if java_file.suffix.lower() != ".java":
+        raise McpError(f"java_file must end with .java: {java_file}", code=-32602)
+    if output_mph.suffix.lower() != ".mph":
+        raise McpError(f"output_mph must end with .mph: {output_mph}", code=-32602)
+    if batch_log.suffix.lower() != ".log":
+        raise McpError(f"batch_log must end with .log: {batch_log}", code=-32602)
+    if timeout_s < 1 or timeout_s > 7 * 24 * 60 * 60:
+        raise McpError("timeout_s must be between 1 and 604800 seconds", code=-32602)
+
+    class_file = java_file.with_suffix(".class")
+    prefs_dir = runtime_dir / "prefs"
+    config_dir = runtime_dir / "config"
+    tmp_dir = runtime_dir / "tmp"
+    return {
+        "dry_run": True,
+        "execution_enabled": execution_enabled,
+        "will_execute": False,
+        "solver_root_source": solver_root_source,
+        "solver_root_redacted_as": "<PHOTONIC_SOLVER_ROOT>",
+        "java_file": str(java_file),
+        "class_file": str(class_file),
+        "output_mph": str(output_mph),
+        "batch_log": str(batch_log),
+        "runtime_dirs": {
+            "root": str(runtime_dir),
+            "prefs": str(prefs_dir),
+            "config": str(config_dir),
+            "tmp": str(tmp_dir),
+        },
+        "timeout_s": timeout_s,
+        "compile_command_shape": [
+            "<PHOTONIC_SOLVER_ROOT>\\java\\win64\\jre\\bin\\javac.exe",
+            "-proc:none",
+            "-cp",
+            "<PHOTONIC_SOLVER_ROOT>\\plugins\\*.jar",
+            str(java_file),
+        ],
+        "batch_command_shape": [
+            "<PHOTONIC_SOLVER_ROOT>\\bin\\win64\\comsolbatch.exe",
+            "-prefsdir",
+            str(prefs_dir),
+            "-configuration",
+            str(config_dir),
+            "-tmpdir",
+            str(tmp_dir),
+            "-inputfile",
+            str(class_file),
+            "-outputfile",
+            str(output_mph),
+            "-batchlog",
+            str(batch_log),
+        ],
+        "safety_gate": "dry-run only; call scripts/invoke-waveguide-java-batch.ps1 directly until direct-batch equality tests pass",
+    }
+
+
 class PhotonicMcpServer:
-    def __init__(self, skill_root: Path, allowed_roots: list[Path]) -> None:
+    def __init__(self, skill_root: Path, allowed_roots: list[Path], enable_execution: bool = False) -> None:
         self.skill_root = skill_root.resolve()
         self.allowed_roots = [root.resolve() for root in allowed_roots]
+        self.enable_execution = enable_execution
 
     def resource_list(self) -> list[dict[str, str]]:
         resources = [
@@ -300,6 +376,26 @@ class PhotonicMcpServer:
                     "additionalProperties": False,
                 },
             },
+            {
+                "name": "run_java_batch",
+                "title": "Render Java batch run plan",
+                "description": "Render a redacted, allowlist-checked COMSOL Java batch dry-run plan. Real execution is disabled in this prototype.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "java_file": {"type": "string"},
+                        "output_mph": {"type": "string"},
+                        "batch_log": {"type": "string"},
+                        "runtime_dir": {"type": "string"},
+                        "solver_root": {"type": "string"},
+                        "timeout_s": {"type": "integer", "default": 3600},
+                        "dry_run": {"type": "boolean", "default": True},
+                        "allow_execute": {"type": "boolean", "default": False},
+                    },
+                    "required": ["java_file", "output_mph", "batch_log", "runtime_dir"],
+                    "additionalProperties": False,
+                },
+            },
         ]
 
     def tool_call(self, name: str, arguments: dict[str, Any]) -> dict[str, Any]:
@@ -323,6 +419,35 @@ class PhotonicMcpServer:
             write_csv(summary_csv, [summary])
             write_csv(trace_csv, rows)
             result = {"summary": summary, "summary_csv": str(summary_csv), "trace_csv": str(trace_csv)}
+        elif name == "run_java_batch":
+            java_file = ensure_allowed(Path(arguments["java_file"]), self.allowed_roots)
+            output_mph = ensure_allowed(Path(arguments["output_mph"]), self.allowed_roots)
+            batch_log = ensure_allowed(Path(arguments["batch_log"]), self.allowed_roots)
+            runtime_dir = ensure_allowed(Path(arguments["runtime_dir"]), self.allowed_roots)
+            dry_run = read_bool(arguments.get("dry_run"), True)
+            allow_execute = read_bool(arguments.get("allow_execute"), False)
+            timeout_s = int(arguments.get("timeout_s", 3600))
+            solver_root_source = "argument" if arguments.get("solver_root") else "env:PHOTONIC_SOLVER_ROOT"
+            if not arguments.get("solver_root") and not os.environ.get("PHOTONIC_SOLVER_ROOT"):
+                solver_root_source = "unset"
+            if not dry_run:
+                if not allow_execute:
+                    raise McpError("non-dry-run requires allow_execute=true and explicit user approval", code=-32602)
+                if not self.enable_execution:
+                    raise McpError("server was not started with --enable-execution; non-dry-run is disabled", code=-32602)
+                raise McpError(
+                    "non-dry-run solver execution is intentionally not implemented in this prototype; use scripts/invoke-waveguide-java-batch.ps1 directly",
+                    code=-32000,
+                )
+            result = build_java_batch_plan(
+                java_file,
+                output_mph,
+                batch_log,
+                runtime_dir,
+                timeout_s,
+                solver_root_source,
+                self.enable_execution,
+            )
         else:
             raise McpError(f"unknown tool: {name}", code=-32602)
 
@@ -387,9 +512,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Minimal stdio MCP server for photonic-waveguide-optics workflows.")
     parser.add_argument("--skill-root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--allow-root", action="append", default=[])
+    parser.add_argument("--enable-execution", action="store_true", help="Reserve flag for future non-dry-run solver execution gates.")
     args = parser.parse_args()
 
-    server = PhotonicMcpServer(args.skill_root.resolve(), parse_roots(args.allow_root, args.skill_root.resolve()))
+    server = PhotonicMcpServer(
+        args.skill_root.resolve(),
+        parse_roots(args.allow_root, args.skill_root.resolve()),
+        enable_execution=args.enable_execution,
+    )
     for raw in sys.stdin:
         try:
             request = json.loads(raw)
