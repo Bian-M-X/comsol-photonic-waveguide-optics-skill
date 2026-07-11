@@ -1,3 +1,4 @@
-display_name: Photonic Waveguide Optics
-short_description: Build and debug integrated photonic device simulation workflows.
-default_prompt: Use $photonic-waveguide-optics to build, debug, optimize, or report an integrated photonic waveguide or on-chip optical device simulation workflow.
+interface:
+  display_name: "Photonic Device Design and Simulation"
+  short_description: "Design, compose, simulate, and verify photonic devices"
+  default_prompt: "Use $photonic-waveguide-optics to design, simulate, optimize, or hierarchically compose an integrated photonic device with explicit verification gates."

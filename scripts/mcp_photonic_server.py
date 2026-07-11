@@ -11,10 +11,12 @@ from typing import Any
 
 
 SERVER_NAME = "photonic-waveguide-optics-mcp"
-SERVER_VERSION = "0.1.0"
+SERVER_VERSION = "0.2.0"
 
 
 REFERENCE_RESOURCES = {
+    "hierarchical-device-workflow": "references/hierarchical-device-workflow.md",
+    "verification-gates": "references/verification-gates.md",
     "smooth-bend-geometry": "references/smooth-bend-geometry.md",
     "subagent-orchestration": "references/subagent-orchestration.md",
     "comsol-mcp-evaluation": "references/comsol-mcp-evaluation.md",
@@ -153,12 +155,17 @@ def safe_artifact_audit(project_root: Path) -> dict[str, Any]:
 def create_project_scaffold(project_root: Path, device_family: str) -> dict[str, Any]:
     folders = [
         "requirements",
+        "components/contracts",
+        "components/sparameters",
+        "circuits",
+        "layout",
         "models/java",
         "models/mph",
         "runs",
         "scripts",
         "data/raw",
         "data/processed",
+        "verification",
         "reports",
         "handoff",
     ]
@@ -188,6 +195,17 @@ def create_project_scaffold(project_root: Path, device_family: str) -> dict[str,
     handoff = project_root / "handoff" / "latest.md"
     if not handoff.exists():
         handoff.write_text("# Latest Handoff\n\nStatus: initialized\n", encoding="utf-8")
+    skill_root = Path(__file__).resolve().parent.parent
+    template_root = skill_root / "assets" / "templates" / "hierarchical-device"
+    assembly = project_root / "circuits" / "assembly.json"
+    sample_sparams = project_root / "components" / "sparameters" / "waveguide.csv"
+    assembly_tool = project_root / "scripts" / "photonic_assembly.py"
+    if template_root.exists() and not assembly.exists():
+        assembly.write_text((template_root / "assembly.json").read_text(encoding="utf-8"), encoding="utf-8")
+    if template_root.exists() and not sample_sparams.exists():
+        sample_sparams.write_text((template_root / "waveguide.csv").read_text(encoding="utf-8"), encoding="utf-8")
+    if not assembly_tool.exists():
+        assembly_tool.write_text((skill_root / "scripts" / "photonic_assembly.py").read_text(encoding="utf-8"), encoding="utf-8")
     return {"project_root": str(project_root), "device_family": device_family, "created_folders": folders}
 
 

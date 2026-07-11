@@ -13,12 +13,17 @@ $ErrorActionPreference = "Stop"
 $root = [System.IO.Path]::GetFullPath($ProjectRoot)
 $folders = @(
   "requirements",
+  "components\contracts",
+  "components\sparameters",
+  "circuits",
+  "layout",
   "models\java",
   "models\mph",
   "runs",
   "scripts",
   "data\raw",
   "data\processed",
+  "verification",
   "reports",
   "handoff"
 )
@@ -65,6 +70,20 @@ if (-not (Test-Path -LiteralPath $handoff)) {
   ) | Set-Content -LiteralPath $handoff -Encoding UTF8
 }
 
+$templateRoot = Join-Path $PSScriptRoot "..\assets\templates\hierarchical-device"
+$assembly = Join-Path $root "circuits\assembly.json"
+$sampleSparams = Join-Path $root "components\sparameters\waveguide.csv"
+$assemblyTool = Join-Path $root "scripts\photonic_assembly.py"
+if ((Test-Path -LiteralPath $templateRoot) -and -not (Test-Path -LiteralPath $assembly)) {
+  Copy-Item -LiteralPath (Join-Path $templateRoot "assembly.json") -Destination $assembly
+}
+if ((Test-Path -LiteralPath $templateRoot) -and -not (Test-Path -LiteralPath $sampleSparams)) {
+  Copy-Item -LiteralPath (Join-Path $templateRoot "waveguide.csv") -Destination $sampleSparams
+}
+if (-not (Test-Path -LiteralPath $assemblyTool)) {
+  Copy-Item -LiteralPath (Join-Path $PSScriptRoot "photonic_assembly.py") -Destination $assemblyTool
+}
+
 $gitignore = Join-Path $root ".gitignore"
 if (-not (Test-Path -LiteralPath $gitignore)) {
   @(
@@ -74,6 +93,7 @@ if (-not (Test-Path -LiteralPath $gitignore)) {
     "*.mphbin",
     "models/mph/",
     "runs/**/runtime/",
+    "data/raw/",
     "__pycache__/",
     "*.pyc"
   ) | Set-Content -LiteralPath $gitignore -Encoding UTF8

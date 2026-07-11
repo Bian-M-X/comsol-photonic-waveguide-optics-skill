@@ -10,7 +10,7 @@ Use this reference when deciding whether to run COMSOL through Java batch, an in
 | `mphserver` / LiveLink-style interactive control | Useful but stateful | Backup or exploratory | Good for interactive inspection, but more fragile for unattended runs and environment setup |
 | Custom MCP server bridge around the batch runner | Phase 1/2 tested; Phase 3 dry-run tested | Experimental backup after validation | Resource discovery, artifact audit, scaffold creation, sweep parsing, and redacted batch-plan rendering are feasible; solver execution still needs direct-batch equality tests |
 
-As of the 2026-06 skill update, no verified, project-ready, off-the-shelf COMSOL MCP server was adopted. Treat MCP as an integration layer around the already reliable batch route, not as a replacement for the solver workflow.
+As of the 2026-07 skill update, no verified, project-ready, off-the-shelf COMSOL MCP server was adopted. Treat MCP as an integration layer around the already reliable batch route, not as a replacement for the solver workflow.
 
 ## Local Prototype Test Status
 
@@ -33,7 +33,7 @@ Tested MCP-style calls:
 Smoke-test result on an existing LT-aMZI true-smooth sweep table:
 
 ```text
-resource_count = 15
+resource_count = 17
 tools = list_allowed_roots, create_project_scaffold, audit_project_artifacts, parse_sweep_table, run_java_batch
 row_count = 31
 max_T21 = 0.3255039699650145
@@ -74,7 +74,7 @@ The first usable route should be a thin local MCP server that wraps existing, te
 
 - Keep `scripts/invoke-waveguide-java-batch.ps1` as the only solver execution backend.
 - Keep `scripts/parse-comsol-sweep.py` as the first table parser.
-- Require an explicit project root under an allowlist such as `%USERPROFILE%\Documents`, `D:\Quantum Chip Based on Light`, or another user-approved root.
+- Require an explicit project root under an allowlist such as `%USERPROFILE%\Documents`, `D:\Projects`, or another user-approved root.
 - Resolve the solver location from `PHOTONIC_SOLVER_ROOT`; do not expose the full value in normal responses.
 - Never place proprietary binaries, plugin jars, license files, `.mph` models, or raw logs inside the MCP server package.
 

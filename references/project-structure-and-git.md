@@ -6,12 +6,17 @@ Use this reference when creating a new simulation project, handing off work to a
 
 ```text
 project-root/
-  README.md
   PROJECT.md
   requirements/
     paper_targets.md
     assumptions.md
     conventions.md
+  components/
+    contracts/
+    sparameters/
+  circuits/
+    assembly.json
+  layout/
   models/
     java/
     mph/                 # usually gitignored
@@ -27,6 +32,7 @@ project-root/
   data/
     raw/                 # usually gitignored if large/proprietary
     processed/
+  verification/
   reports/
   handoff/
 ```
@@ -67,6 +73,7 @@ Every meaningful run should leave:
 - key metrics;
 - known limitations;
 - next recommended action.
+- verification-gate status and evidence links.
 
 For long projects, keep a short `handoff/latest.md` that a new conversation can read first.
 

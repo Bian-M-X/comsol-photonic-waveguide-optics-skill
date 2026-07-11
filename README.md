@@ -1,6 +1,6 @@
 # Photonic Waveguide Optics Skill
 
-An installable Codex skill for reproducible integrated-photonic simulation work: waveguides, bends, splitters, directional couplers, MZI/aMZI/LT-aMZI devices, resonators, gratings, sensors, modulators, parameter sweeps, and simulation reports.
+An installable Codex skill for reproducible integrated-photonic design and simulation: waveguides, bends, splitters, directional couplers, MZI/aMZI/LT-aMZI devices, resonators, gratings, sensors, modulators, hierarchical circuit composition, parameter sweeps, robustness studies, and evidence-backed reports.
 
 The main idea is simple: this skill teaches Codex how to treat photonic simulations as an auditable engineering workflow, not just as geometry drawing. A good run should preserve the chain from literature parameters, geometry assumptions, material selections, ports, mesh, solver settings, exported spectra, postprocessing scripts, and final interpretation.
 
@@ -16,6 +16,8 @@ Use this skill when you want Codex to help with:
 - sensors, modulators, and early inverse-design or layout-screening studies;
 - wavelength sweeps, S-parameter extraction, FSR checks, insertion loss, extinction ratio, and energy-budget diagnostics;
 - Java API plus batch automation for licensed local finite-element solver installations;
+- reusable component contracts, complete complex multiport S matrices, assembly manifests, and circuit-level composition;
+- port-aware layout/netlist workflows with promoted full-wave subassembly checks;
 - structured reports, handoff notes, and publication-safe artifact audits.
 
 The skill is especially useful when a project needs a new Codex conversation to quickly understand what has been done, what is trusted, what is still only approximate, and what should be tested next.
@@ -117,11 +119,12 @@ For most photonic devices, use a staged flow:
 2. Choose the model level: 2D effective-index, substructure 3D, or full 3D.
 3. Validate the straight waveguide and numeric ports.
 4. Validate standalone building blocks: bend, taper, coupler, splitter, ring, grating, or MMI.
-5. Assemble the final device only after key blocks are stable.
-6. Run a single-wavelength field check before sweeping.
-7. Sweep wavelength or geometry and export CSV/TXT tables.
-8. Compare against theory, papers, reduced-order models, or measured data.
-9. Write a model-quality report that separates verified facts, approximations, and next actions.
+5. Export complete complex S matrices and component contracts for reusable blocks.
+6. Compose complex devices through a validated manifest/netlist before attempting a monolithic solve.
+7. Generate a port-aware layout, extract connectivity, and promote critical subassemblies to full-wave checks.
+8. Sweep wavelength, geometry, and process corners; export CSV/TXT tables.
+9. Compare against theory, papers, reduced-order models, higher-fidelity submodels, or measured data.
+10. Write a model-quality report that separates circuit, 2D, 3D, layout, and experimental evidence.
 
 This order prevents a common failure mode: debugging a full interferometer while the real issue is a port, material selection, boundary condition, bend, coupler, mesh, or postprocessing expression.
 
@@ -159,6 +162,8 @@ The batch route remains the first choice for trusted solver execution because it
 | `scripts/invoke-waveguide-java-batch.ps1` | Compile Java API source with the solver-bundled `javac.exe`, then run it through batch mode. |
 | `scripts/new-photonic-project.ps1` | Create a standard project folder scaffold for simulation work. |
 | `scripts/parse-comsol-sweep.py` | Parse exported sweep tables and summarize peaks, valleys, FSR-like spacings, `S11`, `T21`, and `S11+T21`. |
+| `scripts/photonic_assembly.py` | Validate component contracts and compose hierarchical wavelength-dependent S-parameter networks. |
+| `scripts/test_photonic_assembly.py` | Smoke-test cascade composition and mode-mismatch rejection. |
 | `scripts/audit-simulation-artifacts.ps1` | Scan a folder before publication or commit for blocked artifacts and obvious sensitive data. |
 | `scripts/emit-analytic-bend-java-helper.py` | Emit a Java helper skeleton for analytic circular/annular-sector bends. |
 | `scripts/mcp_photonic_server.py` | Dependency-free stdio MCP-style prototype for resources, safe local tools, sweep parsing, and redacted batch dry-run planning. |
@@ -176,6 +181,8 @@ Use `SKILL.md` as the router. Load detailed references only when needed.
 | `references/interferometer-workflows.md` | MZI, aMZI, LT-aMZI topology, directional coupler calibration, FSR checks, and common failure modes. |
 | `references/optimization-and-reporting.md` | Sweeps, objective functions, diagnostics, result tables, reports, and reproducibility packages. |
 | `references/smooth-bend-geometry.md` | True smooth bends, analytic circular arcs, smooth Euler bends via `InterpolationCurve type=solid`, centerline length preservation, and bend-radius scans. |
+| `references/hierarchical-device-workflow.md` | Component contracts, S-parameter networks, geometry parts, layout/netlists, and full-wave promotion. |
+| `references/verification-gates.md` | Evidence gates from device contract through final robustness and reporting. |
 | `references/subagent-orchestration.md` | Planning, execution, geometry, audit, result review, and data-processing subagent patterns. |
 | `references/comsol-mcp-evaluation.md` | Direct batch vs interactive server vs MCP wrapper route selection and adoption gates. |
 | `references/quantum-photonic-knowledge-base.md` | Quantum photonic chip basics, MZI meshes, phase shifters, Hadamard/CNOT-style building blocks, and literature entry points. |
@@ -223,6 +230,36 @@ Real solver execution through MCP is intentionally not the default. The current 
 3. Interactive server or LiveLink-style workflows only for special inspection/debugging cases.
 
 Before MCP becomes a daily execution route, it should pass direct-batch equality tests, timeout/failure-mode tests, redaction audits, and a small validated smoke model.
+
+## Hierarchical Complex-Device Workflow
+
+The recommended scalable route for a complex photonic circuit is:
+
+```text
+qualified building blocks
+  -> complete complex S-parameter models
+  -> validated assembly manifest
+  -> circuit-level simulation and sensitivity
+  -> port-aware layout and extracted connectivity
+  -> selected 2D/3D full-wave subassembly validation
+```
+
+Initialize a project with the supplied assembly template:
+
+```powershell
+.\scripts\new-photonic-project.ps1 -ProjectRoot 'D:\Work\my-photonic-device'
+```
+
+Validate and compose the sample or a project-specific manifest:
+
+```powershell
+python .\scripts\photonic_assembly.py validate .\circuits\assembly.json
+python .\scripts\photonic_assembly.py compose .\circuits\assembly.json `
+  --output .\data\processed\circuit_sparameters.csv `
+  --summary .\verification\circuit_summary.json
+```
+
+This composition is a circuit-level result. It becomes a stronger engineering claim only after reference-plane, mode, passivity, layout-connectivity, and promoted full-wave checks pass.
 
 ## Example Prompts
 
@@ -324,6 +361,7 @@ photonic-waveguide-optics-skill/
   README.md
   LICENSE
   NOTICE.md
+  assets/
   agents/
   references/
   scripts/
