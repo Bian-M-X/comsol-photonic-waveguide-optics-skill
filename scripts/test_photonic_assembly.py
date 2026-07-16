@@ -97,6 +97,37 @@ def make_manifest(root: Path) -> Path:
 
 
 class PhotonicAssemblyTests(unittest.TestCase):
+    def test_bundled_four_port_mzi_template(self) -> None:
+        manifest_path = (
+            Path(__file__).resolve().parents[1]
+            / "assets"
+            / "templates"
+            / "hierarchical-device"
+            / "mzi-4port"
+            / "circuits"
+            / "assembly.json"
+        )
+        manifest, component_data = photonic_assembly.validate_manifest(manifest_path)
+        rows, summary = photonic_assembly.compose(manifest, component_data)
+        cross = next(
+            row
+            for row in rows
+            if row["wavelength_nm"] == "1550"
+            and row["out_port"] == "out_bottom"
+            and row["in_port"] == "in_top"
+        )
+        through = next(
+            row
+            for row in rows
+            if row["wavelength_nm"] == "1550"
+            and row["out_port"] == "out_top"
+            and row["in_port"] == "in_top"
+        )
+        self.assertEqual(summary["instance_count"], 4)
+        self.assertEqual(summary["external_ports"], ["in_top", "in_bottom", "out_top", "out_bottom"])
+        self.assertAlmostEqual(float(cross["power"]), 1.0, places=12)
+        self.assertAlmostEqual(float(through["power"]), 0.0, places=12)
+
     def test_two_stage_cascade(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             manifest_path = make_manifest(Path(temp_dir))
@@ -177,6 +208,31 @@ class PhotonicAssemblyTests(unittest.TestCase):
             manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
             with self.assertRaisesRegex(photonic_assembly.AssemblyError, "mode mismatch"):
                 photonic_assembly.validate_manifest(manifest_path)
+
+    def test_manifest_contract_rejects_ambiguous_or_unsafe_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manifest_path = make_manifest(Path(temp_dir))
+            baseline = json.loads(manifest_path.read_text(encoding="utf-8"))
+            cases = {
+                "is reused by": lambda payload: payload["external_ports"].update(
+                    {"duplicate_in": "left:o1"}
+                ),
+                "non-empty strings": lambda payload: payload["components"]["a"]["port_modes"].update(
+                    {"o1": ""}
+                ),
+                "relative to the manifest": lambda payload: payload["components"]["a"].update(
+                    {"sparameters": str((Path(temp_dir) / "a.csv").resolve())}
+                ),
+                "must be a boolean": lambda payload: payload["components"]["a"].update(
+                    {"passive": "yes"}
+                ),
+            }
+            for expected, mutate in cases.items():
+                with self.subTest(expected=expected):
+                    payload = json.loads(json.dumps(baseline))
+                    mutate(payload)
+                    errors = photonic_assembly.validate_structure(payload)
+                    self.assertTrue(any(expected in error for error in errors), errors)
 
 
 if __name__ == "__main__":

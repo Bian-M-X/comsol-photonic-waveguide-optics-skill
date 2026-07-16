@@ -4,7 +4,7 @@ This repository is an independent workflow and educational skill for integrated 
 
 It is not affiliated with, endorsed by, sponsored by, or authorized by COMSOL AB.
 
-COMSOL and COMSOL Multiphysics are registered trademarks of COMSOL AB. Any references to those marks are used only to identify compatible third-party software environments. Product names, repository names, folder names, and skill names in this project intentionally avoid incorporating those marks.
+COMSOL and COMSOL Multiphysics are registered trademarks of COMSOL AB. References to those marks, including the current repository slug, are used nominatively only to identify a compatible third-party software environment. The installable skill name, `photonic-waveguide-optics`, is vendor-neutral. No repository or skill name implies affiliation, certification, sponsorship, or endorsement.
 
 This repository does not include or redistribute:
 

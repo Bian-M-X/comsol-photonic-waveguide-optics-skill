@@ -5,13 +5,47 @@ import csv
 import json
 import math
 import os
+import re
 import sys
 from pathlib import Path
 from typing import Any
 
 
 SERVER_NAME = "photonic-waveguide-optics-mcp"
-SERVER_VERSION = "0.2.0"
+SERVER_VERSION = "0.2.1"
+
+SAFE_LABEL_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}\Z")
+WINDOWS_RESERVED_BASENAMES = {
+    "CON",
+    "PRN",
+    "AUX",
+    "NUL",
+    *(f"COM{i}" for i in range(1, 10)),
+    *(f"LPT{i}" for i in range(1, 10)),
+}
+AUDIT_TEXT_SUFFIXES = {
+    ".md", ".txt", ".csv", ".java", ".py", ".ps1", ".psm1", ".json",
+    ".yaml", ".yml", ".toml", ".ini", ".cfg", ".conf", ".config",
+    ".properties", ".xml", ".sh", ".cmd", ".bat", ".log", ".sql",
+    ".pem", ".key", ".pub",
+}
+AUDIT_EXCLUDED_DIRS = {".git", ".hg", ".svn", "node_modules", "__pycache__", ".venv", "venv"}
+AUDIT_SCANNER_FILES = {"audit-simulation-artifacts.ps1", "mcp_photonic_server.py"}
+AUDIT_SENSITIVE_NAME_RE = re.compile(
+    r"^(?:\.env(?:\..+)?|credentials?(?:\..+)?|secrets?(?:\..+)?|tokens?(?:\..+)?|id_(?:rsa|dsa|ecdsa|ed25519)(?:\.pub)?)$",
+    re.IGNORECASE,
+)
+AUDIT_SENSITIVE_CONTENT = {
+    "license_setting": re.compile(r"\b(?:LM_LICENSE_FILE|COMSOL_LICENSE)\b\s*[:=]", re.IGNORECASE | re.MULTILINE),
+    "license_file": re.compile(r"(?:license\." + r"dat|\S+\." + "lic)", re.IGNORECASE | re.MULTILINE),
+    "credential_token": re.compile(
+        r"^[\t ]*(?:export[\t ]+)?[\"']?(?:api[_-]?key|access[_-]?token|auth[_-]?token|token|password|passwd|secret)[\"']?[\t ]*[:=][\t ]*[^\s#;]+",
+        re.IGNORECASE | re.MULTILINE,
+    ),
+    "private_key": re.compile(r"-----BEGIN (?:[A-Z0-9 ]+ )?PRIVATE KEY-----", re.MULTILINE),
+    "user_profile_path": re.compile(r"C:\\Users\\", re.IGNORECASE),
+    "solver_install_path": re.compile(r"(?:COMSOL64\\Multiphysics|D:\\COMSOL|D:\\cosmol)", re.IGNORECASE),
+}
 
 
 REFERENCE_RESOURCES = {
@@ -57,8 +91,45 @@ def ensure_allowed(path: Path, allowed_roots: list[Path]) -> Path:
     raise McpError(f"path is outside allowed roots: {path}", code=-32602)
 
 
-def parse_comsol_table(path: Path) -> list[dict[str, float]]:
-    rows: list[dict[str, float]] = []
+def validate_artifact_label(value: Any) -> str:
+    if not isinstance(value, str) or not value:
+        raise McpError("label must be a non-empty string", code=-32602)
+    if value in {".", ".."} or "/" in value or "\\" in value:
+        raise McpError("label must be a basename without path separators", code=-32602)
+    if Path(value).is_absolute() or not SAFE_LABEL_RE.fullmatch(value):
+        raise McpError(
+            "label must be a safe basename using only ASCII letters, digits, '.', '_' and '-'",
+            code=-32602,
+        )
+    reserved_prefix = value.split(".", 1)[0].upper()
+    if reserved_prefix in WINDOWS_RESERVED_BASENAMES:
+        raise McpError(f"label is a reserved basename: {value}", code=-32602)
+    return value
+
+
+def strict_json_dumps(value: Any, **kwargs: Any) -> str:
+    return json.dumps(value, allow_nan=False, **kwargs)
+
+
+def request_id_from(request: Any) -> str | int | float | None:
+    if not isinstance(request, dict):
+        return None
+    request_id = request.get("id")
+    if request_id is None or isinstance(request_id, str):
+        return request_id
+    if isinstance(request_id, bool) or not isinstance(request_id, (int, float)):
+        return None
+    if isinstance(request_id, float) and not math.isfinite(request_id):
+        return None
+    return request_id
+
+
+def reject_json_constant(value: str) -> None:
+    raise ValueError(f"non-finite JSON number is not allowed: {value}")
+
+
+def parse_comsol_table(path: Path) -> list[dict[str, float | None]]:
+    rows: list[dict[str, float | None]] = []
     for lineno, raw in enumerate(path.read_text(encoding="utf-8", errors="replace").splitlines(), start=1):
         line = raw.strip()
         if not line or line.startswith("%"):
@@ -71,9 +142,14 @@ def parse_comsol_table(path: Path) -> list[dict[str, float]]:
             lambda_um = float(parts[1])
             s11 = float(parts[2])
             t21 = float(parts[3])
-            t21_db = float(parts[4]) if len(parts) >= 5 else math.nan
+            t21_db = float(parts[4]) if len(parts) >= 5 else None
         except ValueError as exc:
-            raise McpError(f"{path}:{lineno}: cannot parse numeric row") from exc
+            raise McpError(f"{path}:{lineno}: cannot parse numeric row", code=-32602) from exc
+        numeric_values = [freq_ghz, lambda_um, s11, t21]
+        if t21_db is not None:
+            numeric_values.append(t21_db)
+        if not all(math.isfinite(value) for value in numeric_values):
+            raise McpError(f"{path}:{lineno}: non-finite numeric value is not allowed", code=-32602)
         rows.append(
             {
                 "freq_GHz": freq_ghz,
@@ -89,28 +165,48 @@ def parse_comsol_table(path: Path) -> list[dict[str, float]]:
     return rows
 
 
-def extrema(rows: list[dict[str, float]], mode: str, threshold: float) -> list[dict[str, float]]:
-    out: list[dict[str, float]] = []
-    for i in range(1, len(rows) - 1):
-        prev_v = rows[i - 1]["T21"]
-        cur_v = rows[i]["T21"]
-        next_v = rows[i + 1]["T21"]
-        if mode == "max" and cur_v >= prev_v and cur_v >= next_v and cur_v >= threshold:
-            out.append(rows[i])
-        if mode == "min" and cur_v <= prev_v and cur_v <= next_v:
-            out.append(rows[i])
+def extrema(
+    rows: list[dict[str, float | None]], mode: str, threshold: float
+) -> list[dict[str, float | None]]:
+    """Return one representative sample for each strict local extremum plateau."""
+    out: list[dict[str, float | None]] = []
+    i = 0
+    while i < len(rows):
+        start = i
+        current = float(rows[i]["T21"])
+        while i + 1 < len(rows) and math.isclose(
+            float(rows[i + 1]["T21"]), current, rel_tol=1e-12, abs_tol=1e-15
+        ):
+            i += 1
+        end = i
+        if start > 0 and end < len(rows) - 1:
+            left = float(rows[start - 1]["T21"])
+            right = float(rows[end + 1]["T21"])
+            is_peak = mode == "max" and current > left and current > right and current >= threshold
+            is_valley = mode == "min" and current < left and current < right
+            if is_peak or is_valley:
+                representative = dict(rows[(start + end) // 2])
+                representative["lambda_nm"] = 0.5 * (
+                    float(rows[start]["lambda_nm"]) + float(rows[end]["lambda_nm"])
+                )
+                out.append(representative)
+        i += 1
     return out
 
 
-def summarize_rows(label: str, rows: list[dict[str, float]], peak_threshold: float) -> dict[str, Any]:
-    max_row = max(rows, key=lambda row: row["T21"])
-    min_row = min(rows, key=lambda row: row["T21"])
-    peaks = extrema(rows, "max", peak_threshold)
-    valleys = extrema(rows, "min", peak_threshold)
+def summarize_rows(label: str, rows: list[dict[str, float | None]], peak_threshold: float) -> dict[str, Any]:
+    if not math.isfinite(peak_threshold):
+        raise McpError("peak_threshold must be finite", code=-32602)
+    spectral_rows = sorted(rows, key=lambda row: float(row["lambda_nm"]))
+    max_row = max(spectral_rows, key=lambda row: float(row["T21"]))
+    min_row = min(spectral_rows, key=lambda row: float(row["T21"]))
+    peaks = extrema(spectral_rows, "max", peak_threshold)
+    valleys = extrema(spectral_rows, "min", peak_threshold)
     peak_spacings = [peaks[i + 1]["lambda_nm"] - peaks[i]["lambda_nm"] for i in range(len(peaks) - 1)]
     valley_spacings = [valleys[i + 1]["lambda_nm"] - valleys[i]["lambda_nm"] for i in range(len(valleys) - 1)]
     peak_values = [row["T21"] for row in peaks]
-    weak_strong = min(peak_values) / max(peak_values) if peak_values else math.nan
+    strongest_peak = max(peak_values) if peak_values else None
+    weak_strong = min(peak_values) / strongest_peak if strongest_peak is not None and strongest_peak > 0 else None
     return {
         "label": label,
         "row_count": len(rows),
@@ -137,18 +233,52 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         writer.writerows(rows)
 
 
+def read_likely_text_sample(path: Path, limit: int = 1024 * 1024) -> str | None:
+    try:
+        with path.open("rb") as handle:
+            raw = handle.read(limit)
+    except OSError:
+        return None
+    if not raw:
+        return ""
+    if raw.startswith((b"\xff\xfe", b"\xfe\xff")):
+        try:
+            return raw.decode("utf-16")
+        except UnicodeDecodeError:
+            return None
+    if b"\x00" in raw:
+        return None
+    control_count = sum(byte < 32 and byte not in {9, 10, 12, 13} for byte in raw)
+    if control_count > max(1, int(len(raw) * 0.02)):
+        return None
+    return raw.decode("utf-8", errors="replace")
+
+
 def safe_artifact_audit(project_root: Path) -> dict[str, Any]:
     blocked_suffixes = {".mph", ".class", ".mphbin", ".mphstatus"}
     large_limit = 25 * 1024 * 1024
     findings: list[dict[str, str]] = []
     for path in project_root.rglob("*"):
-        if not path.is_file():
+        if not path.is_file() or path.is_symlink():
+            continue
+        relative = path.relative_to(project_root)
+        if any(part.lower() in AUDIT_EXCLUDED_DIRS for part in relative.parts[:-1]):
             continue
         suffix = path.suffix.lower()
         if suffix in blocked_suffixes:
-            findings.append({"kind": "blocked_extension", "path": str(path.relative_to(project_root))})
+            findings.append({"kind": "blocked_extension", "path": str(relative)})
         if path.stat().st_size > large_limit:
-            findings.append({"kind": "large_file", "path": str(path.relative_to(project_root))})
+            findings.append({"kind": "large_file", "path": str(relative)})
+        if AUDIT_SENSITIVE_NAME_RE.fullmatch(path.name):
+            findings.append({"kind": "sensitive_file_name", "path": str(relative)})
+        is_text_candidate = suffix in AUDIT_TEXT_SUFFIXES or not suffix or path.name.lower().startswith(".env")
+        if is_text_candidate and path.name not in AUDIT_SCANNER_FILES:
+            content = read_likely_text_sample(path)
+            if content is not None:
+                for name, pattern in AUDIT_SENSITIVE_CONTENT.items():
+                    if pattern.search(content):
+                        findings.append({"kind": f"possible_sensitive_content:{name}", "path": str(relative)})
+                        break
     return {"project_root": str(project_root), "finding_count": len(findings), "findings": findings}
 
 
@@ -197,16 +327,66 @@ def create_project_scaffold(project_root: Path, device_family: str) -> dict[str,
         handoff.write_text("# Latest Handoff\n\nStatus: initialized\n", encoding="utf-8")
     skill_root = Path(__file__).resolve().parent.parent
     template_root = skill_root / "assets" / "templates" / "hierarchical-device"
+    normalized_family = device_family.strip().lower()
+    use_mzi_template = normalized_family in {"mzi", "balanced-mzi", "interferometer"}
     assembly = project_root / "circuits" / "assembly.json"
-    sample_sparams = project_root / "components" / "sparameters" / "waveguide.csv"
     assembly_tool = project_root / "scripts" / "photonic_assembly.py"
-    if template_root.exists() and not assembly.exists():
-        assembly.write_text((template_root / "assembly.json").read_text(encoding="utf-8"), encoding="utf-8")
-    if template_root.exists() and not sample_sparams.exists():
-        sample_sparams.write_text((template_root / "waveguide.csv").read_text(encoding="utf-8"), encoding="utf-8")
+    requirements_file = project_root / "requirements.txt"
+    gitignore = project_root / ".gitignore"
+    if use_mzi_template:
+        assembly_template = template_root / "mzi-4port" / "circuits" / "assembly.json"
+        sparameter_templates = {
+            "directional_coupler.csv": template_root / "mzi-4port" / "components" / "sparameters" / "directional_coupler.csv",
+            "arm.csv": template_root / "mzi-4port" / "components" / "sparameters" / "arm.csv",
+        }
+        template_kind = "mzi-4port"
+    else:
+        assembly_template = template_root / "assembly.json"
+        sparameter_templates = {"waveguide.csv": template_root / "waveguide.csv"}
+        template_kind = "waveguide-cascade"
+    if assembly_template.exists() and not assembly.exists():
+        assembly.write_text(assembly_template.read_text(encoding="utf-8"), encoding="utf-8")
+    for filename, source in sparameter_templates.items():
+        destination = project_root / "components" / "sparameters" / filename
+        if source.exists() and not destination.exists():
+            destination.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
     if not assembly_tool.exists():
         assembly_tool.write_text((skill_root / "scripts" / "photonic_assembly.py").read_text(encoding="utf-8"), encoding="utf-8")
-    return {"project_root": str(project_root), "device_family": device_family, "created_folders": folders}
+    if not requirements_file.exists():
+        requirements_file.write_text((skill_root / "requirements.txt").read_text(encoding="utf-8"), encoding="utf-8")
+    if not gitignore.exists():
+        gitignore.write_text(
+            "\n".join(
+                [
+                    "*.mph",
+                    "*.class",
+                    "*.log",
+                    "*.mphbin",
+                    "models/mph/",
+                    "runs/**/runtime/",
+                    "data/raw/",
+                    "__pycache__/",
+                    "*.pyc",
+                ]
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+    return {
+        "project_root": str(project_root),
+        "device_family": device_family,
+        "template_kind": template_kind,
+        "created_folders": folders,
+        "created_files": [
+            "PROJECT.md",
+            "handoff/latest.md",
+            "circuits/assembly.json",
+            *[f"components/sparameters/{name}" for name in sparameter_templates],
+            "scripts/photonic_assembly.py",
+            "requirements.txt",
+            ".gitignore",
+        ],
+    }
 
 
 def read_bool(value: Any, default: bool) -> bool:
@@ -328,7 +508,7 @@ class PhotonicMcpServer:
                 "tools": [tool["name"] for tool in self.tool_list()],
                 "resources": [item["uri"] for item in self.resource_list()],
             }
-            return [{"uri": uri, "mimeType": "application/json", "text": json.dumps(payload, indent=2)}]
+            return [{"uri": uri, "mimeType": "application/json", "text": strict_json_dumps(payload, indent=2)}]
         if uri.startswith("photonic://skill/reference/"):
             name = uri.rsplit("/", 1)[-1]
             rel = REFERENCE_RESOURCES.get(name)
@@ -428,12 +608,13 @@ class PhotonicMcpServer:
         elif name == "parse_sweep_table":
             table = ensure_allowed(Path(arguments["table_file"]), self.allowed_roots)
             out_dir = ensure_allowed(Path(arguments["output_dir"]), self.allowed_roots)
-            label = str(arguments.get("label") or table.stem)
+            raw_label = arguments["label"] if "label" in arguments else table.stem
+            label = validate_artifact_label(raw_label)
             threshold = float(arguments.get("peak_threshold", 0.02))
             rows = parse_comsol_table(table)
             summary = summarize_rows(label, rows, threshold)
-            summary_csv = out_dir / f"{label}_summary.csv"
-            trace_csv = out_dir / f"{label}_trace.csv"
+            summary_csv = ensure_allowed(out_dir / f"{label}_summary.csv", self.allowed_roots)
+            trace_csv = ensure_allowed(out_dir / f"{label}_trace.csv", self.allowed_roots)
             write_csv(summary_csv, [summary])
             write_csv(trace_csv, rows)
             result = {"summary": summary, "summary_csv": str(summary_csv), "trace_csv": str(trace_csv)}
@@ -470,15 +651,25 @@ class PhotonicMcpServer:
             raise McpError(f"unknown tool: {name}", code=-32602)
 
         return {
-            "content": [{"type": "text", "text": json.dumps(result, indent=2)}],
+            "content": [{"type": "text", "text": strict_json_dumps(result, indent=2)}],
             "structuredContent": result,
             "isError": False,
         }
 
-    def handle(self, request: dict[str, Any]) -> dict[str, Any] | None:
+    def handle(self, request: Any) -> dict[str, Any] | None:
+        if not isinstance(request, dict):
+            raise McpError("invalid request: expected a JSON object", code=-32600)
+        if request.get("jsonrpc") != "2.0" or not isinstance(request.get("method"), str):
+            raise McpError("invalid JSON-RPC request", code=-32600)
+        if "id" in request and request_id_from(request) is None and request.get("id") is not None:
+            raise McpError("invalid JSON-RPC request id", code=-32600)
         method = request.get("method")
-        request_id = request.get("id")
-        params = request.get("params") or {}
+        request_id = request_id_from(request)
+        params = request.get("params", {})
+        if params is None:
+            params = {}
+        if not isinstance(params, dict):
+            raise McpError("params must be an object", code=-32602)
         if method == "notifications/initialized":
             return None
         if method == "initialize":
@@ -502,10 +693,15 @@ class PhotonicMcpServer:
         if method == "tools/list":
             return {"jsonrpc": "2.0", "id": request_id, "result": {"tools": self.tool_list()}}
         if method == "tools/call":
+            arguments = params.get("arguments", {})
+            if arguments is None:
+                arguments = {}
+            if not isinstance(arguments, dict):
+                raise McpError("tool arguments must be an object", code=-32602)
             return {
                 "jsonrpc": "2.0",
                 "id": request_id,
-                "result": self.tool_call(str(params.get("name", "")), dict(params.get("arguments") or {})),
+                "result": self.tool_call(str(params.get("name", "")), arguments),
             }
         raise McpError(f"unknown method: {method}", code=-32601)
 
@@ -539,23 +735,42 @@ def main() -> None:
         enable_execution=args.enable_execution,
     )
     for raw in sys.stdin:
+        request: Any = None
         try:
-            request = json.loads(raw)
-            response = server.handle(request)
-        except McpError as exc:
+            request = json.loads(raw, parse_constant=reject_json_constant)
+        except (json.JSONDecodeError, ValueError) as exc:
             response = {
                 "jsonrpc": "2.0",
-                "id": locals().get("request", {}).get("id"),
-                "error": {"code": exc.code, "message": str(exc)},
+                "id": None,
+                "error": {"code": -32700, "message": f"parse error: {exc}"},
             }
-        except Exception as exc:  # fail closed for protocol tests
-            response = {
-                "jsonrpc": "2.0",
-                "id": locals().get("request", {}).get("id"),
-                "error": {"code": -32000, "message": f"internal error: {exc}"},
-            }
+        else:
+            try:
+                response = server.handle(request)
+            except McpError as exc:
+                response = {
+                    "jsonrpc": "2.0",
+                    "id": request_id_from(request),
+                    "error": {"code": exc.code, "message": str(exc)},
+                }
+            except Exception as exc:  # fail closed for protocol tests
+                response = {
+                    "jsonrpc": "2.0",
+                    "id": request_id_from(request),
+                    "error": {"code": -32000, "message": f"internal error: {exc}"},
+                }
         if response is not None:
-            sys.stdout.write(json.dumps(response) + "\n")
+            try:
+                encoded = strict_json_dumps(response)
+            except (TypeError, ValueError):
+                encoded = strict_json_dumps(
+                    {
+                        "jsonrpc": "2.0",
+                        "id": None,
+                        "error": {"code": -32000, "message": "internal error: response is not strict JSON"},
+                    }
+                )
+            sys.stdout.write(encoded + "\n")
             sys.stdout.flush()
 
 

@@ -1,6 +1,6 @@
 # Subagent Orchestration For Photonic Simulation
 
-Use this reference only when the user explicitly asks for subagents, delegated work, parallel audit, or multi-agent simulation workflow. Otherwise the main assistant should work directly.
+Use this reference when the task benefits from delegated work, independent audit, or a multi-agent simulation workflow and the active runtime permits delegation. Work directly when delegation would not materially improve speed, independence, or verification quality.
 
 ## Core Rule
 
@@ -13,6 +13,7 @@ Before spawning or instructing a subagent:
 3. Define the subagent's write scope or read-only scope.
 4. Give a concrete output contract.
 5. Keep critical-path work local unless the delegated task can run independently.
+6. Follow the active runtime's delegation policy; do not use this reference to override stricter system or user instructions.
 
 ## Recommended Roles
 
@@ -44,6 +45,7 @@ For short tasks, combine roles locally rather than spawning a full team.
 
 - No destructive filesystem operations.
 - No parallel COMSOL batch jobs sharing the same `prefs`, `configuration`, or `tmp` directories.
+- No licensed solver execution by a delegated agent unless the user-authorized execution scope and license/runtime isolation are explicit.
 - No claim of convergence without a declared sweep, mesh, or reference check.
 - No publication of local absolute paths, credentials, license files, `.mph`, `.class`, or raw proprietary logs unless explicitly approved.
 - Audit agents should fail closed: if data is missing, report missing data instead of inferring success.

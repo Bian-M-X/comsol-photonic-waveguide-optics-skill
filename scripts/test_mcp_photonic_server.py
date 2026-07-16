@@ -9,16 +9,25 @@ from pathlib import Path
 from typing import Any
 
 
-def send(proc: subprocess.Popen[str], request: dict[str, Any]) -> dict[str, Any]:
+def reject_json_constant(value: str) -> None:
+    raise ValueError(f"non-strict JSON constant in server response: {value}")
+
+
+def roundtrip(proc: subprocess.Popen[str], request: Any) -> tuple[dict[str, Any], str]:
     assert proc.stdin is not None
     assert proc.stdout is not None
-    proc.stdin.write(json.dumps(request) + "\n")
+    proc.stdin.write(json.dumps(request, allow_nan=False) + "\n")
     proc.stdin.flush()
     line = proc.stdout.readline()
     if not line:
         stderr = proc.stderr.read() if proc.stderr else ""
         raise RuntimeError(f"server closed unexpectedly; stderr={stderr}")
-    response = json.loads(line)
+    response = json.loads(line, parse_constant=reject_json_constant)
+    return response, line
+
+
+def send(proc: subprocess.Popen[str], request: dict[str, Any]) -> dict[str, Any]:
+    response, _ = roundtrip(proc, request)
     if "error" in response:
         raise RuntimeError(f"MCP error for {request.get('method')}: {response['error']}")
     return response
@@ -44,6 +53,25 @@ def main() -> None:
                 "191.8 1.563 0.22 0.12 -9.21\n",
                 encoding="utf-8",
             )
+        zero_table = temp_dir / "zero_fixture.txt"
+        zero_table.write_text(
+            "% freq_GHz lambda_um S11 T21\n"
+            "195.0 1.540 0.0 0.0\n"
+            "193.0 1.550 0.0 0.0\n"
+            "191.0 1.560 0.0 0.0\n",
+            encoding="utf-8",
+        )
+        descending_flat_table = temp_dir / "descending_flat_fixture.txt"
+        descending_flat_table.write_text(
+            "% descending wavelength with a two-sample flat-top peak\n"
+            "190.0 1.560 0.02 0.10\n"
+            "191.0 1.555 0.02 0.80\n"
+            "192.0 1.550 0.02 0.80\n"
+            "193.0 1.545 0.02 0.10\n"
+            "194.0 1.540 0.02 0.60\n"
+            "195.0 1.535 0.02 0.10\n",
+            encoding="utf-8",
+        )
         cmd = [
             sys.executable,
             str(args.server),
@@ -68,6 +96,7 @@ def main() -> None:
             encoding="utf-8",
         )
         try:
+            invalid_array, _ = roundtrip(proc, [])
             init = send(
                 proc,
                 {
@@ -100,6 +129,59 @@ def main() -> None:
                     },
                 },
             )
+            unsafe_label_responses = []
+            for index, unsafe_label in enumerate(
+                ["../escape", "..\\escape", str(temp_dir / "absolute"), "", ".", "CON.report"], start=20
+            ):
+                response, _ = roundtrip(
+                    proc,
+                    {
+                        "jsonrpc": "2.0",
+                        "id": index,
+                        "method": "tools/call",
+                        "params": {
+                            "name": "parse_sweep_table",
+                            "arguments": {
+                                "table_file": str(table),
+                                "output_dir": str(temp_dir / "unsafe-output"),
+                                "label": unsafe_label,
+                            },
+                        },
+                    },
+                )
+                unsafe_label_responses.append(response)
+            zero_parsed = send(
+                proc,
+                {
+                    "jsonrpc": "2.0",
+                    "id": 30,
+                    "method": "tools/call",
+                    "params": {
+                        "name": "parse_sweep_table",
+                        "arguments": {
+                            "table_file": str(zero_table),
+                            "output_dir": str(temp_dir / "zero-output"),
+                            "label": "zero_spectrum",
+                        },
+                    },
+                },
+            )
+            descending_flat_parsed = send(
+                proc,
+                {
+                    "jsonrpc": "2.0",
+                    "id": 31,
+                    "method": "tools/call",
+                    "params": {
+                        "name": "parse_sweep_table",
+                        "arguments": {
+                            "table_file": str(descending_flat_table),
+                            "output_dir": str(temp_dir / "descending-output"),
+                            "label": "descending_flat",
+                        },
+                    },
+                },
+            )
             scaffold_dir = temp_dir / "project-scaffold"
             scaffold = send(
                 proc,
@@ -120,6 +202,23 @@ def main() -> None:
                     "id": 7,
                     "method": "tools/call",
                     "params": {"name": "audit_project_artifacts", "arguments": {"project_root": str(scaffold_dir)}},
+                },
+            )
+            credential_name = ".env"
+            credential_file = scaffold_dir / credential_name
+            credential_file.write_text("TO" + "KEN=fixture-value\n", encoding="utf-8")
+            binary_file = scaffold_dir / "binaryblob"
+            binary_file.write_bytes(bytes([0, 84, 79, 75, 69, 78, 61, 120]))
+            credential_audit = send(
+                proc,
+                {
+                    "jsonrpc": "2.0",
+                    "id": 32,
+                    "method": "tools/call",
+                    "params": {
+                        "name": "audit_project_artifacts",
+                        "arguments": {"project_root": str(scaffold_dir)},
+                    },
                 },
             )
             java_file = temp_dir / "SmokeModel.java"
@@ -161,14 +260,28 @@ def main() -> None:
             proc.wait(timeout=10)
 
     summary = parsed["result"]["structuredContent"]["summary"]
+    zero_summary = zero_parsed["result"]["structuredContent"]["summary"]
+    descending_flat_summary = descending_flat_parsed["result"]["structuredContent"]["summary"]
     batch_structured = batch_plan["result"]["structuredContent"]
+    credential_findings = credential_audit["result"]["structuredContent"]["findings"]
     output = {
         "initialize_server": init["result"]["serverInfo"],
         "resource_count": len(resources["result"]["resources"]),
         "tool_names": [tool["name"] for tool in tools["result"]["tools"]],
         "manifest_bytes": len(manifest["result"]["contents"][0]["text"]),
         "parse_summary": summary,
+        "regressions": {
+            "array_request_error": invalid_array.get("error"),
+            "unsafe_label_error_codes": [item.get("error", {}).get("code") for item in unsafe_label_responses],
+            "zero_spectrum_weak_strong_ratio": zero_summary["weak_strong_ratio"],
+            "descending_flat_peak_lambdas_nm": descending_flat_summary["peak_lambdas_nm"],
+            "descending_flat_peak_spacings_nm": descending_flat_summary["peak_spacings_nm"],
+            "credential_audit_kinds": [item["kind"] for item in credential_findings],
+        },
         "scaffold_root_created": bool(scaffold["result"]["structuredContent"]["created_folders"]),
+        "scaffold_requirements_created": "requirements.txt"
+        in scaffold["result"]["structuredContent"].get("created_files", []),
+        "scaffold_template_kind": scaffold["result"]["structuredContent"].get("template_kind"),
         "audit_finding_count": audit["result"]["structuredContent"]["finding_count"],
         "batch_dry_run": {
             "dry_run": batch_structured["dry_run"],
@@ -184,10 +297,31 @@ def main() -> None:
     expected_t21 = args.expected_t21
     if abs(float(summary["max_T21"]) - expected_t21) > 1e-9:
         raise SystemExit(f"unexpected max_T21: {summary['max_T21']}")
+    if invalid_array.get("error", {}).get("code") != -32600 or invalid_array.get("id") is not None:
+        raise SystemExit(f"array request should return JSON-RPC invalid request: {invalid_array}")
+    if any(item.get("error", {}).get("code") != -32602 for item in unsafe_label_responses):
+        raise SystemExit(f"unsafe labels were not uniformly rejected: {unsafe_label_responses}")
+    if zero_summary["peak_lambdas_nm"] or zero_summary["weak_strong_ratio"] is not None:
+        raise SystemExit(f"zero/no-peak spectrum must use an empty peak list and null ratio: {zero_summary}")
+    peak_lambdas = descending_flat_summary["peak_lambdas_nm"]
+    peak_spacings = descending_flat_summary["peak_spacings_nm"]
+    if peak_lambdas != [1540.0, 1552.5]:
+        raise SystemExit(f"descending flat-top peaks were not consolidated/sorted: {peak_lambdas}")
+    if peak_spacings != [12.5] or any(spacing <= 0 for spacing in peak_spacings):
+        raise SystemExit(f"descending spectrum produced invalid peak spacing: {peak_spacings}")
+    credential_kinds = {item["kind"] for item in credential_findings}
+    if "sensitive_file_name" not in credential_kinds or "possible_sensitive_content:credential_token" not in credential_kinds:
+        raise SystemExit(f"MCP artifact audit missed hidden credential evidence: {credential_findings}")
+    if any(item["path"] == "binaryblob" for item in credential_findings):
+        raise SystemExit(f"MCP artifact audit treated a NUL-containing binary as text: {credential_findings}")
     if "parse_sweep_table" not in output["tool_names"]:
         raise SystemExit("parse_sweep_table tool missing")
     if "run_java_batch" not in output["tool_names"]:
         raise SystemExit("run_java_batch tool missing")
+    if not output["scaffold_requirements_created"]:
+        raise SystemExit("project scaffold did not include requirements.txt")
+    if output["scaffold_template_kind"] != "mzi-4port":
+        raise SystemExit(f"MZI project did not select the four-port template: {output['scaffold_template_kind']}")
     if output["audit_finding_count"] != 0:
         raise SystemExit("fresh scaffold should have no artifact audit findings")
     if output["batch_dry_run"] != {

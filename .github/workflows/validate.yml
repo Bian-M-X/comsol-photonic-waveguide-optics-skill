@@ -1,0 +1,42 @@
+name: Validate skill
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install runtime dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements.txt
+
+      - name: Test hierarchical assembly
+        run: python -B scripts/test_photonic_assembly.py
+
+      - name: Test numeric helpers
+        run: python -B scripts/test_numeric_tools.py
+
+      - name: Test MCP protocol and security boundaries
+        run: python -B scripts/test_mcp_photonic_server.py
+
+      - name: Test PowerShell runner and audit safety
+        shell: pwsh
+        run: ./scripts/test_powershell_safety.ps1
+
+      - name: Audit repository artifacts
+        shell: pwsh
+        run: ./scripts/audit-simulation-artifacts.ps1 -ProjectRoot . -FailOnIssues

@@ -14,7 +14,7 @@ As of the 2026-07 skill update, no verified, project-ready, off-the-shelf COMSOL
 
 ## Local Prototype Test Status
 
-A dependency-free stdio JSON-RPC prototype is provided in:
+A dependency-free stdio JSON-RPC prototype (server version `0.2.1`) is provided in:
 
 - `scripts/mcp_photonic_server.py`
 - `scripts/test_mcp_photonic_server.py`
@@ -29,6 +29,10 @@ Tested MCP-style calls:
 - `tools/call` for `create_project_scaffold`
 - `tools/call` for `audit_project_artifacts`
 - `tools/call` for `run_java_batch` in dry-run mode only
+- invalid-request handling for non-object JSON values
+- rejection of path separators, traversal, absolute paths, and reserved basenames in output labels
+- strict JSON output for zero/no-peak spectra and positive spacing for descending/plateau spectra
+- hidden credential-file/content detection with binary-file and cache/VCS exclusions in artifact audit
 
 Smoke-test result on an existing LT-aMZI true-smooth sweep table:
 
@@ -45,7 +49,7 @@ run_java_batch will_execute = false
 raw_solver_root_returned = false
 ```
 
-Verdict: Phase 1 and Phase 2 are practically feasible. Phase 3 dry-run rendering is practically feasible and now validates allowlisted paths, redacted solver-root display, timeout input, runtime directory shape, and refusal to execute. Keep real solver execution outside MCP until approval prompts, redaction audit, timeout behavior, failure-mode handling, and direct-batch equality checks pass.
+Verdict: Phase 1 and Phase 2 are practically feasible. Phase 3 dry-run rendering is practically feasible and now validates the final resolved output path, restricts artifact labels, emits strict JSON, redacts the solver root, validates timeout input and runtime directory shape, and refuses to execute. Keep real solver execution outside MCP until approval prompts, redaction audit, timeout behavior, failure-mode handling, and direct-batch equality checks pass.
 
 ## Why Batch Remains First Choice
 

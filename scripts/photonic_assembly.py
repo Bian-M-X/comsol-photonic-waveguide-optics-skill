@@ -93,6 +93,8 @@ def validate_structure(manifest: dict[str, Any]) -> list[str]:
         external_ports = {}
 
     for name, component in components.items():
+        if not isinstance(name, str) or not name:
+            errors.append("component names must be non-empty strings")
         if not isinstance(component, dict):
             errors.append(f"component {name!r} must be an object")
             continue
@@ -105,14 +107,23 @@ def validate_structure(manifest: dict[str, Any]) -> list[str]:
         modes = component.get("port_modes")
         if not isinstance(modes, dict) or set(modes) != set(ports):
             errors.append(f"component {name!r}.port_modes must define exactly every port")
+        elif any(not isinstance(mode, str) or not mode.strip() for mode in modes.values()):
+            errors.append(f"component {name!r}.port_modes values must be non-empty strings")
         if component.get("model_level") not in MODEL_LEVELS:
             errors.append(f"component {name!r}.model_level must be one of {sorted(MODEL_LEVELS)}")
         if not isinstance(component.get("reference_plane"), str) or not component.get("reference_plane"):
             errors.append(f"component {name!r}.reference_plane must be a non-empty string")
-        if not isinstance(component.get("sparameters"), str) or not component.get("sparameters"):
+        sparameters = component.get("sparameters")
+        if not isinstance(sparameters, str) or not sparameters:
             errors.append(f"component {name!r}.sparameters must be a relative CSV path")
+        elif Path(sparameters).is_absolute():
+            errors.append(f"component {name!r}.sparameters must be relative to the manifest")
+        if "passive" in component and not isinstance(component["passive"], bool):
+            errors.append(f"component {name!r}.passive must be a boolean")
 
     for name, instance in instances.items():
+        if not isinstance(name, str) or not name:
+            errors.append("instance names must be non-empty strings")
         if not isinstance(instance, dict) or instance.get("component") not in components:
             errors.append(f"instance {name!r} must reference a known component")
 
@@ -142,13 +153,15 @@ def validate_structure(manifest: dict[str, Any]) -> list[str]:
 
     for external_name, endpoint in external_ports.items():
         label = f"external_ports.{external_name}"
+        if not isinstance(external_name, str) or not external_name:
+            errors.append("external port names must be non-empty strings")
         try:
             component_for_endpoint(manifest, endpoint)
         except (AssemblyError, TypeError, AttributeError) as exc:
             errors.append(f"{label}: {exc}")
             continue
         if endpoint in used:
-            errors.append(f"endpoint {endpoint!r} is both internal and external")
+            errors.append(f"endpoint {endpoint!r} is reused by {label} and {used[endpoint]}")
         used[endpoint] = label
 
     all_endpoints: set[str] = set()

@@ -12,6 +12,8 @@ param(
   [string]$PrefsDir = $env:PHOTONIC_SOLVER_PREFS,
   [string]$ConfigDir = $env:PHOTONIC_SOLVER_CONFIG,
   [string]$TmpDir = $env:PHOTONIC_SOLVER_TMP,
+  [string]$JavacExecutable,
+  [string]$BatchExecutable,
   [switch]$DryRun,
   [switch]$ShowFullPaths
 )
@@ -27,8 +29,16 @@ if ([string]::IsNullOrWhiteSpace($PrefsDir)) { $PrefsDir = Join-Path $runtimeRoo
 if ([string]::IsNullOrWhiteSpace($ConfigDir)) { $ConfigDir = Join-Path $runtimeRoot "config" }
 if ([string]::IsNullOrWhiteSpace($TmpDir)) { $TmpDir = Join-Path $runtimeRoot "tmp" }
 
-$javac = Join-Path $SolverRoot "java\win64\jre\bin\javac.exe"
-$batch = Join-Path $SolverRoot "bin\win64\comsolbatch.exe"
+$javac = if ([string]::IsNullOrWhiteSpace($JavacExecutable)) {
+  Join-Path $SolverRoot "java\win64\jre\bin\javac.exe"
+} else {
+  $JavacExecutable
+}
+$batch = if ([string]::IsNullOrWhiteSpace($BatchExecutable)) {
+  Join-Path $SolverRoot "bin\win64\comsolbatch.exe"
+} else {
+  $BatchExecutable
+}
 $plugins = Join-Path $SolverRoot "plugins"
 $cp = ""
 if (Test-Path -LiteralPath $plugins) {
@@ -74,5 +84,23 @@ if ([string]::IsNullOrWhiteSpace($cp)) { throw "No plugin jars found under: $plu
 New-Item -ItemType Directory -Force -Path $PrefsDir, $ConfigDir, $TmpDir | Out-Null
 New-Item -ItemType Directory -Force -Path (Split-Path -Parent $OutputFile), (Split-Path -Parent $BatchLog) | Out-Null
 
+# Never allow a failed or incomplete compilation to leave a stale class as the
+# batch input. javac should recreate this file during the current invocation.
+if (Test-Path -LiteralPath $classFile) {
+  Remove-Item -LiteralPath $classFile -Force
+}
+
 & $javac @compileArgs
+$javacExitCode = $LASTEXITCODE
+if ($javacExitCode -ne 0) {
+  throw "javac failed with exit code $javacExitCode. Batch execution was not started."
+}
+if (-not (Test-Path -LiteralPath $classFile -PathType Leaf)) {
+  throw "javac reported success but did not create the expected class file: $classFile. Batch execution was not started."
+}
+
 & $batch @batchArgs
+$batchExitCode = $LASTEXITCODE
+if ($batchExitCode -ne 0) {
+  throw "Batch solver failed with exit code $batchExitCode."
+}

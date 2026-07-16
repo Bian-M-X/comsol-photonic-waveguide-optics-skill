@@ -71,17 +71,38 @@ if (-not (Test-Path -LiteralPath $handoff)) {
 }
 
 $templateRoot = Join-Path $PSScriptRoot "..\assets\templates\hierarchical-device"
+$normalizedFamily = $DeviceFamily.Trim().ToLowerInvariant()
+$useMziTemplate = $normalizedFamily -in @("mzi", "balanced-mzi", "interferometer")
 $assembly = Join-Path $root "circuits\assembly.json"
-$sampleSparams = Join-Path $root "components\sparameters\waveguide.csv"
 $assemblyTool = Join-Path $root "scripts\photonic_assembly.py"
-if ((Test-Path -LiteralPath $templateRoot) -and -not (Test-Path -LiteralPath $assembly)) {
-  Copy-Item -LiteralPath (Join-Path $templateRoot "assembly.json") -Destination $assembly
+$requirementsFile = Join-Path $root "requirements.txt"
+$assemblyTemplate = if ($useMziTemplate) {
+  Join-Path $templateRoot "mzi-4port\circuits\assembly.json"
+} else {
+  Join-Path $templateRoot "assembly.json"
 }
-if ((Test-Path -LiteralPath $templateRoot) -and -not (Test-Path -LiteralPath $sampleSparams)) {
-  Copy-Item -LiteralPath (Join-Path $templateRoot "waveguide.csv") -Destination $sampleSparams
+$sparameterTemplates = if ($useMziTemplate) {
+  @(
+    @{ Source = (Join-Path $templateRoot "mzi-4port\components\sparameters\directional_coupler.csv"); Name = "directional_coupler.csv" },
+    @{ Source = (Join-Path $templateRoot "mzi-4port\components\sparameters\arm.csv"); Name = "arm.csv" }
+  )
+} else {
+  @(@{ Source = (Join-Path $templateRoot "waveguide.csv"); Name = "waveguide.csv" })
+}
+if ((Test-Path -LiteralPath $assemblyTemplate) -and -not (Test-Path -LiteralPath $assembly)) {
+  Copy-Item -LiteralPath $assemblyTemplate -Destination $assembly
+}
+foreach ($template in $sparameterTemplates) {
+  $destination = Join-Path $root ("components\sparameters\" + $template.Name)
+  if ((Test-Path -LiteralPath $template.Source) -and -not (Test-Path -LiteralPath $destination)) {
+    Copy-Item -LiteralPath $template.Source -Destination $destination
+  }
 }
 if (-not (Test-Path -LiteralPath $assemblyTool)) {
   Copy-Item -LiteralPath (Join-Path $PSScriptRoot "photonic_assembly.py") -Destination $assemblyTool
+}
+if (-not (Test-Path -LiteralPath $requirementsFile)) {
+  Copy-Item -LiteralPath (Join-Path $PSScriptRoot "..\requirements.txt") -Destination $requirementsFile
 }
 
 $gitignore = Join-Path $root ".gitignore"

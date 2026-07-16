@@ -6,7 +6,7 @@ This reference is a practical publication checklist, not legal advice.
 
 Reduce risk when publishing this skill project by ensuring it:
 
-- does not use commercial solver trademarks in the repository, project, folder, or skill name
+- keeps the installable skill and generated project names vendor-neutral; if a repository slug uses a third-party mark for compatibility discovery, treats that use as nominative and pairs it with clear attribution and non-affiliation language
 - does not imply affiliation, authorization, sponsorship, or endorsement
 - does not redistribute proprietary software, official docs, official examples, screenshots, logos, license files, or vendor-owned datasets
 - uses trademarks only to identify compatible third-party software environments
@@ -21,7 +21,7 @@ Acceptable project-style names:
 - `integrated-photonics-simulation-skill`
 - `waveguide-interferometer-skill`
 
-Avoid repository, folder, or skill names that incorporate third-party marks.
+Prefer repository, folder, and skill names that do not incorporate third-party marks. If an existing public repository slug contains a mark for compatibility discovery, do not claim otherwise: document the nominative purpose, include attribution and non-affiliation language, and consider a neutral slug during a separately authorized repository migration.
 
 ## Compatibility Wording
 
@@ -71,7 +71,7 @@ Self-authored workflow notes, original scripts, and compatibility instructions a
 
 Before publishing:
 
-- [x] Repository name contains no third-party solver trademark.
+- [x] Existing repository slug trademark use is disclosed as nominative compatibility wording and paired with non-affiliation language; the installable skill name remains vendor-neutral.
 - [x] `SKILL.md` skill name contains no third-party solver trademark.
 - [x] `README.md` includes non-affiliation language.
 - [x] `NOTICE.md` includes trademark attribution.

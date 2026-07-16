@@ -36,7 +36,7 @@ Read only the modules needed for the next action:
 | Batch vs interactive server vs MCP wrapper | `references/comsol-mcp-evaluation.md` |
 | Current source links and refresh targets | `references/source-notes.md` |
 | Public release, licensing, trademarks, local-data safety | `references/legal-and-trademark-notes.md` |
-| Delegation only when explicitly requested | `references/subagent-orchestration.md` |
+| Optional delegation, independent audit, and solver concurrency | `references/subagent-orchestration.md` |
 
 ## Select the Modeling Level
 
@@ -175,7 +175,9 @@ Missing evidence is not a pass.
 | `scripts/parse-comsol-sweep.py` | Parse exported tables and summarize spectral metrics. |
 | `scripts/photonic_assembly.py` | Validate component contracts and compose hierarchical S-parameter networks. |
 | `scripts/test_photonic_assembly.py` | Test cascade composition and mode-mismatch rejection. |
+| `scripts/test_numeric_tools.py` | Test spectral extrema/spacing and arbitrary-angle circular-bend geometry. |
 | `scripts/audit-simulation-artifacts.ps1` | Scan for blocked binaries, large files, and obvious local secrets before publication. |
+| `scripts/test_powershell_safety.ps1` | Test native failure propagation, dry-run isolation, and hidden credential-file detection. |
 | `scripts/emit-analytic-bend-java-helper.py` | Emit a circular-bend Java helper skeleton. |
 | `scripts/mcp_photonic_server.py` | Experimental read/parse/audit/scaffold/dry-run integration layer; not the trusted solver backend. |
 
@@ -187,4 +189,4 @@ Missing evidence is not a pass.
 - Do not treat 2D EIM, circuit simulation, DRC, and 3D full-wave evidence as interchangeable.
 - Do not publish local paths, usernames, credentials, license data, proprietary PDFs/models, `.mph`, `.class`, logs, or caches without explicit authorization.
 - Do not imply vendor affiliation or redistribute proprietary solver files.
-- Do not delegate or parallelize solver work unless the user explicitly requests it and runtime/license isolation is established.
+- Keep delegated work bounded and auditable. Do not run licensed solver jobs in parallel unless the user authorizes the execution plan and runtime/license isolation is established.

@@ -90,6 +90,7 @@ $javac = Join-Path $solverRoot 'java\win64\jre\bin\javac.exe'
 $cp = (Get-ChildItem -LiteralPath $plugins -Filter '*.jar' | ForEach-Object { $_.FullName }) -join ';'
 
 & $javac -proc:none -cp $cp 'C:\Path\To\ModelSource.java'
+if ($LASTEXITCODE -ne 0) { throw "javac failed with exit code $LASTEXITCODE" }
 ```
 
 `-proc:none` avoids annotation-processing noise and should be kept unless there is a clear reason to remove it.
@@ -110,6 +111,7 @@ $batch = Join-Path $solverRoot 'bin\win64\comsolbatch.exe'
   -inputfile 'C:\Path\To\ModelSource.class' `
   -outputfile 'C:\Path\To\OutputModel.mph' `
   -batchlog 'C:\Path\To\BatchLog.log'
+if ($LASTEXITCODE -ne 0) { throw "batch solver failed with exit code $LASTEXITCODE" }
 ```
 
 ## Helper Script
@@ -135,7 +137,7 @@ Privacy-safe preview:
   -DryRun
 ```
 
-`-DryRun` hides the full plugin classpath by default. Use `-ShowFullPaths` only in private local debugging.
+`-DryRun` hides the full plugin classpath by default. Use `-ShowFullPaths` only in private local debugging. The wrapper removes a stale target `.class` before compilation, stops immediately on a nonzero `javac` exit, requires a newly generated class file, and propagates a nonzero batch exit.
 
 ## Long-Run Discipline
 

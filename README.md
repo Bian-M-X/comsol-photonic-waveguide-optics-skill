@@ -1,5 +1,7 @@
 # Photonic Waveguide Optics Skill
 
+[![Validate skill](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/validate.yml/badge.svg)](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/validate.yml)
+
 Use this installable Codex skill to design, simulate, debug, optimize, hierarchically compose, and report integrated-photonic devices with explicit evidence gates.
 
 The skill covers individual waveguide devices and larger circuits assembled from validated complex multiport S-parameter models. It keeps analytic, circuit-level, 2D effective-index, 3D full-wave, layout, and experimental claims separate so that a fast model is never presented as stronger evidence than it is.
@@ -35,7 +37,7 @@ The skill covers individual waveguide devices and larger circuits assembled from
 Clone the repository into the Codex skills folder:
 
 ```powershell
-$SkillRoot = Join-Path $env:USERPROFILE '.codex\skills\photonic-waveguide-optics-skill'
+$SkillRoot = Join-Path $env:USERPROFILE '.codex\skills\photonic-waveguide-optics'
 New-Item -ItemType Directory -Force (Split-Path $SkillRoot) | Out-Null
 git clone https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill.git $SkillRoot
 ```
@@ -43,7 +45,11 @@ git clone https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill.git
 Update an existing installation with a fast-forward-only pull:
 
 ```powershell
-git -C "$env:USERPROFILE\.codex\skills\photonic-waveguide-optics-skill" pull --ff-only
+$SkillRoot = Join-Path $env:USERPROFILE '.codex\skills\photonic-waveguide-optics'
+if (-not (Test-Path -LiteralPath $SkillRoot)) {
+  $SkillRoot = Join-Path $env:USERPROFILE '.codex\skills\photonic-waveguide-optics-skill'
+}
+git -C $SkillRoot pull --ff-only
 ```
 
 Restart Codex or open a new task if the skill does not appear immediately.
@@ -68,10 +74,11 @@ Use Python 3 with NumPy. No commercial solver is needed for this example.
 git clone https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill.git
 Set-Location .\comsol-photonic-waveguide-optics-skill
 
+python -m pip install -r .\requirements.txt
 python .\scripts\test_photonic_assembly.py
 
 $Demo = Join-Path $env:TEMP 'photonic-skill-demo'
-.\scripts\new-photonic-project.ps1 -ProjectRoot $Demo
+.\scripts\new-photonic-project.ps1 -ProjectRoot $Demo -DeviceFamily mzi
 
 python "$Demo\scripts\photonic_assembly.py" validate `
   "$Demo\circuits\assembly.json"
@@ -82,7 +89,7 @@ python "$Demo\scripts\photonic_assembly.py" compose `
   --summary "$Demo\verification\circuit_summary.json"
 ```
 
-The scaffold includes two reusable waveguide instances and sample complex S data. Replace them with qualified component models before making a device claim.
+The `mzi` scaffold includes two ideal 2x2 directional couplers, two arm instances, four external ports, and complete sample complex S data at three wavelengths. Replace the analytic fixtures with qualified component models before making a device claim. Use the default `waveguide` family when you only need the two-stage cascade template.
 
 ## Compose a Complex Device
 
@@ -164,7 +171,9 @@ Remove `-DryRun` only after reviewing paths, selections, study order, expected c
 | `scripts/test_photonic_assembly.py` | Test a two-stage cascade, a four-component balanced MZI, and mode-mismatch rejection. |
 | `scripts/invoke-waveguide-java-batch.ps1` | Compile Java API source with the solver-bundled JDK and run the licensed batch executable. |
 | `scripts/parse-comsol-sweep.py` | Parse exported sweep tables and summarize spectral metrics. |
+| `scripts/test_numeric_tools.py` | Test wavelength ordering, plateau extrema, zero spectra, and arbitrary-angle circular bends. |
 | `scripts/audit-simulation-artifacts.ps1` | Detect blocked binaries, large files, and obvious local secrets before publication. |
+| `scripts/test_powershell_safety.ps1` | Test compiler/batch failure propagation, dry-run isolation, and hidden credential-file detection without COMSOL. |
 | `scripts/emit-analytic-bend-java-helper.py` | Emit a circular-bend Java helper skeleton. |
 | `scripts/mcp_photonic_server.py` | Expose dependency-free local resource, scaffold, parse, audit, and dry-run operations. |
 | `scripts/test_mcp_photonic_server.py` | Exercise the MCP protocol surface without executing a solver. |
@@ -175,7 +184,9 @@ Run the deterministic tests from the repository root:
 
 ```powershell
 python .\scripts\test_photonic_assembly.py
+python .\scripts\test_numeric_tools.py
 python .\scripts\test_mcp_photonic_server.py
+.\scripts\test_powershell_safety.ps1
 .\scripts\audit-simulation-artifacts.ps1 -ProjectRoot . -FailOnIssues
 git diff --check
 ```
@@ -210,9 +221,10 @@ Use `SKILL.md` as the concise router and load only the reference needed for the 
 ## Repository Layout
 
 ```text
-photonic-waveguide-optics-skill/
+photonic-waveguide-optics/
   SKILL.md
   README.md
+  requirements.txt
   agents/openai.yaml
   assets/templates/hierarchical-device/
   references/
