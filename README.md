@@ -1,138 +1,148 @@
 # Photonic Waveguide Optics Skill
 
-An installable Codex skill for reproducible integrated-photonic design and simulation: waveguides, bends, splitters, directional couplers, MZI/aMZI/LT-aMZI devices, resonators, gratings, sensors, modulators, hierarchical circuit composition, parameter sweeps, robustness studies, and evidence-backed reports.
+Use this installable Codex skill to design, simulate, debug, optimize, hierarchically compose, and report integrated-photonic devices with explicit evidence gates.
 
-The main idea is simple: this skill teaches Codex how to treat photonic simulations as an auditable engineering workflow, not just as geometry drawing. A good run should preserve the chain from literature parameters, geometry assumptions, material selections, ports, mesh, solver settings, exported spectra, postprocessing scripts, and final interpretation.
+The skill covers individual waveguide devices and larger circuits assembled from validated complex multiport S-parameter models. It keeps analytic, circuit-level, 2D effective-index, 3D full-wave, layout, and experimental claims separate so that a fast model is never presented as stronger evidence than it is.
 
-## What This Skill Helps With
+> Skill token: `$photonic-waveguide-optics`
+>
+> Repository: `Bian-M-X/comsol-photonic-waveguide-optics-skill`
+>
+> License: MIT for this repository's original text and helper code
 
-Use this skill when you want Codex to help with:
+## Why Use It
 
-- SOI strip/rib waveguide models and 2D effective-index approximations;
-- straight waveguide, bend, taper, transition, and mode-converter validation;
-- directional couplers, MMI couplers, Y-branches, and splitters;
-- ring resonators, Bragg gratings, periodic filters, and grating couplers;
-- conventional MZI, asymmetric MZI, and loop-terminated asymmetric MZI workflows;
-- sensors, modulators, and early inverse-design or layout-screening studies;
-- wavelength sweeps, S-parameter extraction, FSR checks, insertion loss, extinction ratio, and energy-budget diagnostics;
-- Java API plus batch automation for licensed local finite-element solver installations;
-- reusable component contracts, complete complex multiport S matrices, assembly manifests, and circuit-level composition;
-- port-aware layout/netlist workflows with promoted full-wave subassembly checks;
-- structured reports, handoff notes, and publication-safe artifact audits.
+- Start from a device contract instead of an untracked geometry sketch.
+- Validate straight-waveguide ports before debugging a large circuit.
+- Qualify bends, tapers, couplers, splitters, rings, gratings, sensors, and modulators independently.
+- Export complete complex S matrices with explicit port, mode, normalization, phase, and reference-plane conventions.
+- Compose many calibrated components into a complex circuit before promoting only critical subassemblies to expensive full-wave models.
+- Preserve scripts, manifests, logs, metrics, validation gates, limitations, and the next safe action in every handoff.
 
-The skill is especially useful when a project needs a new Codex conversation to quickly understand what has been done, what is trusted, what is still only approximate, and what should be tested next.
+## Supported Workflows
 
-## What This Repository Does Not Provide
-
-This is an independent educational and workflow aid.
-
-- It is not an official COMSOL product, add-on, tutorial, example library, or vendor package.
-- It is not affiliated with, endorsed by, sponsored by, or authorized by COMSOL AB.
-- It does not include or license any commercial solver, module, plugin jar, official model, official screenshot, documentation, logo, license file, or vendor dataset.
-- It does not make a 2D effective-index model equivalent to final 3D fabrication sign-off.
-- It does not remove the user's obligation to comply with their own software license and institutional rules.
-
-COMSOL and COMSOL Multiphysics are registered trademarks of COMSOL AB. References to those names are used only to identify compatible third-party software environments.
+| Area | Included workflow |
+|---|---|
+| Component design | Waveguides, bends, tapers, mode converters, directional/MMI couplers, Y branches, rings, gratings, sensors, modulators, and inverse-designed regions |
+| Interferometers | MZI, aMZI, LT-aMZI, coupler calibration, path-length control, FSR checks, and energy-budget diagnosis |
+| Solver automation | COMSOL Wave Optics Java API source, licensed local batch execution, dry-run review, sweeps, and structured exports |
+| Hierarchical composition | Component contracts, full complex multiport S data, assembly manifests, exact port occupancy, mode checks, network reduction, and external S-matrix export |
+| Verification | Circuit, 2D EIM, 3D subassembly, full-device, layout/PDK, robustness, and experimental claim boundaries |
+| Reproducibility | Project scaffolding, artifact audits, reports, and checkpointable handoffs |
 
 ## Install
 
-Clone this repository into your Codex skills folder.
-
-Typical Windows location:
-
-```text
-C:\Users\<you>\.codex\skills\photonic-waveguide-optics-skill
-```
-
-Recommended PowerShell install command:
+Clone the repository into the Codex skills folder:
 
 ```powershell
-New-Item -ItemType Directory -Force "$env:USERPROFILE\.codex\skills" | Out-Null
-git clone https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill.git "$env:USERPROFILE\.codex\skills\photonic-waveguide-optics-skill"
+$SkillRoot = Join-Path $env:USERPROFILE '.codex\skills\photonic-waveguide-optics-skill'
+New-Item -ItemType Directory -Force (Split-Path $SkillRoot) | Out-Null
+git clone https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill.git $SkillRoot
 ```
 
-If the folder already exists:
+Update an existing installation with a fast-forward-only pull:
 
 ```powershell
-git -C "$env:USERPROFILE\.codex\skills\photonic-waveguide-optics-skill" pull
+git -C "$env:USERPROFILE\.codex\skills\photonic-waveguide-optics-skill" pull --ff-only
 ```
 
-Restart Codex or open a new session if the skill does not appear immediately.
+Restart Codex or open a new task if the skill does not appear immediately.
 
-## First Prompt
-
-After installation, use a prompt like:
+## Start With One Prompt
 
 ```text
-Use $photonic-waveguide-optics to build, debug, optimize, or report an integrated photonic waveguide simulation workflow.
+Use $photonic-waveguide-optics. Read D:\Path\To\MyProject first, identify the latest trusted evidence, and propose the next validation or optimization step.
 ```
 
-For an existing project, give Codex the project folder and ask it to read local handoff/report files first:
+For a new complex device:
 
 ```text
-Use $photonic-waveguide-optics. Read this project folder first, identify the latest trusted simulation state, then propose the next validation or optimization step.
+Use $photonic-waveguide-optics to define component contracts, calibrate reusable building blocks, compose their complete complex S matrices, verify the circuit and layout connectivity, and promote only the critical subassemblies to higher-fidelity full-wave checks.
 ```
 
-## Local Solver Setup
+## Run a Solver-Free Smoke Test
 
-The skill assumes the user has their own licensed local solver installation. For COMSOL-based automation, helper scripts expect a solver root that contains:
+Use Python 3 with NumPy. No commercial solver is needed for this example.
+
+```powershell
+git clone https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill.git
+Set-Location .\comsol-photonic-waveguide-optics-skill
+
+python .\scripts\test_photonic_assembly.py
+
+$Demo = Join-Path $env:TEMP 'photonic-skill-demo'
+.\scripts\new-photonic-project.ps1 -ProjectRoot $Demo
+
+python "$Demo\scripts\photonic_assembly.py" validate `
+  "$Demo\circuits\assembly.json"
+
+python "$Demo\scripts\photonic_assembly.py" compose `
+  "$Demo\circuits\assembly.json" `
+  --output "$Demo\data\processed\circuit_sparameters.csv" `
+  --summary "$Demo\verification\circuit_summary.json"
+```
+
+The scaffold includes two reusable waveguide instances and sample complex S data. Replace them with qualified component models before making a device claim.
+
+## Compose a Complex Device
+
+Use this scalable route:
 
 ```text
-bin\win64\comsolbatch.exe
-java\win64\jre\bin\javac.exe
-plugins\*.jar
+device requirements
+  -> validated straight-waveguide and port baseline
+  -> qualified component models
+  -> complete complex multiport S data
+  -> validated assembly manifest
+  -> circuit spectrum and sensitivity
+  -> port-aware layout and extracted connectivity
+  -> selected full-wave subassembly checks
+  -> robustness study and evidence package
 ```
 
-Set the solver root in PowerShell:
+Define each reusable component in `assembly.json` with:
+
+- an ordered port list and one declared mode per port;
+- a model level: `analytic`, `reduced`, `full-wave-2d-eim`, `full-wave-3d`, or `measured`;
+- a reference-plane description;
+- a relative path to a complete wavelength-dependent complex S-matrix CSV;
+- a passivity declaration when applicable.
+
+Store one matrix entry per row with the exact columns `wavelength_nm,out_port,in_port,s_real,s_imag`.
+
+Use `scripts/photonic_assembly.py` to reject unknown endpoints, reused or dangling ports, connected mode mismatches, incomplete S matrices, mismatched wavelength grids, and non-passive component data. The composer eliminates internal connected ports and exports the external circuit S matrix at every supplied wavelength.
+
+Represent phase, propagation loss, bends, tapers, and transitions as explicit components. Treat a manifest connection as an ideal zero-length, zero-loss connection.
+
+### Current composition boundary
+
+The supplied composer is a deterministic circuit-level reference implementation. It does not yet import Touchstone or solver port sweeps automatically, interpolate mismatched wavelength grids, generate a foundry layout, run DRC, infer electromagnetic coupling between nominally separate blocks, or replace a 2D/3D solver. Promote a subassembly or the complete device when block separation is physically invalid, parasitic coupling matters, or the intended claim requires whole-device fields.
+
+## Use the Verification Gates
+
+| Gate | Required evidence |
+|---|---|
+| `G0` | Device contract: topology, ports, modes, band, stack, metrics, tolerances, and claim level |
+| `G1` | Straight-waveguide, port, mesh, boundary, phase, and reference-plane baseline |
+| `G2` | Independent component qualification and complete reusable S data |
+| `G3` | Valid manifest, conventions, endpoints, modes, occupancy, and wavelength grid |
+| `G4` | Circuit response, energy/passivity checks, sensitivity, and expected limiting behavior |
+| `G5` | Port-aware layout, extracted connectivity, and PDK/DRC status when applicable |
+| `G6` | Promoted full-wave validation of the critical interaction region or subassembly |
+| `G7` | Re-evaluated optimum across solver fidelity and relevant process/temperature corners |
+| `G8` | Reproducible evidence package with limitations and an exact next action |
+
+Stop escalation when a gate fails. Missing evidence is not a pass.
+
+## Run a Licensed Local Solver
+
+Provide your own licensed COMSOL installation. Set the solver root instead of hard-coding a personal path:
 
 ```powershell
 $env:PHOTONIC_SOLVER_ROOT = 'C:\Path\To\LicensedSolverRoot'
 ```
 
-For a persistent Windows user environment variable:
-
-```powershell
-setx PHOTONIC_SOLVER_ROOT "C:\Path\To\LicensedSolverRoot"
-```
-
-Optional runtime directories can be separated for long jobs or sequential sweeps:
-
-```powershell
-$env:PHOTONIC_SOLVER_PREFS = Join-Path $env:TEMP 'photonic-waveguide-solver\prefs'
-$env:PHOTONIC_SOLVER_CONFIG = Join-Path $env:TEMP 'photonic-waveguide-solver\config'
-$env:PHOTONIC_SOLVER_TMP = Join-Path $env:TEMP 'photonic-waveguide-solver\tmp'
-```
-
-Verify the expected files:
-
-```powershell
-Test-Path (Join-Path $env:PHOTONIC_SOLVER_ROOT 'bin\win64\comsolbatch.exe')
-Test-Path (Join-Path $env:PHOTONIC_SOLVER_ROOT 'java\win64\jre\bin\javac.exe')
-Test-Path (Join-Path $env:PHOTONIC_SOLVER_ROOT 'plugins')
-```
-
-## Recommended Workflow
-
-For most photonic devices, use a staged flow:
-
-1. Extract literature targets and decide what must be reproduced.
-2. Choose the model level: 2D effective-index, substructure 3D, or full 3D.
-3. Validate the straight waveguide and numeric ports.
-4. Validate standalone building blocks: bend, taper, coupler, splitter, ring, grating, or MMI.
-5. Export complete complex S matrices and component contracts for reusable blocks.
-6. Compose complex devices through a validated manifest/netlist before attempting a monolithic solve.
-7. Generate a port-aware layout, extract connectivity, and promote critical subassemblies to full-wave checks.
-8. Sweep wavelength, geometry, and process corners; export CSV/TXT tables.
-9. Compare against theory, papers, reduced-order models, higher-fidelity submodels, or measured data.
-10. Write a model-quality report that separates circuit, 2D, 3D, layout, and experimental evidence.
-
-This order prevents a common failure mode: debugging a full interferometer while the real issue is a port, material selection, boundary condition, bend, coupler, mesh, or postprocessing expression.
-
-## Batch Automation
-
-The preferred execution route is Java API source plus the local solver's batch runner.
-
-Preview the command without launching a solve:
+Preview the generated batch command first:
 
 ```powershell
 .\scripts\invoke-waveguide-java-batch.ps1 `
@@ -143,215 +153,59 @@ Preview the command without launching a solve:
   -DryRun
 ```
 
-Run the model:
+Remove `-DryRun` only after reviewing paths, selections, study order, expected cost, and outputs. Keep direct Java API plus batch execution as the trusted solve path; use the MCP prototype for discovery, scaffolding, parsing, audit, and redacted dry-run planning until it passes solver-execution parity tests.
+
+## Included Tools
+
+| Tool | Purpose |
+|---|---|
+| `scripts/new-photonic-project.ps1` | Create requirements, components, circuits, layout, models, runs, data, verification, reports, and handoff folders. |
+| `scripts/photonic_assembly.py` | Validate a hierarchical manifest and compose external wavelength-dependent complex S parameters. |
+| `scripts/test_photonic_assembly.py` | Test a two-stage cascade, a four-component balanced MZI, and mode-mismatch rejection. |
+| `scripts/invoke-waveguide-java-batch.ps1` | Compile Java API source with the solver-bundled JDK and run the licensed batch executable. |
+| `scripts/parse-comsol-sweep.py` | Parse exported sweep tables and summarize spectral metrics. |
+| `scripts/audit-simulation-artifacts.ps1` | Detect blocked binaries, large files, and obvious local secrets before publication. |
+| `scripts/emit-analytic-bend-java-helper.py` | Emit a circular-bend Java helper skeleton. |
+| `scripts/mcp_photonic_server.py` | Expose dependency-free local resource, scaffold, parse, audit, and dry-run operations. |
+| `scripts/test_mcp_photonic_server.py` | Exercise the MCP protocol surface without executing a solver. |
+
+## Validate This Skill
+
+Run the deterministic tests from the repository root:
 
 ```powershell
-.\scripts\invoke-waveguide-java-batch.ps1 `
-  -SolverRoot $env:PHOTONIC_SOLVER_ROOT `
-  -JavaFile 'C:\Path\To\ModelSource.java' `
-  -OutputFile 'C:\Path\To\OutputModel.mph' `
-  -BatchLog 'C:\Path\To\BatchLog.log'
+python .\scripts\test_photonic_assembly.py
+python .\scripts\test_mcp_photonic_server.py
+.\scripts\audit-simulation-artifacts.ps1 -ProjectRoot . -FailOnIssues
+git diff --check
 ```
 
-The batch route remains the first choice for trusted solver execution because it is reproducible, easy to log, and keeps model source under review.
+When the Codex system `skill-creator` package and PyYAML are available in the selected Python environment, also run:
 
-## Included Scripts
-
-| Script | Purpose |
-|---|---|
-| `scripts/invoke-waveguide-java-batch.ps1` | Compile Java API source with the solver-bundled `javac.exe`, then run it through batch mode. |
-| `scripts/new-photonic-project.ps1` | Create a standard project folder scaffold for simulation work. |
-| `scripts/parse-comsol-sweep.py` | Parse exported sweep tables and summarize peaks, valleys, FSR-like spacings, `S11`, `T21`, and `S11+T21`. |
-| `scripts/photonic_assembly.py` | Validate component contracts and compose hierarchical wavelength-dependent S-parameter networks. |
-| `scripts/test_photonic_assembly.py` | Smoke-test cascade composition and mode-mismatch rejection. |
-| `scripts/audit-simulation-artifacts.ps1` | Scan a folder before publication or commit for blocked artifacts and obvious sensitive data. |
-| `scripts/emit-analytic-bend-java-helper.py` | Emit a Java helper skeleton for analytic circular/annular-sector bends. |
-| `scripts/mcp_photonic_server.py` | Dependency-free stdio MCP-style prototype for resources, safe local tools, sweep parsing, and redacted batch dry-run planning. |
-| `scripts/test_mcp_photonic_server.py` | Protocol-level smoke test for the MCP prototype. |
+```powershell
+python "$env:USERPROFILE\.codex\skills\.system\skill-creator\scripts\quick_validate.py" .
+```
 
 ## Documentation Map
 
-Use `SKILL.md` as the router. Load detailed references only when needed.
+Use `SKILL.md` as the concise router and load only the reference needed for the next action.
 
-| Reference | When to read it |
+| Need | Reference |
 |---|---|
-| `references/environment-and-runner.md` | Local solver path setup, batch runner behavior, runtime directories, dry-run safety. |
-| `references/wave-optics-port-models.md` | Materials, numeric ports, boundary mode analysis, datasets, mesh, S-parameter expressions. |
-| `references/device-family-workflows.md` | General workflows for waveguides, bends, tapers, splitters, rings, gratings, sensors, modulators, and inverse-design regions. |
-| `references/interferometer-workflows.md` | MZI, aMZI, LT-aMZI topology, directional coupler calibration, FSR checks, and common failure modes. |
-| `references/optimization-and-reporting.md` | Sweeps, objective functions, diagnostics, result tables, reports, and reproducibility packages. |
-| `references/smooth-bend-geometry.md` | True smooth bends, analytic circular arcs, smooth Euler bends via `InterpolationCurve type=solid`, centerline length preservation, and bend-radius scans. |
-| `references/hierarchical-device-workflow.md` | Component contracts, S-parameter networks, geometry parts, layout/netlists, and full-wave promotion. |
-| `references/verification-gates.md` | Evidence gates from device contract through final robustness and reporting. |
-| `references/subagent-orchestration.md` | Planning, execution, geometry, audit, result review, and data-processing subagent patterns. |
-| `references/comsol-mcp-evaluation.md` | Direct batch vs interactive server vs MCP wrapper route selection and adoption gates. |
-| `references/quantum-photonic-knowledge-base.md` | Quantum photonic chip basics, MZI meshes, phase shifters, Hadamard/CNOT-style building blocks, and literature entry points. |
-| `references/project-structure-and-git.md` | Recommended folder layout, naming, handoff files, artifact management, and git policy. |
-| `references/legal-and-trademark-notes.md` | Publication, trademark, license, and local-data safety guardrails. |
-| `references/source-notes.md` | Pointers to official docs, MCP specs, and paper entry points that should be refreshed when needed. |
-
-## Subagent Roles
-
-The skill includes role contracts under `agents/` for workflows where a new conversation wants structured delegation or independent audit.
-
-Available roles include:
-
-- planning agent;
-- geometry-modeling agent;
-- execution agent;
-- code auditor;
-- model auditor;
-- results auditor;
-- data-processing agent;
-- literature/knowledge agent;
-- MCP-integration agent.
-
-Recommended use:
-
-1. Read `references/subagent-orchestration.md`.
-2. Select only the role files needed for the task.
-3. Give each subagent a narrow scope and the relevant local artifacts.
-4. Keep solver paths, license information, `.mph` files, raw logs, and private data out of subagent context unless explicitly authorized.
-
-## MCP Prototype Status
-
-The repository includes a minimal local MCP-style server prototype. Its current safe uses are:
-
-- list resources and skill references;
-- create a photonic project scaffold;
-- audit a project folder for obvious blocked artifacts;
-- parse a COMSOL-style sweep table into structured summaries;
-- render a redacted Java batch dry-run plan.
-
-Real solver execution through MCP is intentionally not the default. The current route ranking is:
-
-1. Direct Java API plus batch runner for trusted execution.
-2. MCP wrapper for structured discovery, parsing, audit, and dry-run planning.
-3. Interactive server or LiveLink-style workflows only for special inspection/debugging cases.
-
-Before MCP becomes a daily execution route, it should pass direct-batch equality tests, timeout/failure-mode tests, redaction audits, and a small validated smoke model.
-
-## Hierarchical Complex-Device Workflow
-
-The recommended scalable route for a complex photonic circuit is:
-
-```text
-qualified building blocks
-  -> complete complex S-parameter models
-  -> validated assembly manifest
-  -> circuit-level simulation and sensitivity
-  -> port-aware layout and extracted connectivity
-  -> selected 2D/3D full-wave subassembly validation
-```
-
-Initialize a project with the supplied assembly template:
-
-```powershell
-.\scripts\new-photonic-project.ps1 -ProjectRoot 'D:\Work\my-photonic-device'
-```
-
-Validate and compose the sample or a project-specific manifest:
-
-```powershell
-python .\scripts\photonic_assembly.py validate .\circuits\assembly.json
-python .\scripts\photonic_assembly.py compose .\circuits\assembly.json `
-  --output .\data\processed\circuit_sparameters.csv `
-  --summary .\verification\circuit_summary.json
-```
-
-This composition is a circuit-level result. It becomes a stronger engineering claim only after reference-plane, mode, passivity, layout-connectivity, and promoted full-wave checks pass.
-
-## Example Prompts
-
-Straight waveguide validation:
-
-```text
-Use $photonic-waveguide-optics to create a 2D effective-index straight waveguide validation model with two numeric ports, run a single-wavelength solve, and report S21, S11, and field confinement.
-```
-
-Directional coupler calibration:
-
-```text
-Use $photonic-waveguide-optics to build a standalone 2x2 directional coupler, sweep coupling length and gap, find the 3 dB point near 1550 nm, and export a calibration table.
-```
-
-LT-aMZI reproduction:
-
-```text
-Use $photonic-waveguide-optics to reproduce a loop-terminated asymmetric MZI using a 2D effective-index approximation. Verify both directional couplers first, connect the loop reflector, sweep wavelength, extract FSR, and compare with lambda^2/(2*n_g*DeltaL).
-```
-
-Low-transmission debugging:
-
-```text
-Use $photonic-waveguide-optics to audit this model for material selections, port placement, boundary mode datasets, bend loss, coupler imbalance, mesh resolution, S-parameter expressions, and energy balance.
-```
-
-True-smooth bend or `R_bend` optimization:
-
-```text
-Use $photonic-waveguide-optics to convert polygonal bends to true smooth circular/annular-sector bends, preserve centerline DeltaL, then sweep R_bend and compare max_T21, S11_at_max, S11+T21, peak spacing, weak/strong peak ratio, and path-length error.
-```
-
-Fully smooth Euler bend:
-
-```text
-Use $photonic-waveguide-optics to replace routed bends with smooth Euler bends. Do not use short-line or Polygon approximations for the bend boundary; build each Euler bend as a COMSOL InterpolationCurve type=solid, audit the Euler cutback clearance, preserve DeltaL, and compare against a same-clearance circular-bend control.
-```
-
-Report writing:
-
-```text
-Use $photonic-waveguide-optics to write a model-quality report that separates paper parameters, implemented assumptions, validation steps, simulation results, known limitations, and next engineering actions.
-```
-
-## Key Modeling Rules
-
-- Keep paper-faithful reproduction and engineering optimization as separate tracks.
-- Compute path length and `DeltaL` along the centerline, not by coordinate differences.
-- Validate standalone couplers/splitters before inserting them into a larger interferometer.
-- Do not assume a standalone 3 dB coupler length is optimal inside a round-trip LT-aMZI.
-- For LT-aMZI, use `FSR = lambda^2 / (2*n_g*DeltaL)`.
-- Check `S11`, `T21`, `S11+T21`, and uncollected energy; do not optimize only peak transmission.
-- Use true smooth bend geometry when possible, then preserve path length explicitly.
-- If the user asks for fully smooth Euler bends, do not implement the bend as many short straight segments. Use a smooth solid-domain primitive such as `InterpolationCurve type=solid`, and report the cutback and centerline-length audit.
-- Treat 2D effective-index models as fast topology and trend tools, not final 3D fabrication sign-off.
-- Run expensive solver jobs sequentially unless runtime directories and memory pressure are known to be isolated.
-
-## Output Expectations
-
-A serious simulation handoff should normally include:
-
-- source scripts or model-generation scripts;
-- model files if the user is allowed to keep or share them;
-- batch logs;
-- exported CSV/TXT sweep data;
-- field plots and spectra;
-- parameter tables;
-- model-quality audit notes;
-- comparison with theory, paper data, or experimental data;
-- known limitations and next steps.
-
-For public repositories, keep heavy/proprietary/local artifacts out of git unless there is explicit permission and a clear reason.
-
-## Privacy And Release Checklist
-
-Before pushing changes to a public repository, scan for:
-
-- local absolute paths and user names;
-- home directories and temporary directories;
-- license servers, license files, tokens, credentials, or private environment variables;
-- private research PDFs, vendor documentation, official screenshots, official model files, or logos;
-- generated `.mph`, `.class`, `.log`, cache, status, and temporary sweep files;
-- unpublished project names, unpublished data, and confidential partner information.
-
-The included `.gitignore` blocks common solver outputs and temporary files, but it does not replace a manual audit.
-
-Run the included audit script before publishing:
-
-```powershell
-.\scripts\audit-simulation-artifacts.ps1 -ProjectRoot .
-```
+| Local solver and batch setup | `references/environment-and-runner.md` |
+| Materials, ports, studies, datasets, and mesh | `references/wave-optics-port-models.md` |
+| Component-family workflows | `references/device-family-workflows.md` |
+| MZI, aMZI, LT-aMZI, couplers, and FSR | `references/interferometer-workflows.md` |
+| Circular and Euler bend geometry | `references/smooth-bend-geometry.md` |
+| Hierarchical component-to-circuit workflow | `references/hierarchical-device-workflow.md` |
+| Stage acceptance and claim boundaries | `references/verification-gates.md` |
+| Optimization, robustness, and reporting | `references/optimization-and-reporting.md` |
+| Quantum photonic circuits and mesh context | `references/quantum-photonic-knowledge-base.md` |
+| Project layout, artifacts, git, and handoffs | `references/project-structure-and-git.md` |
+| Batch, interactive server, and MCP route selection | `references/comsol-mcp-evaluation.md` |
+| Official source links and refresh targets | `references/source-notes.md` |
+| Licensing, trademarks, and publication safety | `references/legal-and-trademark-notes.md` |
+| Optional delegated-role boundaries | `references/subagent-orchestration.md` |
 
 ## Repository Layout
 
@@ -359,16 +213,18 @@ Run the included audit script before publishing:
 photonic-waveguide-optics-skill/
   SKILL.md
   README.md
-  LICENSE
-  NOTICE.md
-  assets/
-  agents/
+  agents/openai.yaml
+  assets/templates/hierarchical-device/
   references/
   scripts/
 ```
 
+## Safety, Licensing, and Claim Boundaries
+
+This repository is an independent workflow aid. It is not affiliated with, endorsed by, sponsored by, or authorized by COMSOL AB. It does not include or license any commercial solver, proprietary model, official screenshot, vendor documentation, license file, logo, or dataset. COMSOL and COMSOL Multiphysics are registered trademarks of COMSOL AB and are named only to identify a compatible third-party software environment.
+
+Before publication, exclude local paths, user names, credentials, license data, private papers/models, `.mph`, `.class`, logs, caches, and unpublished results. A clean field plot, a circuit trace, or a 2D EIM result is not by itself full-device 3D or experimental validation.
+
 ## License
 
-The original text, workflow notes, and helper scripts in this repository are provided under the MIT License.
-
-The license does not grant rights to any third-party solver, API, trademark, documentation, model file, example, logo, dataset, or commercial software component beyond what its owner allows.
+The repository's original text, workflow notes, and helper scripts are available under the [MIT License](LICENSE). Third-party tools, APIs, trademarks, documents, models, and datasets remain subject to their owners' terms.
