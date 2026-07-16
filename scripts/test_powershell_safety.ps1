@@ -149,3 +149,7 @@ try {
     Remove-Item -LiteralPath $tempRoot -Recurse -Force
   }
 }
+
+# PowerShell 7 otherwise propagates the expected child audit failure stored in
+# $LASTEXITCODE even though every regression assertion above passed.
+exit 0
