@@ -22,6 +22,11 @@ Require:
 - solved input/output modes;
 - stable port orientation and numbering;
 - `S21`, `S11`, phase, and mode profile;
+- one declared power normalization, reference-plane convention, and complex
+  port-mode phase basis;
+- all claimed complex S-matrix columns from one model/source sweep or an
+  independently verified gauge-alignment transform;
+- per-input modal, signed exterior-flux, and material-absorption accounting;
 - acceptable boundary and mesh sensitivity;
 - reference-plane locations recorded.
 
@@ -66,6 +71,10 @@ Require:
 - energy accounting per independent input;
 - wavelength resolution sufficient for narrow features;
 - sensitivity or corner screen for high-impact parameters.
+
+When a COMSOL source sweep supplies the matrix, require the source-conditioned
+column mapping, phase basis, and evidence checks in
+`frequency-domain-source-sweeps.md`.
 
 Label this evidence `circuit-level verified`, not `full-wave verified`.
 

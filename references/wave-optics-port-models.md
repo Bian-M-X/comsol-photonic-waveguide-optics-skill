@@ -101,6 +101,13 @@ Port mistakes are common. Check:
 - scattering/radiation boundary does not include port boundaries
 - final study uses the port mode solution, not a stale or missing mode
 
+For a complete complex S matrix, keep all source columns in one model and one
+declared port-mode phase basis. Read
+`frequency-domain-source-sweeps.md` before configuring or parsing a COMSOL
+Frequency Domain Source Sweep. Independently rebuilt source cases may support
+per-column powers, but not complex reciprocity, singular-value, phase, or
+group-delay claims unless their gauges are explicitly aligned and audited.
+
 ## Boundary Conditions
 
 Start with scattering/radiation boundaries for quick models. For engineering claims, compare:
@@ -207,6 +214,13 @@ Interpretation:
 - high S11: reflection, port mismatch, or round-trip coupler mismatch
 - low Ssum: radiation, boundary absorption, bend loss, or uncollected output
 - single-wavelength T21 is insufficient for interferometer validation
+
+Do not assign `1 - sum(abs(Sij)^2)` to radiation or absorption by inference.
+For every independent input, reconcile modal output power with explicitly
+integrated signed non-port exterior flux and material absorption. Keep a solver
+feature's outgoing-power variable as a crosscheck unless its equality to the
+chosen flux integral has been demonstrated. See
+`frequency-domain-source-sweeps.md` for the fail-closed accounting contract.
 
 ## Straight Waveguide Smoke Test
 

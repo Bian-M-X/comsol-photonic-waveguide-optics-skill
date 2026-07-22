@@ -25,6 +25,7 @@ Read only the modules needed for the next action:
 |---|---|
 | Solver paths, Java compilation, batch execution | `references/environment-and-runner.md` |
 | Materials, ports, boundary-mode studies, mesh, datasets | `references/wave-optics-port-models.md` |
+| Complete complex S matrices and COMSOL source sweeps | `references/frequency-domain-source-sweeps.md` |
 | Waveguides, bends, tapers, couplers, rings, gratings, sensors | `references/device-family-workflows.md` |
 | MZI, aMZI, LT-aMZI, coupler calibration, FSR | `references/interferometer-workflows.md` |
 | Circular/Euler bend geometry and path-length control | `references/smooth-bend-geometry.md` |
@@ -74,7 +75,7 @@ Exclude port boundaries from scattering/radiation selections. Use stable numeric
 
 Build the smallest independent model for each bend, taper, splitter, coupler, ring, grating, transition, phase section, or inverse-design region. Evaluate the device-family metrics from `references/device-family-workflows.md`.
 
-For reusable circuit models, export the complete complex S matrix across the declared band. Record port order, modes, normalization, time/phase convention, reference planes, model level, geometry/process parameters, and validity range.
+For reusable circuit models, export the complete complex S matrix across the declared band. Record port order, modes, normalization, time/phase convention, reference planes, model level, geometry/process parameters, and validity range. When COMSOL numeric ports provide the matrix, follow `references/frequency-domain-source-sweeps.md`; do not assemble complex columns from independently rebuilt models without an explicit gauge-alignment proof.
 
 ### 4. Compose complex devices hierarchically
 

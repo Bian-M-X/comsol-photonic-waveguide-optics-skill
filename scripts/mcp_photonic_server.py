@@ -12,7 +12,7 @@ from typing import Any
 
 
 SERVER_NAME = "photonic-waveguide-optics-mcp"
-SERVER_VERSION = "0.2.1"
+SERVER_VERSION = "0.2.2"
 
 SAFE_LABEL_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}\Z")
 WINDOWS_RESERVED_BASENAMES = {
@@ -49,6 +49,7 @@ AUDIT_SENSITIVE_CONTENT = {
 
 
 REFERENCE_RESOURCES = {
+    "frequency-domain-source-sweeps": "references/frequency-domain-source-sweeps.md",
     "hierarchical-device-workflow": "references/hierarchical-device-workflow.md",
     "verification-gates": "references/verification-gates.md",
     "smooth-bend-geometry": "references/smooth-bend-geometry.md",

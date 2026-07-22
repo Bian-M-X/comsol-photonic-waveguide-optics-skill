@@ -205,6 +205,7 @@ Use `SKILL.md` as the concise router and load only the reference needed for the 
 |---|---|
 | Local solver and batch setup | `references/environment-and-runner.md` |
 | Materials, ports, studies, datasets, and mesh | `references/wave-optics-port-models.md` |
+| Complete complex S matrices and source sweeps | `references/frequency-domain-source-sweeps.md` |
 | Component-family workflows | `references/device-family-workflows.md` |
 | MZI, aMZI, LT-aMZI, couplers, and FSR | `references/interferometer-workflows.md` |
 | Circular and Euler bend geometry | `references/smooth-bend-geometry.md` |

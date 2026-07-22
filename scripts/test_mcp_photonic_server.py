@@ -108,6 +108,17 @@ def main() -> None:
             )
             resources = send(proc, {"jsonrpc": "2.0", "id": 2, "method": "resources/list"})
             tools = send(proc, {"jsonrpc": "2.0", "id": 3, "method": "tools/list"})
+            source_sweep_reference = send(
+                proc,
+                {
+                    "jsonrpc": "2.0",
+                    "id": 30,
+                    "method": "resources/read",
+                    "params": {
+                        "uri": "photonic://skill/reference/frequency-domain-source-sweeps"
+                    },
+                },
+            )
             manifest = send(
                 proc,
                 {
@@ -264,9 +275,13 @@ def main() -> None:
     descending_flat_summary = descending_flat_parsed["result"]["structuredContent"]["summary"]
     batch_structured = batch_plan["result"]["structuredContent"]
     credential_findings = credential_audit["result"]["structuredContent"]["findings"]
+    source_sweep_text = source_sweep_reference["result"]["contents"][0]["text"]
+    if "source_solution_index == column" not in source_sweep_text:
+        raise RuntimeError("source-sweep reference was not exposed through MCP")
     output = {
         "initialize_server": init["result"]["serverInfo"],
         "resource_count": len(resources["result"]["resources"]),
+        "source_sweep_reference_verified": True,
         "tool_names": [tool["name"] for tool in tools["result"]["tools"]],
         "manifest_bytes": len(manifest["result"]["contents"][0]["text"]),
         "parse_summary": summary,
