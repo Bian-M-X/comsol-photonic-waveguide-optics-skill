@@ -1,157 +1,289 @@
-# Photonic Waveguide Optics Skill
+# Photonic Waveguide Optics Skill and Workflow
 
 [![Validate skill](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/validate.yml/badge.svg)](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/validate.yml)
 
-Use this installable Codex skill to design, simulate, debug, optimize, hierarchically compose, and report integrated-photonic devices with explicit evidence gates.
+`photonic-workflow` is an installable local Python runtime and Codex skill for
+auditable photonic-integrated-circuit design closure. It connects design
+intent, PDK aliases, component and compact-model contracts, complex
+S-parameter circuits, layout/netlist comparisons, solver plans, optimization,
+packaging, tapeout, measurement, provenance, and evidence gates.
 
-The skill covers individual waveguide devices and larger circuits assembled from validated complex multiport S-parameter models. It keeps analytic, circuit-level, 2D effective-index, 3D full-wave, layout, and experimental claims separate so that a fast model is never presented as stronger evidence than it is.
+The runtime coordinates external tools; it does not replace an electromagnetic
+solver, a foundry PDK, DRC/LVS signoff, calibrated measurement, or engineering
+judgment. A successful command, import, dry-run, or attractive plot is never
+promoted automatically to physics evidence.
 
 > Skill token: `$photonic-waveguide-optics`
 >
-> Repository: `Bian-M-X/comsol-photonic-waveguide-optics-skill`
+> Python package and CLI: `photonic-workflow` / `photonic`
 >
-> License: MIT for this repository's original text and helper code
+> Current package version: `0.4.0` (alpha)
+>
+> Repository: `Bian-M-X/comsol-photonic-waveguide-optics-skill`
 
-## Why Use It
+## What Version 0.4.0 Provides
 
-- Start from a device contract instead of an untracked geometry sketch.
-- Validate straight-waveguide ports before debugging a large circuit.
-- Qualify bends, tapers, couplers, splitters, rings, gratings, sensors, and modulators independently.
-- Export complete complex S matrices with explicit port, mode, normalization, phase, and reference-plane conventions.
-- Compose many calibrated components into a complex circuit before promoting only critical subassemblies to expensive full-wave models.
-- Preserve scripts, manifests, logs, metrics, validation gates, limitations, and the next safe action in every handoff.
-
-## Supported Workflows
-
-| Area | Included workflow |
+| Surface | Current role |
 |---|---|
-| Component design | Waveguides, bends, tapers, mode converters, directional/MMI couplers, Y branches, rings, gratings, sensors, modulators, and inverse-designed regions |
-| Interferometers | MZI, aMZI, LT-aMZI, coupler calibration, path-length control, FSR checks, and energy-budget diagnosis |
-| Solver automation | COMSOL Wave Optics Java API source, licensed local batch execution, dry-run review, sweeps, and structured exports |
-| Hierarchical composition | Component contracts, full complex multiport S data, assembly manifests, exact port occupancy, mode checks, network reduction, and external S-matrix export |
-| Verification | Circuit, 2D EIM, 3D subassembly, full-device, layout/PDK, robustness, and experimental claim boundaries |
-| Reproducibility | Project scaffolding, artifact audits, reports, and checkpointable handoffs |
+| Installable core | Click CLI, Pydantic contracts, NumPy circuit composition, project configuration, run store, provenance, artifact audit, and G0-G8/M0-M4 ledgers |
+| PIC and PDK contracts | Design intent, devices, ports, components, netlists, layouts, PDK/technology/corner models, model cards, packaging, test, tapeout, and measurement records |
+| Circuit compatibility | Legacy `assembly.json` 1.0 and long-form complex S-parameter CSV validation/composition |
+| Reusable modeling recipes | Versioned, fail-closed circular/Euler geometry, segmented port windows, bulk material dispersion, and common-basis two-port diagnostics distilled from reviewed LT-aMZI workflows |
+| External backends | Capability probes and bounded plans; commercial execution remains separately authorized and test-gated |
+| MATLAB | Phase A check, inventory, plan, controlled-wrapper, result, and Engine-probe surfaces; real local smoke belongs to Phase B |
+| MCP | Dependency-light stdio JSON-RPC transport whose manifest enumerates all registered skill resources and 10 narrow tools; no solver, MATLAB, instrument, or arbitrary-shell execution |
+| Legacy entry points | Existing Python and PowerShell commands remain compatibility entry points while package-service parity is regression-tested |
+| Research record | Official/project-maintained source surveys for PIC and MATLAB tools with explicit local and physics verification boundaries |
+
+Implementation and local availability are reported separately:
+
+- implementation: `implemented`, `experimental`, `planned`, or `unverified`;
+- availability: `available`, `unavailable`, `incompatible`, or `unverified`.
+
+Neither field is a device gate. Only inspected evidence can change a G or M
+gate.
 
 ## Install
 
-Clone the repository into the Codex skills folder:
-
-```powershell
-$SkillRoot = Join-Path $env:USERPROFILE '.codex\skills\photonic-waveguide-optics'
-New-Item -ItemType Directory -Force (Split-Path $SkillRoot) | Out-Null
-git clone https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill.git $SkillRoot
-```
-
-Update an existing installation with a fast-forward-only pull:
-
-```powershell
-$SkillRoot = Join-Path $env:USERPROFILE '.codex\skills\photonic-waveguide-optics'
-if (-not (Test-Path -LiteralPath $SkillRoot)) {
-  $SkillRoot = Join-Path $env:USERPROFILE '.codex\skills\photonic-waveguide-optics-skill'
-}
-git -C $SkillRoot pull --ff-only
-```
-
-Restart Codex or open a new task if the skill does not appear immediately.
-
-## Start With One Prompt
-
-```text
-Use $photonic-waveguide-optics. Read D:\Path\To\MyProject first, identify the latest trusted evidence, and propose the next validation or optimization step.
-```
-
-For a new complex device:
-
-```text
-Use $photonic-waveguide-optics to define component contracts, calibrate reusable building blocks, compose their complete complex S matrices, verify the circuit and layout connectivity, and promote only the critical subassemblies to higher-fidelity full-wave checks.
-```
-
-## Run a Solver-Free Smoke Test
-
-Use Python 3 with NumPy. No commercial solver is needed for this example.
+Python 3.11 or newer is required. Install the solver-independent core from a
+reviewed checkout:
 
 ```powershell
 git clone https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill.git
 Set-Location .\comsol-photonic-waveguide-optics-skill
 
-python -m pip install -r .\requirements.txt
-python .\scripts\test_photonic_assembly.py
-
-$Demo = Join-Path $env:TEMP 'photonic-skill-demo'
-.\scripts\new-photonic-project.ps1 -ProjectRoot $Demo -DeviceFamily mzi
-
-python "$Demo\scripts\photonic_assembly.py" validate `
-  "$Demo\circuits\assembly.json"
-
-python "$Demo\scripts\photonic_assembly.py" compose `
-  "$Demo\circuits\assembly.json" `
-  --output "$Demo\data\processed\circuit_sparameters.csv" `
-  --summary "$Demo\verification\circuit_summary.json"
+python -m pip install -e .
+photonic --version
 ```
 
-The `mzi` scaffold includes two ideal 2x2 directional couplers, two arm instances, four external ports, and complete sample complex S data at three wavelengths. Replace the analytic fixtures with qualified component models before making a device claim. Use the default `waveguide` family when you only need the two-stage cascade template.
+The core installs only Click, Pydantic, and NumPy. Optional extras describe
+integration families; they do not download commercial products, licenses,
+PDKs, MATLAB toolboxes, or instruments:
 
-## Compose a Complex Device
+```powershell
+python -m pip install -e ".[layout,circuit,sparams]"
+python -m pip install -e ".[dev]"
+```
 
-Use this scalable route:
+Install optional dependencies only for an approved local workflow and review
+their licenses independently. The `all` extra intentionally includes only
+redistributable Python packages listed in `pyproject.toml`; it is not a
+complete PIC environment.
+
+To install the Codex skill itself, place this repository under a discovered
+skills directory such as:
+
+```powershell
+$SkillRoot = Join-Path $env:USERPROFILE '.codex\skills\photonic-waveguide-optics'
+git clone https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill.git $SkillRoot
+```
+
+Restart Codex or open a new task after changing skill discovery locations.
+
+## Five-Minute Solver-Free Start
+
+Create an MZI project, validate it, and inspect its fail-closed status:
+
+```powershell
+$ProjectRoot = Join-Path $env:TEMP 'photonic-mzi-demo'
+
+photonic init $ProjectRoot --device-family mzi --json
+photonic check --project-root $ProjectRoot --json
+photonic circuit validate "$ProjectRoot\circuits\assembly.json" --json
+photonic circuit compose "$ProjectRoot\circuits\assembly.json" `
+  --output "$ProjectRoot\data\processed\circuit_sparameters.csv" `
+  --summary "$ProjectRoot\verification\circuit_summary.json" `
+  --json
+photonic status --project-root $ProjectRoot --json
+```
+
+The bundled fixtures are deterministic analytic examples. They exercise
+contracts and network composition; they are not a qualified PDK, fabricated
+device, or full-wave validation.
+
+Available initialization profiles are:
+
+- `pdk-first`;
+- `layout-first`;
+- `custom-device-first`;
+- `matlab-legacy-layout`;
+- `matlab-assisted-design`.
+
+`photonic.toml` records runtime policy and aliases. Physical geometry,
+materials, modes, topology, boundary conditions, objectives, and acceptance
+thresholds belong in versioned design and run contracts.
+
+## CLI Map
+
+Run `photonic <group> --help` for the authoritative command schema.
+
+| Area | Command groups |
+|---|---|
+| Project and recovery | `init`, `check`, `doctor`, `status`, `inspect`, `report` |
+| PDK and device data | `pdk`, `component`, `model`, `sparams`, `variation` |
+| Reusable modeling | `recipe list`, `recipe inspect`, `recipe render` |
+| Circuit and layout | `circuit`, `netlist`, `layout` |
+| External planning | `solver`, `matlab` |
+| Campaigns and release | `optimize`, `package`, `testplan`, `tapeout`, `measurement` |
+| Evidence and security | `gate`, `audit` |
+
+Backend readiness is deliberately separate from device evidence. Initialize,
+inspect, and evaluate one backend record at a time:
+
+```powershell
+photonic gate adoption list --project-root . --json
+photonic gate adoption init matlab-runtime --project-root . --dry-run --json
+photonic gate adoption init matlab-runtime --project-root . --json
+photonic gate adoption inspect matlab-runtime --project-root . --json
+photonic gate adoption record matlab-runtime capability-probe blocked `
+  --reason "normal interactive-user probe is pending" `
+  --project-root . --json
+photonic gate adoption evaluate matlab-runtime --project-root . --json
+```
+
+Records live under `verification/adoption/`. Initialization never overwrites an
+existing record, and `--dry-run` performs no writes. Pass/fail evidence supplied
+to the CLI must be a readable project-relative file; a nonblank reference alone
+is not accepted as proof.
+
+JSON responses use a stable envelope with command, status, exit code, data,
+warnings, and errors. Important exit codes are:
+
+| Code | Meaning |
+|---:|---|
+| 0 | success |
+| 1 | internal or unclassified failure |
+| 2 | invalid input |
+| 3 | unavailable capability |
+| 4 | incompatible version |
+| 5 | execution failure |
+| 6 | acceptance rejected |
+| 7 | security violation |
+| 8 | timeout |
+
+A read-only status command may return code 0 while every evidence gate remains
+`blocked`. Execution success and physical acceptance are independent states.
+
+### Reusable Modeling Recipes
+
+The built-in recipe registry turns reviewed LT-aMZI modeling primitives into
+stable, inspectable calls without copying project-specific models or claiming
+solver acceptance:
+
+```powershell
+photonic recipe list --json
+photonic recipe inspect geometry.symmetric-euler-bend --json
+photonic recipe render geometry.symmetric-euler-bend `
+  --input .\examples\recipes\symmetric-euler-bend.json `
+  --renderer canonical-json `
+  --json
+```
+
+Each recipe uses an exact semantic version, explicit units, strict input
+validation, deterministic output, and packaged provenance. Only the allowlisted
+geometry/port recipes can emit bounded COMSOL Java fragments; rendering is not
+solver execution or physics evidence. Each Java fragment also requires an
+explicit safe `--instance-id` so multiple MZI arms/routes can coexist without
+feature-tag collisions. See `references/modeling-recipes.md`.
+
+## Modeling and Evidence Workflow
+
+Use the lowest-cost model that can answer the declared question:
 
 ```text
-device requirements
-  -> validated straight-waveguide and port baseline
-  -> qualified component models
+design intent and claim
+  -> straight-waveguide and port baseline
+  -> independently qualified component models
   -> complete complex multiport S data
-  -> validated assembly manifest
-  -> circuit spectrum and sensitivity
+  -> validated circuit and sensitivity
   -> port-aware layout and extracted connectivity
-  -> selected full-wave subassembly checks
-  -> robustness study and evidence package
+  -> selected promoted full-wave checks
+  -> robustness and evidence package
+  -> test readiness, measurement, correlation, recalibration
 ```
 
-Define each reusable component in `assembly.json` with:
-
-- an ordered port list and one declared mode per port;
-- a model level: `analytic`, `reduced`, `full-wave-2d-eim`, `full-wave-3d`, or `measured`;
-- a reference-plane description;
-- a relative path to a complete wavelength-dependent complex S-matrix CSV;
-- a passivity declaration when applicable.
-
-Store one matrix entry per row with the exact columns `wavelength_nm,out_port,in_port,s_real,s_imag`.
-
-Use `scripts/photonic_assembly.py` to reject unknown endpoints, reused or dangling ports, connected mode mismatches, incomplete S matrices, mismatched wavelength grids, and non-passive component data. The composer eliminates internal connected ports and exports the external circuit S matrix at every supplied wavelength.
-
-Represent phase, propagation loss, bends, tapers, and transitions as explicit components. Treat a manifest connection as an ideal zero-length, zero-loss connection.
-
-### Current composition boundary
-
-The supplied composer is a deterministic circuit-level reference implementation. It does not yet import Touchstone or solver port sweeps automatically, interpolate mismatched wavelength grids, generate a foundry layout, run DRC, infer electromagnetic coupling between nominally separate blocks, or replace a 2D/3D solver. Promote a subassembly or the complete device when block separation is physically invalid, parasitic coupling matters, or the intended claim requires whole-device fields.
-
-## Use the Verification Gates
+G0-G8 track design through evidence packaging. M0-M4 are a separate
+post-fabrication track:
 
 | Gate | Required evidence |
 |---|---|
-| `G0` | Device contract: topology, ports, modes, band, stack, metrics, tolerances, and claim level |
-| `G1` | Straight-waveguide, port, mesh, boundary, phase, and reference-plane baseline |
-| `G2` | Independent component qualification and complete reusable S data |
-| `G3` | Valid manifest, conventions, endpoints, modes, occupancy, and wavelength grid |
-| `G4` | Circuit response, energy/passivity checks, sensitivity, and expected limiting behavior |
-| `G5` | Port-aware layout, extracted connectivity, and PDK/DRC status when applicable |
-| `G6` | Promoted full-wave validation of the critical interaction region or subassembly |
-| `G7` | Re-evaluated optimum across solver fidelity and relevant process/temperature corners |
-| `G8` | Reproducible evidence package with limitations and an exact next action |
+| `G0` | Device contract and intended claim |
+| `G1` | Port and straight-waveguide baseline |
+| `G2` | Component qualification |
+| `G3` | Assembly contract |
+| `G4` | Circuit behavior |
+| `G5` | Layout and connectivity |
+| `G6` | Promoted full-wave subassembly |
+| `G7` | Robustness and optimization |
+| `G8` | Reproducible evidence package |
+| `M0` | Test readiness |
+| `M1` | Raw-data integrity |
+| `M2` | Calibrated measurement |
+| `M3` | Simulation/measurement correlation |
+| `M4` | Compact-model recalibration |
 
-Stop escalation when a gate fails. Missing evidence is not a pass.
+Missing evidence is `blocked`, not pass. A gate pass requires explicit evidence.
 
-## Run a Licensed Local Solver
+## Phase Boundaries
 
-Provide your own licensed COMSOL installation. Set the solver root instead of hard-coding a personal path:
+The phase labels describe integration maturity, not device acceptance:
+
+- **Phase A — reliable local core:** installable package, contracts, safe
+  plans, mock fixtures, run recovery, gates, legacy parity, MATLAB
+  check/plan surfaces, thin MCP, and public-CI-safe tests.
+- **Phase B — authorized local validation:** licensed `matlab -batch` and
+  `matlab.unittest` smoke, optional Engine checks, data round trips, legacy
+  layout/FDFD/RF fixtures, and local numerical parity.
+- **Phase C — bounded external integrations:** COMSOL LiveLink, Lumerical,
+  instruments, Simulink, commercial PDK/tapeout, packaging/test execution,
+  measurement correlation, and large or remote optimization after
+  backend-specific adoption gates.
+
+Files, descriptors, schemas, product listings, imports, and dry-run plans do
+not prove Phase B/C execution. A MATLAB FDFD result is not 3D full-wave
+evidence; generated GDS is not foundry DRC signoff; solver convergence is not
+measurement correlation.
+
+## MATLAB
+
+MATLAB is optional. The default controlled route is `matlab -batch`; MATLAB
+Engine is an optional probe and low-latency route, not the workflow authority.
+
+```powershell
+photonic matlab check --json
+photonic matlab doctor --json
+photonic matlab products --json
+photonic matlab toolboxes --json
+photonic matlab sessions --json
+photonic matlab plan .\runs\example\run_spec.json --project-root . --json
+```
+
+Phase A planning accepts only registered entrypoint IDs and constructs argument
+arrays around fixed repository-owned MATLAB functions. It does not accept
+arbitrary MATLAB code. An absent executable must be reported as structured
+`unavailable`; an importable Engine package does not prove a compatible,
+licensed, trusted session.
+
+In the Phase A runtime, `matlab run` without `--execute` is another planning
+surface; real execution and `matlab test` remain fail-closed Phase B hooks.
+When a later version enables an explicitly authorized local Phase B
+validation, record MATLAB release, product/toolbox inventory, wrapper and input
+hashes, result manifest, expected artifacts, tolerance, and claim limits.
+LiveLink, Lumerical, instrument, Simulink, and real tapeout workflows remain
+Phase C until their own adoption gates pass.
+
+See `docs/architecture/matlab-integration.md`,
+`docs/architecture/matlab-security.md`, and
+`docs/research/matlab-tool-landscape.md`.
+
+## COMSOL and Other Solvers
+
+Provide your own compatible, licensed installation. The trusted legacy COMSOL
+execution path remains the bounded Java API plus batch runner:
 
 ```powershell
 $env:PHOTONIC_SOLVER_ROOT = 'C:\Path\To\LicensedSolverRoot'
-```
 
-Preview the generated batch command first:
-
-```powershell
 .\scripts\invoke-waveguide-java-batch.ps1 `
   -SolverRoot $env:PHOTONIC_SOLVER_ROOT `
   -JavaFile 'C:\Path\To\ModelSource.java' `
@@ -160,84 +292,140 @@ Preview the generated batch command first:
   -DryRun
 ```
 
-Remove `-DryRun` only after reviewing paths, selections, study order, expected cost, and outputs. Keep direct Java API plus batch execution as the trusted solve path; use the MCP prototype for discovery, scaffolding, parsing, audit, and redacted dry-run planning until it passes solver-execution parity tests.
+Review paths, selections, study order, cost, concurrency, expected outputs, and
+claim level before removing `-DryRun`. A rendered solver plan is provenance
+support, not solver execution or physics evidence.
 
-## Included Tools
+The official-source tool surveys in `docs/research/tool-landscape.md` and
+`docs/research/matlab-tool-landscape.md` distinguish documented capability from
+local availability and verified physics.
 
-| Tool | Purpose |
-|---|---|
-| `scripts/new-photonic-project.ps1` | Create requirements, components, circuits, layout, models, runs, data, verification, reports, and handoff folders. |
-| `scripts/photonic_assembly.py` | Validate a hierarchical manifest and compose external wavelength-dependent complex S parameters. |
-| `scripts/test_photonic_assembly.py` | Test a two-stage cascade, a four-component balanced MZI, and mode-mismatch rejection. |
-| `scripts/invoke-waveguide-java-batch.ps1` | Compile Java API source with the solver-bundled JDK and run the licensed batch executable. |
-| `scripts/parse-comsol-sweep.py` | Parse exported sweep tables and summarize spectral metrics. |
-| `scripts/test_numeric_tools.py` | Test wavelength ordering, plateau extrema, zero spectra, and arbitrary-angle circular bends. |
-| `scripts/audit-simulation-artifacts.ps1` | Detect blocked binaries, large files, and obvious local secrets before publication. |
-| `scripts/test_powershell_safety.ps1` | Test compiler/batch failure propagation, dry-run isolation, and hidden credential-file detection without COMSOL. |
-| `scripts/emit-analytic-bend-java-helper.py` | Emit a circular-bend Java helper skeleton. |
-| `scripts/mcp_photonic_server.py` | Expose dependency-free local resource, scaffold, parse, audit, and dry-run operations. |
-| `scripts/test_mcp_photonic_server.py` | Exercise the MCP protocol surface without executing a solver. |
+## MCP Surface
 
-## Validate This Skill
+`scripts/mcp_photonic_server.py` is a compatibility launcher for the package
+transport. The current version exposes:
 
-Run the deterministic tests from the repository root:
+- resources declared by one authoritative registry: one server manifest, every
+  registered reference document, and every bounded agent role contract;
+- 10 tools: `list_allowed_roots`, `create_project_scaffold`,
+  `audit_project_artifacts`, `parse_sweep_table`, `validate_contract`,
+  `inspect_project`, `validate_circuit`, `compose_circuit`, `gate_status`, and
+  the compatibility-named `run_java_batch`.
+
+`run_java_batch` renders a redacted dry-run plan only. MCP never exposes
+arbitrary shell/Python/MATLAB execution or real solver/instrument execution.
+Read roots and write roots are separate; write operations fail when no writable
+root is configured. Installed wheels carry a read-only mirror of all MCP
+reference and agent resources, so `photonic-mcp` does not depend on the current
+working directory or a source checkout. `PHOTONIC_SKILL_ROOT` remains an
+explicit override for a reviewed skill tree.
+
+See `references/comsol-mcp-evaluation.md` for the adoption boundary.
+
+## Legacy Compatibility
+
+Existing interfaces remain supported while business logic moves into the
+package:
+
+- `scripts/photonic_assembly.py validate|compose`;
+- `scripts/parse-comsol-sweep.py`;
+- `scripts/new-photonic-project.ps1`;
+- `scripts/audit-simulation-artifacts.ps1`;
+- `scripts/invoke-waveguide-java-batch.ps1`;
+- `scripts/mcp_photonic_server.py`.
+
+The v1 assembly schema, port order, model-level vocabulary, exact wavelength
+grid, long-form complex CSV columns, and six-column composed output remain
+compatibility contracts. See `docs/migration.md` before changing an existing
+project.
+
+## Validate a Checkout
+
+The public core validation deliberately requires no MATLAB, COMSOL, Lumerical,
+commercial PDK, instrument, network API, or cloud account:
 
 ```powershell
-python .\scripts\test_photonic_assembly.py
-python .\scripts\test_numeric_tools.py
-python .\scripts\test_mcp_photonic_server.py
+python -m pip install -e '.[dev]'
+
+python -B -m unittest discover -s tests -p 'test_*.py'
+python -B .\scripts\update_contract_surface_snapshot.py
+python -B .\scripts\test_photonic_assembly.py
+python -B .\scripts\test_numeric_tools.py
+python -B .\scripts\test_mcp_photonic_server.py
+python -B .\scripts\test_skill_metadata.py
 .\scripts\test_powershell_safety.ps1
-.\scripts\audit-simulation-artifacts.ps1 -ProjectRoot . -FailOnIssues
+.\scripts\sync-packaged-skill-resources.ps1
+.\scripts\sync-packaged-matlab-resources.ps1
+ruff check src tests scripts
+
+photonic --version
+photonic audit artifacts . --fail-on-issues --json
 git diff --check
 ```
 
-When the Codex system `skill-creator` package and PyYAML are available in the selected Python environment, also run:
+Before committing a new package surface, stage the intended files and run
+`git diff --cached --check`; after committing, run `git show --check --oneline
+HEAD`. Plain `git diff --check` does not inspect untracked files.
+
+CI also enforces Ruff and skill metadata schemas, runs the full Windows suite
+on Python 3.11-3.14, runs
+portable-core tests on Ubuntu and macOS, builds the sdist and wheel, installs
+the wheel into a clean environment outside the checkout, reads all MCP
+resources, validates packaged templates, and runs `pip check`. A version tag
+triggers a fresh release build, SHA-256 inventory, and GitHub build-provenance
+attestations. See `docs/maintenance.md` for the release sequence.
+
+When the Codex `skill-creator` validation script and PyYAML are available in
+the selected environment, also run:
 
 ```powershell
 python "$env:USERPROFILE\.codex\skills\.system\skill-creator\scripts\quick_validate.py" .
 ```
 
+Do not install or mutate a global Python environment merely to make an optional
+validator available.
+
 ## Documentation Map
 
-Use `SKILL.md` as the concise router and load only the reference needed for the next action.
+`SKILL.md` is the concise operational router. Detailed material lives under
+`references/` and `docs/`:
 
-| Need | Reference |
+| Need | Read |
 |---|---|
-| Local solver and batch setup | `references/environment-and-runner.md` |
-| Materials, ports, studies, datasets, and mesh | `references/wave-optics-port-models.md` |
-| Complete complex S matrices and source sweeps | `references/frequency-domain-source-sweeps.md` |
-| Component-family workflows | `references/device-family-workflows.md` |
-| MZI, aMZI, LT-aMZI, couplers, and FSR | `references/interferometer-workflows.md` |
-| Circular and Euler bend geometry | `references/smooth-bend-geometry.md` |
-| Hierarchical component-to-circuit workflow | `references/hierarchical-device-workflow.md` |
-| Stage acceptance and claim boundaries | `references/verification-gates.md` |
-| Optimization, robustness, and reporting | `references/optimization-and-reporting.md` |
-| Quantum photonic circuits and mesh context | `references/quantum-photonic-knowledge-base.md` |
-| Project layout, artifacts, git, and handoffs | `references/project-structure-and-git.md` |
-| Batch, interactive server, and MCP route selection | `references/comsol-mcp-evaluation.md` |
-| Official source links and refresh targets | `references/source-notes.md` |
-| Licensing, trademarks, and publication safety | `references/legal-and-trademark-notes.md` |
-| Optional delegated-role boundaries | `references/subagent-orchestration.md` |
+| Runtime architecture and phases | `docs/architecture/runtime-design.md`, `docs/roadmap.md` |
+| Contracts and adapters | `docs/architecture/adapter-contract.md`, `docs/architecture/design-intent.md` |
+| Third-party adapter authoring | `docs/providers/authoring-third-party-adapter.md` |
+| PDKs and compact models | `docs/architecture/pdk-model.md`, `docs/architecture/compact-model-lifecycle.md` |
+| MATLAB integration and security | `docs/architecture/matlab-integration.md`, `docs/architecture/matlab-security.md` |
+| Provenance and migration | `docs/architecture/provenance.md`, `docs/migration.md` |
+| Maintenance and compatibility | `docs/maintenance.md` |
+| Release history | `CHANGELOG.md` |
+| PIC and MATLAB tool research | `docs/research/tool-landscape.md`, `docs/research/matlab-tool-landscape.md` |
+| Workflow profiles | `docs/workflows/` |
+| COMSOL environment and physics | `references/environment-and-runner.md`, `references/wave-optics-port-models.md` |
+| Source sweeps and complex S matrices | `references/frequency-domain-source-sweeps.md` |
+| Device and interferometer workflows | `references/device-family-workflows.md`, `references/interferometer-workflows.md` |
+| Reusable modeling recipes and provenance | `references/modeling-recipes.md` |
+| Hierarchical composition | `references/hierarchical-device-workflow.md` |
+| Gates and reporting | `references/verification-gates.md`, `references/optimization-and-reporting.md` |
+| MCP evaluation | `references/comsol-mcp-evaluation.md` |
+| Sources, licensing, and publication | `references/source-notes.md`, `references/legal-and-trademark-notes.md` |
 
-## Repository Layout
+## Safety, Licensing, and Claims
 
-```text
-photonic-waveguide-optics/
-  SKILL.md
-  README.md
-  requirements.txt
-  agents/openai.yaml
-  assets/templates/hierarchical-device/
-  references/
-  scripts/
-```
+This repository is an independent workflow aid. It is not affiliated with,
+endorsed by, sponsored by, or authorized by COMSOL AB, MathWorks, Ansys, a
+foundry, or any other tool vendor. It contains no commercial solver, MATLAB
+product, PDK, license file, proprietary model, or vendor dataset. Product and
+company names identify optional third-party environments only.
 
-## Safety, Licensing, and Claim Boundaries
+Before publication, remove local paths and usernames, credentials, license
+data, instrument addresses, NDA material, proprietary papers/models, `.mph`,
+compiled artifacts, raw logs, caches, and unpublished results. Audit the full
+artifact tree and review every third-party license. Open-source software does
+not grant access to commercial products or foundry PDKs.
 
-This repository is an independent workflow aid. It is not affiliated with, endorsed by, sponsored by, or authorized by COMSOL AB. It does not include or license any commercial solver, proprietary model, official screenshot, vendor documentation, license file, logo, or dataset. COMSOL and COMSOL Multiphysics are registered trademarks of COMSOL AB and are named only to identify a compatible third-party software environment.
-
-Before publication, exclude local paths, user names, credentials, license data, private papers/models, `.mph`, `.class`, logs, caches, and unpublished results. A clean field plot, a circuit trace, or a 2D EIM result is not by itself full-device 3D or experimental validation.
-
-## License
-
-The repository's original text, workflow notes, and helper scripts are available under the [MIT License](LICENSE). Third-party tools, APIs, trademarks, documents, models, and datasets remain subject to their owners' terms.
+The repository's original text and helper code are available under the
+[MIT License](LICENSE). Third-party tools, APIs, trademarks, documentation,
+models, datasets, and generated artifacts remain subject to their owners'
+terms.

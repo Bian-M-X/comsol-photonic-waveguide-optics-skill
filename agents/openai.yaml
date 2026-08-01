@@ -1,4 +1,4 @@
 interface:
-  display_name: "Photonic Device Design and Simulation"
-  short_description: "Design, compose, simulate, and verify photonic devices"
-  default_prompt: "Use $photonic-waveguide-optics to design, simulate, optimize, or hierarchically compose an integrated photonic device with explicit verification gates."
+  display_name: "Photonic Workflow Design and Closure"
+  short_description: "Auditable PIC workflow design and closure"
+  default_prompt: "Use $photonic-waveguide-optics to inspect the project evidence, choose the lowest valid modeling level, and advance the PIC workflow without crossing verification or licensing boundaries."

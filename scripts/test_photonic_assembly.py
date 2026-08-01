@@ -234,6 +234,40 @@ class PhotonicAssemblyTests(unittest.TestCase):
                     errors = photonic_assembly.validate_structure(payload)
                     self.assertTrue(any(expected in error for error in errors), errors)
 
+    def test_non_finite_complex_entries_are_rejected_before_composition(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            manifest_path = make_manifest(root)
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["components"]["a"]["passive"] = False
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+            with (root / "a.csv").open(encoding="utf-8") as handle:
+                rows = list(csv.DictReader(handle))
+            rows[0]["s_real"] = "nan"
+            with (root / "a.csv").open("w", newline="", encoding="utf-8") as handle:
+                writer = csv.DictWriter(handle, fieldnames=photonic_assembly.REQUIRED_COLUMNS)
+                writer.writeheader()
+                writer.writerows(rows)
+
+            with self.assertRaisesRegex(photonic_assembly.AssemblyError, "non-finite"):
+                photonic_assembly.validate_manifest(manifest_path)
+
+    def test_sparameter_path_must_stay_below_manifest_directory(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            manifest_dir = root / "manifest"
+            manifest_dir.mkdir()
+            manifest_path = make_manifest(manifest_dir)
+            outside = root / "outside.csv"
+            write_two_port(outside, 0.5)
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["components"]["a"]["sparameters"] = "../outside.csv"
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+            with self.assertRaisesRegex(photonic_assembly.AssemblyError, "outside manifest directory"):
+                photonic_assembly.validate_manifest(manifest_path)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,4 +1,4 @@
-name: Validate skill
+name: Validate skill and runtime
 
 on:
   push:
@@ -9,34 +9,301 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  validate:
-    runs-on: windows-latest
+  validate-quality:
+    name: Static quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     steps:
       - name: Check out repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
-          python-version: "3.12"
+          python-version: "3.14"
 
-      - name: Install runtime dependencies
-        run: python -m pip install --disable-pip-version-check -r requirements.txt
+      - name: Set up Java for generated-fragment compile checks
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: "21"
 
-      - name: Test hierarchical assembly
+      - name: Install pinned validation tooling
+        run: python -m pip install --disable-pip-version-check "PyYAML>=6.0.3,<7" ruff==0.16.1
+
+      - name: Enforce the repository lint baseline
+        run: ruff check src tests scripts
+
+      - name: Validate skill and UI metadata schemas
+        run: python -B scripts/test_skill_metadata.py
+
+      - name: Compile maximum-bound generated Java fragments
+        env:
+          PYTHONPATH: src
+        run: python -B -m unittest tests.unit.test_comsol_recipe_renderer
+
+  validate-core:
+    name: Core Python ${{ matrix.python-version }}
+    runs-on: windows-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install editable core
+        run: python -m pip install --disable-pip-version-check -e .
+
+      - name: Test package contracts and services
+        run: python -B -m unittest discover -s tests -p "test_*.py"
+
+      - name: Verify public compatibility snapshot
+        run: python -B scripts/update_contract_surface_snapshot.py
+
+      - name: Test legacy assembly compatibility
         run: python -B scripts/test_photonic_assembly.py
 
-      - name: Test numeric helpers
+      - name: Test legacy numeric compatibility
         run: python -B scripts/test_numeric_tools.py
 
-      - name: Test MCP protocol and security boundaries
-        run: python -B scripts/test_mcp_photonic_server.py
-
-      - name: Test PowerShell runner and audit safety
+      - name: Test MCP protocol, counts, and security boundaries
         shell: pwsh
-        run: ./scripts/test_powershell_safety.ps1
+        run: |
+          $lines = & python -B scripts/test_mcp_photonic_server.py
+          $code = $LASTEXITCODE
+          if ($code -ne 0) {
+            throw "MCP smoke failed with exit code $code"
+          }
+          $payload = ($lines -join "`n") | ConvertFrom-Json
+          if ($payload.resource_count -ne $payload.manifest_resource_count) {
+            throw "MCP resources/list differs from the server manifest"
+          }
+          if ($payload.modeling_recipe_reference_verified -ne $true) {
+            throw "The modeling-recipe reference was not readable through MCP"
+          }
+          if (@($payload.tool_names).Count -ne 10) {
+            throw "Expected 10 MCP tools, found $(@($payload.tool_names).Count)"
+          }
+          if ($payload.batch_dry_run.will_execute -ne $false) {
+            throw "MCP batch-plan compatibility tool must remain non-executing"
+          }
+
+      - name: Test PowerShell runner and artifact safety
+        shell: pwsh
+        run: |
+          ./scripts/test_powershell_safety.ps1
+          if ($LASTEXITCODE -ne 0) { throw "PowerShell safety regression failed" }
+          ./scripts/sync-packaged-skill-resources.ps1
+          if ($LASTEXITCODE -ne 0) { throw "packaged skill mirror drifted" }
+          ./scripts/sync-packaged-matlab-resources.ps1
+          if ($LASTEXITCODE -ne 0) { throw "packaged MATLAB mirror drifted" }
+          $legacyProject = Join-Path $env:RUNNER_TEMP ("photonic-legacy-" + [guid]::NewGuid().ToString("N"))
+          ./scripts/new-photonic-project.ps1 -ProjectRoot $legacyProject -DeviceFamily waveguide
+          if ($LASTEXITCODE -ne 0) { throw "legacy project-scaffold wrapper failed" }
+          if (-not (Test-Path -LiteralPath "$legacyProject\photonic.toml")) {
+            throw "legacy project-scaffold wrapper did not delegate to the package"
+          }
+
+      - name: Smoke-test installed CLI and fresh project
+        shell: pwsh
+        run: |
+          photonic --version
+          photonic --help | Out-Null
+          $project = Join-Path $env:RUNNER_TEMP ("photonic-ci-" + [guid]::NewGuid().ToString("N"))
+          photonic init $project --device-family mzi --json | Out-Null
+          if ($LASTEXITCODE -ne 0) { throw "photonic init failed" }
+          photonic check --project-root $project --json | Out-Null
+          if ($LASTEXITCODE -ne 0) { throw "photonic check failed" }
+          photonic circuit validate "$project\circuits\assembly.json" --json | Out-Null
+          if ($LASTEXITCODE -ne 0) { throw "photonic circuit validate failed" }
+          photonic status --project-root $project --json | Out-Null
+          if ($LASTEXITCODE -ne 0) { throw "photonic status failed" }
+          $adoption = photonic gate adoption list --project-root $project --json | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0) { throw "backend adoption inventory failed" }
+          if (@($adoption.data.targets).Count -ne 7) {
+            throw "expected seven independent backend adoption targets"
+          }
+          $preview = photonic gate adoption init matlab-runtime --project-root $project --dry-run --json | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0 -or $preview.data.record.status -ne 'blocked') {
+            throw "MATLAB adoption dry-run must remain blocked"
+          }
+          photonic audit artifacts $project --fail-on-issues --json | Out-Null
+          if ($LASTEXITCODE -ne 0) { throw "fresh project artifact audit failed" }
+
+      - name: Verify structured MATLAB-unavailable behavior
+        shell: pwsh
+        run: |
+          $lines = & photonic matlab check --executable matlab_photonic_ci_missing.exe --json
+          $code = $LASTEXITCODE
+          $payload = ($lines -join "`n") | ConvertFrom-Json
+          if ($code -ne 3) {
+            throw "Missing MATLAB must exit 3, found $code"
+          }
+          if ($payload.data.availability -ne "unavailable") {
+            throw "Missing MATLAB did not return structured unavailable status"
+          }
+          if ($payload.data.batch_capable -ne $false) {
+            throw "Missing MATLAB was incorrectly reported batch-capable"
+          }
 
       - name: Audit repository artifacts
         shell: pwsh
-        run: ./scripts/audit-simulation-artifacts.ps1 -ProjectRoot . -FailOnIssues
+        run: |
+          photonic audit artifacts . --fail-on-issues --json
+          if ($LASTEXITCODE -ne 0) { throw "package artifact audit failed" }
+          ./scripts/audit-simulation-artifacts.ps1 -ProjectRoot . -FailOnIssues
+
+      - name: Check patch whitespace
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "pull_request") {
+            git diff --check "${{ github.event.pull_request.base.sha }}...HEAD"
+          }
+          elseif (
+            "${{ github.event_name }}" -eq "push" -and
+            "${{ github.event.before }}" -notmatch '^0+$'
+          ) {
+            git diff --check "${{ github.event.before }}...${{ github.sha }}"
+          }
+          else {
+            git show --check --oneline HEAD
+          }
+
+  validate-portable-core:
+    name: Portable core ${{ matrix.os }} / Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.11", "3.14"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install editable core
+        run: python -m pip install --disable-pip-version-check -e .
+
+      - name: Test portable Python contracts and services
+        run: python -B -m unittest discover -s tests -p "test_*.py"
+
+      - name: Verify public compatibility snapshot
+        run: python -B scripts/update_contract_surface_snapshot.py
+
+  validate-package:
+    name: Build and test installed artifacts
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+
+      - name: Build wheel and source distribution
+        shell: pwsh
+        run: |
+          python -m pip install --disable-pip-version-check build
+          python -m build
+          $wheelCount = @(Get-ChildItem -LiteralPath dist -Filter '*.whl').Count
+          $sdistCount = @(Get-ChildItem -LiteralPath dist -Filter '*.tar.gz').Count
+          if ($wheelCount -ne 1 -or $sdistCount -ne 1) {
+            throw "Expected one wheel and one sdist; found $wheelCount and $sdistCount"
+          }
+          python -B scripts/test_distribution_contents.py dist
+
+      - name: Install wheel in a clean environment outside the checkout
+        shell: pwsh
+        run: |
+          $repository = (Get-Location).Path
+          $venv = Join-Path $env:RUNNER_TEMP 'photonic-wheel-venv'
+          $outside = Join-Path $env:RUNNER_TEMP 'photonic-wheel-cwd'
+          python -m venv $venv
+          $wheel = Get-ChildItem -LiteralPath dist -Filter '*.whl' | Select-Object -First 1
+          & "$venv\Scripts\python.exe" -m pip install --disable-pip-version-check $wheel.FullName
+          if ($LASTEXITCODE -ne 0) { throw "wheel installation failed" }
+          & "$venv\Scripts\python.exe" -m pip install --disable-pip-version-check --no-cache-dir --no-deps "$repository\examples\minimal-adapter-provider"
+          if ($LASTEXITCODE -ne 0) { throw "example provider installation failed" }
+          & "$venv\Scripts\python.exe" -m pip check
+          if ($LASTEXITCODE -ne 0) { throw "installed dependency check failed" }
+          New-Item -ItemType Directory -Force -Path $outside | Out-Null
+          Push-Location $outside
+          try {
+            $installedLines = & "$venv\Scripts\python.exe" "$repository\scripts\test_installed_artifact.py" --forbid-root $repository
+            if ($LASTEXITCODE -ne 0) { throw "installed artifact smoke failed" }
+            $installedSmoke = ($installedLines -join "`n") | ConvertFrom-Json
+            & "$venv\Scripts\python.exe" "$repository\scripts\test_installed_adapter_provider.py"
+            if ($LASTEXITCODE -ne 0) { throw "installed provider contract smoke failed" }
+            & "$venv\Scripts\photonic.exe" --version
+            if ($LASTEXITCODE -ne 0) { throw "installed photonic command failed" }
+            $request = '{"jsonrpc":"2.0","id":1,"method":"resources/list","params":{}}'
+            $response = $request | & "$venv\Scripts\photonic-mcp.exe"
+            if ($LASTEXITCODE -ne 0) { throw "installed photonic-mcp command failed" }
+            $payload = ($response -join "`n") | ConvertFrom-Json
+            if (@($payload.result.resources).Count -ne $installedSmoke.mcp_resource_count) {
+              throw "Installed MCP resource list differs from the package registry smoke"
+            }
+          }
+          finally {
+            Pop-Location
+          }
+
+  validate:
+    name: validate
+    if: ${{ always() }}
+    needs:
+      - validate-quality
+      - validate-core
+      - validate-portable-core
+      - validate-package
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Require every validation lane
+        env:
+          QUALITY_RESULT: ${{ needs.validate-quality.result }}
+          CORE_RESULT: ${{ needs.validate-core.result }}
+          PORTABLE_RESULT: ${{ needs.validate-portable-core.result }}
+          PACKAGE_RESULT: ${{ needs.validate-package.result }}
+        run: |
+          test "$QUALITY_RESULT" = "success"
+          test "$CORE_RESULT" = "success"
+          test "$PORTABLE_RESULT" = "success"
+          test "$PACKAGE_RESULT" = "success"

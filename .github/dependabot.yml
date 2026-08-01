@@ -1,0 +1,31 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      core-runtime:
+        patterns:
+          - "click"
+          - "numpy"
+          - "pydantic"
+      development-tools:
+        dependency-type: "development"
+        patterns:
+          - "build"
+          - "mypy"
+          - "PyYAML"
+          - "pytest*"
+          - "ruff"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 3

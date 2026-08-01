@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "photonic-example-adapter"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["photonic-workflow>=0.4,<0.5"]
+
+[project.entry-points."photonic_workflow.adapters"]
+reviewed-example = "photonic_example_adapter:provide_adapters"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,19 @@
+include LICENSE
+include CHANGELOG.md
+include NOTICE.md
+include README.md
+include SKILL.md
+include photonic.toml.example
+include requirements.txt
+
+recursive-include agents *.md *.yaml
+recursive-include assets *.json *.csv
+recursive-include docs *.md
+recursive-include examples *.py *.toml *.md *.json
+recursive-include matlab *.m
+recursive-include references *.md
+recursive-include scripts *.py *.ps1
+recursive-include tests *.py *.json
+
+prune examples/minimal-adapter-provider/build
+prune examples/minimal-adapter-provider/src/photonic_example_adapter.egg-info

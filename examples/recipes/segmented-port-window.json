@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "recipe_id": "waveguide.segmented-port-window",
+  "recipe_version": "1.0.0",
+  "parameters": {
+    "x_min_um": -45.0,
+    "x_max_um": 45.0,
+    "y_min_um": -8.0,
+    "y_max_um": 8.0,
+    "port_center_y_um": 0.0,
+    "port_half_height_um": 3.0,
+    "selection_tolerance_um": 0.008
+  }
+}

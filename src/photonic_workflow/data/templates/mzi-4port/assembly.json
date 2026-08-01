@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "conventions": {
+    "wavelength_unit": "nm",
+    "sparameter_normalization": "power-wave",
+    "time_dependence": "exp(+iwt)"
+  },
+  "components": {
+    "directional_coupler": {
+      "ports": ["l1", "l2", "r1", "r2"],
+      "port_modes": {"l1": "bus/TE0", "l2": "bus/TE0", "r1": "bus/TE0", "r2": "bus/TE0"},
+      "model_level": "analytic",
+      "reference_plane": "four straight access boundaries",
+      "sparameters": "../components/sparameters/directional_coupler.csv",
+      "passive": true
+    },
+    "arm": {
+      "ports": ["o1", "o2"],
+      "port_modes": {"o1": "bus/TE0", "o2": "bus/TE0"},
+      "model_level": "analytic",
+      "reference_plane": "arm endpoints",
+      "sparameters": "../components/sparameters/arm.csv",
+      "passive": true
+    }
+  },
+  "instances": {
+    "dc1": {"component": "directional_coupler"},
+    "upper_arm": {"component": "arm"},
+    "lower_arm": {"component": "arm"},
+    "dc2": {"component": "directional_coupler"}
+  },
+  "connections": [
+    ["dc1:r1", "upper_arm:o1"],
+    ["upper_arm:o2", "dc2:l1"],
+    ["dc1:r2", "lower_arm:o1"],
+    ["lower_arm:o2", "dc2:l2"]
+  ],
+  "external_ports": {
+    "in_top": "dc1:l1",
+    "in_bottom": "dc1:l2",
+    "out_top": "dc2:r1",
+    "out_bottom": "dc2:r2"
+  }
+}

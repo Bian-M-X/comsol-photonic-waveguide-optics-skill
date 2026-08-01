@@ -8,7 +8,6 @@ import unittest
 from pathlib import Path
 from types import ModuleType
 
-
 SCRIPT_DIR = Path(__file__).resolve().parent
 
 
@@ -147,6 +146,21 @@ class CircularBendTests(unittest.TestCase):
         self.assertIn("radius * Math.tan(0.5 * absTurn)", BEND.HELPER)
         self.assertNotIn("Math.min(radius", BEND.HELPER)
         self.assertIn("tangent points do not lie on the requested-radius circle", BEND.HELPER)
+
+    def test_route_rejects_overlapping_cutbacks_on_shared_segment(self) -> None:
+        vertices = [
+            (0.0, 0.0),
+            (10.0, 0.0),
+            (10.0, 6.0),
+            (20.0, 6.0),
+        ]
+        with self.assertRaisesRegex(ValueError, "adjacent cutbacks"):
+            BEND.compute_circular_route(vertices, radius=4.0, width=0.5)
+
+    def test_route_rejects_width_that_reaches_bend_center(self) -> None:
+        vertices = [(0.0, 0.0), (10.0, 0.0), (10.0, 10.0)]
+        with self.assertRaisesRegex(ValueError, "width must be smaller than twice the bend radius"):
+            BEND.compute_circular_route(vertices, radius=2.0, width=4.0)
 
 
 if __name__ == "__main__":

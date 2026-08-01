@@ -108,6 +108,16 @@ try {
   $batchFailureTrace = @(Get-Content -LiteralPath $traceFile)
   Assert-True -Condition (($batchFailureTrace -join ",") -eq "javac,batch") -Message "Expected javac and batch to run exactly once."
 
+  # Exit code zero is insufficient when the expected solver artifacts were
+  # not created by this invocation.
+  Remove-Item -LiteralPath $traceFile -Force
+  Set-Content -LiteralPath $batchStub -Encoding ASCII -Value @(
+    "@echo off",
+    "echo batch>>`"%PHOTONIC_TEST_TRACE%`"",
+    "exit /b 0"
+  )
+  Invoke-ExpectedFailure -ExpectedMessage "did not create the expected output model" -Action { & $runner @runnerArgs }
+
   # Dry-run must not execute either native command or delete an existing class.
   Remove-Item -LiteralPath $traceFile -Force
   Set-Content -LiteralPath $classFile -Value "dry-run-sentinel" -Encoding ASCII

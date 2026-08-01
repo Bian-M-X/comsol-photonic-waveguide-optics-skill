@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "recipe_id": "geometry.symmetric-euler-bend",
+  "recipe_version": "1.0.0",
+  "parameters": {
+    "turn_angle_deg": 90.0,
+    "minimum_radius_um": 5.0,
+    "width_um": 0.5,
+    "samples": 64
+  }
+}

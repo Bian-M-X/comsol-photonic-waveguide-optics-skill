@@ -1,0 +1,34 @@
+{
+  "contract_type": "PdkManifest",
+  "schema_version": "1.0",
+  "stable_id": "pdk:mock-public",
+  "name": "Mock public PDK",
+  "revision": "1",
+  "source": "repository test fixture; no foundry content",
+  "provenance": [
+    "synthetic metadata only"
+  ],
+  "status": "fixture",
+  "validity": "valid",
+  "foundry_alias": "mock-foundry",
+  "pdk_version": "0.0-test",
+  "access": "public",
+  "local_path_alias": "mock-pdk",
+  "fingerprint": "fixture-not-a-foundry-fingerprint",
+  "technology_stack_id": "technology:mock",
+  "pcells": [
+    "pcell:mock-waveguide"
+  ],
+  "compact_models": [
+    "model:mock-waveguide"
+  ],
+  "drc_deck_alias": "mock-drc",
+  "lvs_deck_alias": "mock-lvs",
+  "process_corners": [
+    "nominal"
+  ],
+  "compatibility": {
+    "purpose": "contract testing only"
+  },
+  "matlab_support": []
+}

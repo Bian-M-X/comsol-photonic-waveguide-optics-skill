@@ -1,0 +1,5179 @@
+{
+  "snapshot_schema_version": "1.2",
+  "default_contract_schema_version": "1.0",
+  "production_migrations": [],
+  "contracts": {
+    "AcceptanceCriterion": {
+      "model": "AcceptanceCriterion",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "evidence_level",
+        "metric",
+        "name",
+        "operator",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "threshold",
+        "units",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "AcceptanceResult": {
+      "model": "AcceptanceResult",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "criterion_id",
+        "evidence",
+        "name",
+        "observed",
+        "passed",
+        "provenance",
+        "reason",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "AdapterDescriptor": {
+      "model": "AdapterDescriptor",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "adapter",
+        "adapter_spi_version",
+        "capabilities",
+        "commercial",
+        "contract_schema_versions",
+        "created_at",
+        "default_concurrency",
+        "default_dry_run",
+        "execution_modes",
+        "implementation",
+        "input_contracts",
+        "limitations",
+        "name",
+        "optional",
+        "output_contracts",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity",
+        "version_sensitive"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "ArtifactRecord": {
+      "model": "ArtifactRecord",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "byte_count",
+        "created_at",
+        "immutable",
+        "media_type",
+        "name",
+        "parent_artifacts",
+        "provenance",
+        "relative_path",
+        "revision",
+        "schema_version",
+        "sha256",
+        "source",
+        "stable_id",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "BackendAdoptionCheckRecord": {
+      "model": "BackendAdoptionCheckRecord",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "check",
+        "created_at",
+        "evidence",
+        "name",
+        "provenance",
+        "reason",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "target",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "BackendAdoptionGateRecord": {
+      "model": "BackendAdoptionGateRecord",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "checks",
+        "created_at",
+        "name",
+        "next_action",
+        "phase",
+        "provenance",
+        "reason",
+        "required_checks",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "target",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "CapabilityReport": {
+      "model": "CapabilityReport",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "availability",
+        "capability",
+        "created_at",
+        "features",
+        "implementation",
+        "name",
+        "platform",
+        "probe_method",
+        "provenance",
+        "reasons",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity",
+        "version"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "CircuitManifest": {
+      "model": "CircuitManifest",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "component_models",
+        "created_at",
+        "external_ports",
+        "logical_netlist_id",
+        "name",
+        "provenance",
+        "revision",
+        "schema_version",
+        "simulation_netlist_id",
+        "source",
+        "stable_id",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "ComponentContract": {
+      "model": "ComponentContract",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "family",
+        "model_cards",
+        "name",
+        "parameters",
+        "ports",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity",
+        "validity_envelope"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "Connection": {
+      "model": "Connection",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "name",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "source_endpoint",
+        "stable_id",
+        "status",
+        "target_endpoint",
+        "transition_component_id",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "CrossSection": {
+      "model": "CrossSection",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "etch_depth_nm",
+        "layers",
+        "name",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "thickness_nm",
+        "validity",
+        "width_nm"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "DesignIntent": {
+      "model": "DesignIntent",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "external_ports",
+        "intended_claim",
+        "metrics",
+        "modes",
+        "name",
+        "problem",
+        "process_stack",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "tolerances",
+        "topology",
+        "validity",
+        "wavelength_band_nm"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "DesignVariant": {
+      "model": "DesignVariant",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "name",
+        "parameters",
+        "parent_design_id",
+        "process_corner",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "DeviceContract": {
+      "model": "DeviceContract",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "acceptance_criteria",
+        "created_at",
+        "family",
+        "intent_id",
+        "materials",
+        "name",
+        "ports",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "topology",
+        "validity",
+        "wavelength_band_nm"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "ExtractedNetlist": {
+      "model": "ExtractedNetlist",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "connections",
+        "created_at",
+        "external_ports",
+        "extraction_backend",
+        "instances",
+        "layout_manifest_id",
+        "name",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "GateRecord": {
+      "model": "GateRecord",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "evidence",
+        "gate",
+        "metrics",
+        "name",
+        "next_action",
+        "provenance",
+        "reason",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "Instance": {
+      "model": "Instance",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "component_id",
+        "created_at",
+        "name",
+        "provenance",
+        "revision",
+        "schema_version",
+        "settings",
+        "source",
+        "stable_id",
+        "status",
+        "transform",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "LayerDefinition": {
+      "model": "LayerDefinition",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "datatype",
+        "layer",
+        "material",
+        "name",
+        "provenance",
+        "purpose",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "LayoutManifest": {
+      "model": "LayoutManifest",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "backend",
+        "bounding_box_um",
+        "cell_hierarchy",
+        "created_at",
+        "drc_status",
+        "extracted_netlist_id",
+        "layer_map",
+        "layout_path",
+        "lvs_status",
+        "name",
+        "polygon_count",
+        "port_metadata_path",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "top_cell",
+        "validity",
+        "waveguide_length_path"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "LogicalNetlist": {
+      "model": "LogicalNetlist",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "connections",
+        "created_at",
+        "external_ports",
+        "instances",
+        "name",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "MatlabEnvironmentReport": {
+      "model": "MatlabEnvironmentReport",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "architecture",
+        "availability",
+        "batch_capable",
+        "community_toolboxes",
+        "comsol_livelink",
+        "created_at",
+        "engine_compatible",
+        "engine_importable",
+        "executable_alias",
+        "instrument_control",
+        "lumerical_api",
+        "name",
+        "platform",
+        "products",
+        "provenance",
+        "redacted",
+        "release",
+        "revision",
+        "root_alias",
+        "schema_version",
+        "shared_session_count",
+        "simulink",
+        "source",
+        "stable_id",
+        "status",
+        "validity",
+        "version"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "MatlabResultManifest": {
+      "model": "MatlabResultManifest",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "artifacts",
+        "created_at",
+        "duration_s",
+        "errors",
+        "execution_status",
+        "exit_code",
+        "log_path",
+        "matlab_release",
+        "name",
+        "provenance",
+        "revision",
+        "run_id",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "toolbox_versions",
+        "validity",
+        "warnings"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "MatlabRunSpec": {
+      "model": "MatlabRunSpec",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "acceptance_criteria",
+        "adapter",
+        "commercial_parallel_authorized",
+        "created_at",
+        "dry_run",
+        "entrypoint_id",
+        "execution_model",
+        "expected_artifacts",
+        "inputs",
+        "matlab_paths",
+        "name",
+        "operation",
+        "provenance",
+        "result_path",
+        "revision",
+        "run_spec_path",
+        "runtime_directory",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "timeout_s",
+        "toolbox_requirements",
+        "validity",
+        "worker_count"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "MatlabToolboxRecord": {
+      "model": "MatlabToolboxRecord",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "fingerprint",
+        "installed",
+        "license_verified",
+        "name",
+        "path_alias",
+        "product_name",
+        "provenance",
+        "release",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity",
+        "version"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "MeasurementManifest": {
+      "model": "MeasurementManifest",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "adapter_version",
+        "analysis_hash",
+        "calibration",
+        "chip_id",
+        "component_id",
+        "created_at",
+        "design_revision",
+        "die_id",
+        "linked_model_id",
+        "name",
+        "processed_data",
+        "provenance",
+        "raw_data",
+        "reticle_id",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "test_setup",
+        "uncertainty",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "ModelCard": {
+      "model": "ModelCard",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "artifact_ids",
+        "created_at",
+        "fidelity",
+        "model_source",
+        "name",
+        "parameter_axes",
+        "producer",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "uncertainty",
+        "validity",
+        "validity_envelope"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "MultiPhysicsModelCard": {
+      "model": "MultiPhysicsModelCard",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "artifact_ids",
+        "coupled_physics",
+        "coupling_sequence",
+        "created_at",
+        "fidelity",
+        "model_source",
+        "name",
+        "parameter_axes",
+        "producer",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "uncertainty",
+        "validity",
+        "validity_envelope"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "OptimizationSpec": {
+      "model": "OptimizationSpec",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "acceptance_criterion_id",
+        "checkpoint_interval",
+        "constraints",
+        "created_at",
+        "evaluation_budget",
+        "failure_penalty",
+        "fidelity",
+        "name",
+        "objectives",
+        "process_corners",
+        "promotion_rule",
+        "provenance",
+        "random_seed",
+        "revision",
+        "schema_version",
+        "solver_backend",
+        "source",
+        "stable_id",
+        "status",
+        "timeout_s",
+        "validity",
+        "variables"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "OptimizationTrial": {
+      "model": "OptimizationTrial",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "constraint_results",
+        "created_at",
+        "failure",
+        "name",
+        "objectives",
+        "optimization_spec_id",
+        "parameters",
+        "provenance",
+        "revision",
+        "run_id",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "PCellContract": {
+      "model": "PCellContract",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "backend",
+        "created_at",
+        "family",
+        "footprint",
+        "layer_map",
+        "model_cards",
+        "name",
+        "parameters",
+        "ports",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity",
+        "validity_envelope"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "PackagingConstraint": {
+      "model": "PackagingConstraint",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "coupling",
+        "created_at",
+        "die_outline_um",
+        "electrical_pads",
+        "keep_outs",
+        "name",
+        "optical_ports",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "PdkManifest": {
+      "model": "PdkManifest",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "access",
+        "compact_models",
+        "compatibility",
+        "created_at",
+        "drc_deck_alias",
+        "fingerprint",
+        "foundry_alias",
+        "local_path_alias",
+        "lvs_deck_alias",
+        "matlab_support",
+        "name",
+        "pcells",
+        "pdk_version",
+        "process_corners",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "technology_stack_id",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "PortContract": {
+      "model": "PortContract",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "cross_section",
+        "mode",
+        "name",
+        "normalization",
+        "orientation_deg",
+        "provenance",
+        "reference_plane",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "ProcessCorner": {
+      "model": "ProcessCorner",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "name",
+        "parameter_offsets",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "ProjectConfig": {
+      "model": "ProjectConfig",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "adapter_defaults",
+        "adapter_entrypoint_allowlist",
+        "allowed_roots",
+        "artifact_limit_mb",
+        "commercial_concurrency",
+        "commercial_parallel_authorized",
+        "comsol_livelink",
+        "created_at",
+        "dry_run",
+        "instrument_aliases",
+        "lumerical_api_alias",
+        "matlab_executable_alias",
+        "matlab_execution_model",
+        "matlab_product_requirements",
+        "matlab_toolbox_path_aliases",
+        "name",
+        "packaging_profile",
+        "pdk_alias",
+        "profile",
+        "provenance",
+        "redaction",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "test_profile",
+        "timeout_s",
+        "validity",
+        "workspace"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "ProjectIdentity": {
+      "model": "ProjectIdentity",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "name",
+        "project_root_alias",
+        "provenance",
+        "repository",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "PromotionDecision": {
+      "model": "PromotionDecision",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "answerable_questions",
+        "calibration_requirements",
+        "comparison_metrics",
+        "created_at",
+        "current_fidelity",
+        "name",
+        "provenance",
+        "reason",
+        "revision",
+        "risks",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "target_fidelity",
+        "tolerances",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "ProvenanceRecord": {
+      "model": "ProvenanceRecord",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "activity",
+        "command_shape",
+        "created_at",
+        "input_artifacts",
+        "name",
+        "output_artifacts",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "tool",
+        "tool_version",
+        "transformations",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "RunManifest": {
+      "model": "RunManifest",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "acceptance_status",
+        "artifact_ids",
+        "created_at",
+        "error",
+        "execution_status",
+        "finished_at",
+        "name",
+        "provenance",
+        "revision",
+        "run_spec_id",
+        "schema_version",
+        "source",
+        "stable_id",
+        "started_at",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "RunSpec": {
+      "model": "RunSpec",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "acceptance_criteria",
+        "adapter",
+        "commercial_parallel_authorized",
+        "created_at",
+        "dry_run",
+        "expected_artifacts",
+        "inputs",
+        "name",
+        "operation",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "timeout_s",
+        "validity",
+        "worker_count"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "SParameterDataset": {
+      "model": "SParameterDataset",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "data_path",
+        "dtype",
+        "extrapolation",
+        "interpolation",
+        "metadata_id",
+        "name",
+        "provenance",
+        "representation",
+        "revision",
+        "schema_version",
+        "shape",
+        "source",
+        "stable_id",
+        "status",
+        "validity",
+        "wavelength_count"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "SParameterMetadata": {
+      "model": "SParameterMetadata",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "impedance_is_file_compatibility_only",
+        "mode_order",
+        "name",
+        "normalization",
+        "port_order",
+        "producer",
+        "producer_version",
+        "provenance",
+        "reference_impedance_ohm",
+        "reference_planes",
+        "revision",
+        "schema_version",
+        "sha256",
+        "source",
+        "stable_id",
+        "status",
+        "time_convention",
+        "validity",
+        "wavelength_unit"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "SimulationNetlist": {
+      "model": "SimulationNetlist",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "connections",
+        "created_at",
+        "external_ports",
+        "instances",
+        "model_bindings",
+        "name",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "StatisticalVariationModel": {
+      "model": "StatisticalVariationModel",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "correlations",
+        "created_at",
+        "foundry_supplied",
+        "name",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity",
+        "variables"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "TapeoutManifest": {
+      "model": "TapeoutManifest",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "frozen",
+        "frozen_at",
+        "layout_manifest_id",
+        "name",
+        "packaging_constraint_id",
+        "pdk_manifest_id",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "test_plan_id",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "TechnologyStack": {
+      "model": "TechnologyStack",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "created_at",
+        "cross_sections",
+        "layers",
+        "materials",
+        "name",
+        "provenance",
+        "revision",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "validity"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    },
+    "TestPlan": {
+      "model": "TestPlan",
+      "current_schema_version": "1.0",
+      "schema_version_default": "1.0",
+      "fields": [
+        "calibration",
+        "cleanup",
+        "created_at",
+        "instruments",
+        "name",
+        "provenance",
+        "raw_data_policy",
+        "revision",
+        "safety_limits",
+        "schema_version",
+        "source",
+        "stable_id",
+        "status",
+        "sweeps",
+        "validity",
+        "wiring"
+      ],
+      "required_fields": [
+        "name",
+        "source",
+        "stable_id"
+      ],
+      "extra_policy": "forbid"
+    }
+  },
+  "enums": {
+    "AcceptanceStatus": [
+      "pending",
+      "accepted",
+      "rejected"
+    ],
+    "AvailabilityStatus": [
+      "available",
+      "unavailable",
+      "incompatible",
+      "unverified"
+    ],
+    "BackendAdoptionCheck": [
+      "capability-probe",
+      "interactive-user-context",
+      "dry-run-plan",
+      "authorized-smoke",
+      "matlab-batch-smoke",
+      "matlab-unittest",
+      "json-round-trip",
+      "mat-v7.3-hdf5-round-trip",
+      "complex-array-round-trip",
+      "legacy-gds-klayout-fixture",
+      "fdfd-fixture",
+      "rf-touchstone-fixture",
+      "timeout-failure-cleanup",
+      "timeout-cancellation-orphan-cleanup",
+      "redaction-audit",
+      "result-inspection",
+      "rollback",
+      "native-comsol-java-parity",
+      "direct-lumerical-parity",
+      "instrument-identity",
+      "physical-safety-limits",
+      "immutable-raw-data",
+      "model-io-contract",
+      "reduced-model-claim-boundary",
+      "reference-model-parity",
+      "product-specific-entitlement",
+      "solver-fixture",
+      "reference-fixture-parity",
+      "pdk-fingerprint",
+      "controlled-deck-identity",
+      "drc-execution",
+      "lvs-execution",
+      "extracted-logical-parity",
+      "signoff-scope"
+    ],
+    "BackendAdoptionPhase": [
+      "phase-b",
+      "phase-c"
+    ],
+    "BackendAdoptionTarget": [
+      "matlab-runtime",
+      "matlab-comsol-livelink",
+      "matlab-lumerical",
+      "matlab-instrument",
+      "matlab-simulink",
+      "lumerical",
+      "real-pdk-drc-lvs"
+    ],
+    "ExecutionStatus": [
+      "planned",
+      "running",
+      "succeeded",
+      "failed",
+      "cancelled"
+    ],
+    "FidelityLevel": [
+      "analytic",
+      "reduced",
+      "mode",
+      "circuit",
+      "layout-extracted",
+      "matlab-fdfd-2d",
+      "matlab-varfdfd-2.5d",
+      "full-wave-2d-eim",
+      "full-wave-3d",
+      "multiphysics",
+      "measured"
+    ],
+    "GateName": [
+      "G0",
+      "G1",
+      "G2",
+      "G3",
+      "G4",
+      "G5",
+      "G6",
+      "G7",
+      "G8",
+      "M0",
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "GateStatus": [
+      "pass",
+      "fail",
+      "blocked",
+      "not_applicable"
+    ],
+    "ImplementationStatus": [
+      "implemented",
+      "experimental",
+      "planned",
+      "unverified"
+    ],
+    "RunStatus": [
+      "planned",
+      "running",
+      "succeeded",
+      "failed",
+      "accepted",
+      "rejected",
+      "cancelled"
+    ],
+    "TimeConvention": [
+      "exp(+iwt)",
+      "exp(-iwt)"
+    ],
+    "Validity": [
+      "unknown",
+      "valid",
+      "invalid",
+      "expired",
+      "out_of_envelope"
+    ],
+    "WorkflowProfile": [
+      "pdk-first",
+      "layout-first",
+      "custom-device-first",
+      "matlab-legacy-layout",
+      "matlab-assisted-design"
+    ]
+  },
+  "backend_adoption_gates": {
+    "matlab-runtime": {
+      "phase": "phase-b",
+      "required_checks": [
+        "capability-probe",
+        "interactive-user-context",
+        "dry-run-plan",
+        "matlab-batch-smoke",
+        "matlab-unittest",
+        "json-round-trip",
+        "mat-v7.3-hdf5-round-trip",
+        "complex-array-round-trip",
+        "legacy-gds-klayout-fixture",
+        "fdfd-fixture",
+        "rf-touchstone-fixture",
+        "timeout-cancellation-orphan-cleanup",
+        "redaction-audit",
+        "result-inspection",
+        "rollback"
+      ]
+    },
+    "matlab-comsol-livelink": {
+      "phase": "phase-c",
+      "required_checks": [
+        "capability-probe",
+        "dry-run-plan",
+        "authorized-smoke",
+        "timeout-failure-cleanup",
+        "redaction-audit",
+        "result-inspection",
+        "rollback",
+        "native-comsol-java-parity"
+      ]
+    },
+    "matlab-lumerical": {
+      "phase": "phase-c",
+      "required_checks": [
+        "capability-probe",
+        "dry-run-plan",
+        "authorized-smoke",
+        "timeout-failure-cleanup",
+        "redaction-audit",
+        "result-inspection",
+        "rollback",
+        "direct-lumerical-parity"
+      ]
+    },
+    "matlab-instrument": {
+      "phase": "phase-c",
+      "required_checks": [
+        "capability-probe",
+        "dry-run-plan",
+        "authorized-smoke",
+        "timeout-failure-cleanup",
+        "redaction-audit",
+        "result-inspection",
+        "rollback",
+        "instrument-identity",
+        "physical-safety-limits",
+        "immutable-raw-data"
+      ]
+    },
+    "matlab-simulink": {
+      "phase": "phase-c",
+      "required_checks": [
+        "capability-probe",
+        "dry-run-plan",
+        "authorized-smoke",
+        "timeout-failure-cleanup",
+        "redaction-audit",
+        "result-inspection",
+        "rollback",
+        "model-io-contract",
+        "reduced-model-claim-boundary",
+        "reference-model-parity"
+      ]
+    },
+    "lumerical": {
+      "phase": "phase-c",
+      "required_checks": [
+        "capability-probe",
+        "dry-run-plan",
+        "authorized-smoke",
+        "timeout-failure-cleanup",
+        "redaction-audit",
+        "result-inspection",
+        "rollback",
+        "product-specific-entitlement",
+        "solver-fixture",
+        "reference-fixture-parity"
+      ]
+    },
+    "real-pdk-drc-lvs": {
+      "phase": "phase-c",
+      "required_checks": [
+        "capability-probe",
+        "dry-run-plan",
+        "authorized-smoke",
+        "timeout-failure-cleanup",
+        "redaction-audit",
+        "result-inspection",
+        "rollback",
+        "pdk-fingerprint",
+        "controlled-deck-identity",
+        "drc-execution",
+        "lvs-execution",
+        "extracted-logical-parity",
+        "signoff-scope"
+      ]
+    }
+  },
+  "exit_codes": {
+    "SUCCESS": 0,
+    "INVALID_INPUT": 2,
+    "UNAVAILABLE_CAPABILITY": 3,
+    "INCOMPATIBLE_VERSION": 4,
+    "EXECUTION_FAILURE": 5,
+    "ACCEPTANCE_REJECTED": 6,
+    "SECURITY_VIOLATION": 7,
+    "TIMEOUT": 8
+  },
+  "adapters": {
+    "comsol-native-java-batch": {
+      "implementation": "implemented",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "ArtifactRecord": "1.0",
+        "CapabilityReport": "1.0",
+        "ProvenanceRecord": "1.0",
+        "RunSpec": "1.0"
+      },
+      "commercial": true,
+      "execution_modes": [
+        "descriptor",
+        "capability-probe-contract",
+        "dry-run-plan"
+      ],
+      "input_contracts": [
+        "RunSpec"
+      ],
+      "output_contracts": [
+        "CapabilityReport",
+        "ArtifactRecord",
+        "ProvenanceRecord"
+      ],
+      "has_factory": false
+    },
+    "femwell": {
+      "implementation": "planned",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "ArtifactRecord": "1.0",
+        "CapabilityReport": "1.0",
+        "ProvenanceRecord": "1.0",
+        "RunSpec": "1.0"
+      },
+      "commercial": false,
+      "execution_modes": [
+        "descriptor",
+        "capability-probe-contract",
+        "dry-run-plan"
+      ],
+      "input_contracts": [
+        "RunSpec"
+      ],
+      "output_contracts": [
+        "CapabilityReport",
+        "ArtifactRecord",
+        "ProvenanceRecord"
+      ],
+      "has_factory": false
+    },
+    "gdsfactory": {
+      "implementation": "planned",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "ArtifactRecord": "1.0",
+        "CapabilityReport": "1.0",
+        "ProvenanceRecord": "1.0",
+        "RunSpec": "1.0"
+      },
+      "commercial": false,
+      "execution_modes": [
+        "descriptor",
+        "capability-probe-contract",
+        "dry-run-plan"
+      ],
+      "input_contracts": [
+        "RunSpec"
+      ],
+      "output_contracts": [
+        "CapabilityReport",
+        "ArtifactRecord",
+        "ProvenanceRecord"
+      ],
+      "has_factory": false
+    },
+    "klayout": {
+      "implementation": "planned",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "ArtifactRecord": "1.0",
+        "CapabilityReport": "1.0",
+        "ProvenanceRecord": "1.0",
+        "RunSpec": "1.0"
+      },
+      "commercial": false,
+      "execution_modes": [
+        "descriptor",
+        "capability-probe-contract",
+        "dry-run-plan"
+      ],
+      "input_contracts": [
+        "RunSpec"
+      ],
+      "output_contracts": [
+        "CapabilityReport",
+        "ArtifactRecord",
+        "ProvenanceRecord"
+      ],
+      "has_factory": false
+    },
+    "lumerical": {
+      "implementation": "unverified",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "ArtifactRecord": "1.0",
+        "CapabilityReport": "1.0",
+        "ProvenanceRecord": "1.0",
+        "RunSpec": "1.0"
+      },
+      "commercial": true,
+      "execution_modes": [
+        "descriptor",
+        "capability-probe-contract",
+        "dry-run-plan"
+      ],
+      "input_contracts": [
+        "RunSpec"
+      ],
+      "output_contracts": [
+        "CapabilityReport",
+        "ArtifactRecord",
+        "ProvenanceRecord"
+      ],
+      "has_factory": false
+    },
+    "matlab-comsol-livelink": {
+      "implementation": "unverified",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "MatlabResultManifest": "1.0",
+        "MatlabRunSpec": "1.0",
+        "MultiPhysicsModelCard": "1.0",
+        "SParameterDataset": "1.0"
+      },
+      "commercial": true,
+      "execution_modes": [
+        "descriptor",
+        "probe-contract",
+        "dry-run-plan"
+      ],
+      "input_contracts": [
+        "MultiPhysicsModelCard",
+        "MatlabRunSpec"
+      ],
+      "output_contracts": [
+        "SParameterDataset",
+        "MatlabResultManifest"
+      ],
+      "has_factory": false
+    },
+    "matlab-engine": {
+      "implementation": "experimental",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "CapabilityReport": "1.0"
+      },
+      "commercial": true,
+      "execution_modes": [
+        "probe-only"
+      ],
+      "input_contracts": [],
+      "output_contracts": [
+        "CapabilityReport"
+      ],
+      "has_factory": true
+    },
+    "matlab-fdfd": {
+      "implementation": "experimental",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "DeviceContract": "1.0",
+        "MatlabResultManifest": "1.0",
+        "MatlabRunSpec": "1.0",
+        "ModelCard": "1.0",
+        "SParameterDataset": "1.0"
+      },
+      "commercial": true,
+      "execution_modes": [
+        "descriptor",
+        "capability-probe-contract",
+        "dry-run-plan"
+      ],
+      "input_contracts": [
+        "DeviceContract",
+        "MatlabRunSpec"
+      ],
+      "output_contracts": [
+        "ModelCard",
+        "SParameterDataset",
+        "MatlabResultManifest"
+      ],
+      "has_factory": false
+    },
+    "matlab-instrument": {
+      "implementation": "planned",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "MatlabResultManifest": "1.0",
+        "MatlabRunSpec": "1.0",
+        "MeasurementManifest": "1.0",
+        "TestPlan": "1.0"
+      },
+      "commercial": true,
+      "execution_modes": [
+        "descriptor",
+        "probe-contract",
+        "dry-run-plan"
+      ],
+      "input_contracts": [
+        "TestPlan",
+        "MatlabRunSpec"
+      ],
+      "output_contracts": [
+        "MeasurementManifest",
+        "MatlabResultManifest"
+      ],
+      "has_factory": false
+    },
+    "matlab-layout": {
+      "implementation": "experimental",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "ExtractedNetlist": "1.0",
+        "LayoutManifest": "1.0",
+        "MatlabResultManifest": "1.0",
+        "MatlabRunSpec": "1.0",
+        "PCellContract": "1.0"
+      },
+      "commercial": true,
+      "execution_modes": [
+        "descriptor",
+        "capability-probe-contract",
+        "dry-run-plan"
+      ],
+      "input_contracts": [
+        "LayoutManifest",
+        "PCellContract",
+        "MatlabRunSpec"
+      ],
+      "output_contracts": [
+        "LayoutManifest",
+        "ExtractedNetlist",
+        "MatlabResultManifest"
+      ],
+      "has_factory": false
+    },
+    "matlab-lumerical": {
+      "implementation": "unverified",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "MatlabResultManifest": "1.0",
+        "MatlabRunSpec": "1.0",
+        "ModelCard": "1.0",
+        "SParameterDataset": "1.0"
+      },
+      "commercial": true,
+      "execution_modes": [
+        "descriptor",
+        "probe-contract",
+        "dry-run-plan"
+      ],
+      "input_contracts": [
+        "ModelCard",
+        "MatlabRunSpec"
+      ],
+      "output_contracts": [
+        "SParameterDataset",
+        "MatlabResultManifest"
+      ],
+      "has_factory": false
+    },
+    "matlab-runtime": {
+      "implementation": "implemented",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "MatlabEnvironmentReport": "1.0",
+        "MatlabResultManifest": "1.0",
+        "MatlabRunSpec": "1.0"
+      },
+      "commercial": true,
+      "execution_modes": [
+        "batch-plan"
+      ],
+      "input_contracts": [
+        "MatlabRunSpec"
+      ],
+      "output_contracts": [
+        "MatlabEnvironmentReport",
+        "MatlabResultManifest"
+      ],
+      "has_factory": true
+    },
+    "matlab-simulink": {
+      "implementation": "planned",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "MatlabResultManifest": "1.0",
+        "MatlabRunSpec": "1.0",
+        "ModelCard": "1.0"
+      },
+      "commercial": true,
+      "execution_modes": [
+        "descriptor",
+        "probe-contract",
+        "dry-run-plan"
+      ],
+      "input_contracts": [
+        "ModelCard",
+        "MatlabRunSpec"
+      ],
+      "output_contracts": [
+        "ModelCard",
+        "MatlabResultManifest"
+      ],
+      "has_factory": false
+    },
+    "meep": {
+      "implementation": "planned",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "ArtifactRecord": "1.0",
+        "CapabilityReport": "1.0",
+        "ProvenanceRecord": "1.0",
+        "RunSpec": "1.0"
+      },
+      "commercial": false,
+      "execution_modes": [
+        "descriptor",
+        "capability-probe-contract",
+        "dry-run-plan"
+      ],
+      "input_contracts": [
+        "RunSpec"
+      ],
+      "output_contracts": [
+        "CapabilityReport",
+        "ArtifactRecord",
+        "ProvenanceRecord"
+      ],
+      "has_factory": false
+    },
+    "sax": {
+      "implementation": "planned",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "ArtifactRecord": "1.0",
+        "CapabilityReport": "1.0",
+        "ProvenanceRecord": "1.0",
+        "RunSpec": "1.0"
+      },
+      "commercial": false,
+      "execution_modes": [
+        "descriptor",
+        "capability-probe-contract",
+        "dry-run-plan"
+      ],
+      "input_contracts": [
+        "RunSpec"
+      ],
+      "output_contracts": [
+        "CapabilityReport",
+        "ArtifactRecord",
+        "ProvenanceRecord"
+      ],
+      "has_factory": false
+    },
+    "sim-cli": {
+      "implementation": "experimental",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "ArtifactRecord": "1.0",
+        "CapabilityReport": "1.0",
+        "ProvenanceRecord": "1.0",
+        "RunSpec": "1.0"
+      },
+      "commercial": false,
+      "execution_modes": [
+        "descriptor",
+        "capability-probe-contract",
+        "dry-run-plan"
+      ],
+      "input_contracts": [
+        "RunSpec"
+      ],
+      "output_contracts": [
+        "CapabilityReport",
+        "ArtifactRecord",
+        "ProvenanceRecord"
+      ],
+      "has_factory": false
+    },
+    "tidy3d": {
+      "implementation": "planned",
+      "adapter_spi_version": "1.0",
+      "contract_schema_versions": {
+        "ArtifactRecord": "1.0",
+        "CapabilityReport": "1.0",
+        "ProvenanceRecord": "1.0",
+        "RunSpec": "1.0"
+      },
+      "commercial": true,
+      "execution_modes": [
+        "descriptor",
+        "capability-probe-contract",
+        "dry-run-plan"
+      ],
+      "input_contracts": [
+        "RunSpec"
+      ],
+      "output_contracts": [
+        "CapabilityReport",
+        "ArtifactRecord",
+        "ProvenanceRecord"
+      ],
+      "has_factory": false
+    }
+  },
+  "adapter_provider_spi": {
+    "version": "1.0",
+    "entry_point_group": "photonic_workflow.adapters",
+    "descriptor_only": true,
+    "public_exports": [
+      "Adapter",
+      "AdapterPlan",
+      "AdapterRegistration",
+      "AdapterRegistry",
+      "LoadedAdapterProvider",
+      "PlannedFile",
+      "default_adapter_registry",
+      "registry_for_project",
+      "validate_adapter_provider_contract"
+    ]
+  },
+  "mcp": {
+    "resources": [
+      "photonic://server/manifest",
+      "photonic://skill/reference/comsol-mcp-evaluation",
+      "photonic://skill/reference/device-family-workflows",
+      "photonic://skill/reference/environment-and-runner",
+      "photonic://skill/reference/frequency-domain-source-sweeps",
+      "photonic://skill/reference/hierarchical-device-workflow",
+      "photonic://skill/reference/interferometer-workflows",
+      "photonic://skill/reference/legal-and-trademark-notes",
+      "photonic://skill/reference/modeling-recipes",
+      "photonic://skill/reference/optimization-and-reporting",
+      "photonic://skill/reference/project-structure-and-git",
+      "photonic://skill/reference/quantum-photonic-knowledge-base",
+      "photonic://skill/reference/smooth-bend-geometry",
+      "photonic://skill/reference/source-notes",
+      "photonic://skill/reference/subagent-orchestration",
+      "photonic://skill/reference/verification-gates",
+      "photonic://skill/reference/wave-optics-port-models",
+      "photonic://skill/agent/code-auditor",
+      "photonic://skill/agent/data-processing",
+      "photonic://skill/agent/execution",
+      "photonic://skill/agent/geometry-modeling",
+      "photonic://skill/agent/literature-knowledge",
+      "photonic://skill/agent/mcp-integration",
+      "photonic://skill/agent/model-auditor",
+      "photonic://skill/agent/planning",
+      "photonic://skill/agent/results-auditor"
+    ],
+    "tools": {
+      "list_allowed_roots": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "create_project_scaffold": {
+        "type": "object",
+        "properties": {
+          "project_root": {
+            "type": "string"
+          },
+          "device_family": {
+            "type": "string",
+            "default": "waveguide"
+          },
+          "profile": {
+            "type": "string",
+            "default": "custom-device-first"
+          }
+        },
+        "required": [
+          "project_root"
+        ],
+        "additionalProperties": false
+      },
+      "audit_project_artifacts": {
+        "type": "object",
+        "properties": {
+          "project_root": {
+            "type": "string"
+          },
+          "large_file_mb": {
+            "type": "integer",
+            "default": 25
+          }
+        },
+        "required": [
+          "project_root"
+        ],
+        "additionalProperties": false
+      },
+      "parse_sweep_table": {
+        "type": "object",
+        "properties": {
+          "table_file": {
+            "type": "string"
+          },
+          "output_dir": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "peak_threshold": {
+            "type": "number",
+            "default": 0.02
+          }
+        },
+        "required": [
+          "table_file",
+          "output_dir"
+        ],
+        "additionalProperties": false
+      },
+      "validate_contract": {
+        "type": "object",
+        "properties": {
+          "contract_file": {
+            "type": "string"
+          },
+          "expected_type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "contract_file"
+        ],
+        "additionalProperties": false
+      },
+      "inspect_project": {
+        "type": "object",
+        "properties": {
+          "project_root": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "project_root"
+        ],
+        "additionalProperties": false
+      },
+      "validate_circuit": {
+        "type": "object",
+        "properties": {
+          "manifest": {
+            "type": "string"
+          },
+          "structure_only": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "manifest"
+        ],
+        "additionalProperties": false
+      },
+      "compose_circuit": {
+        "type": "object",
+        "properties": {
+          "manifest": {
+            "type": "string"
+          },
+          "output": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "manifest",
+          "output"
+        ],
+        "additionalProperties": false
+      },
+      "gate_status": {
+        "type": "object",
+        "properties": {
+          "project_root": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "project_root"
+        ],
+        "additionalProperties": false
+      },
+      "run_java_batch": {
+        "type": "object",
+        "properties": {
+          "java_file": {
+            "type": "string"
+          },
+          "output_mph": {
+            "type": "string"
+          },
+          "batch_log": {
+            "type": "string"
+          },
+          "runtime_dir": {
+            "type": "string"
+          },
+          "solver_root": {
+            "type": "string"
+          },
+          "timeout_s": {
+            "type": "integer",
+            "default": 3600
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true
+          },
+          "allow_execute": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "java_file",
+          "output_mph",
+          "batch_log",
+          "runtime_dir"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "cli": {
+    "photonic": {
+      "kind": "Group",
+      "parameters": [
+        {
+          "name": "version",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--version"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic audit": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic audit artifacts": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "project_root",
+          "kind": "Argument",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": ".",
+          "options": [
+            "project_root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "large_file_mb",
+          "kind": "Option",
+          "type": "integer range",
+          "required": false,
+          "nargs": 1,
+          "default": 25,
+          "options": [
+            "--large-file-mb"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "fail_on_issues",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--fail-on-issues"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic check": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic circuit": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic circuit compose": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "manifest",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "manifest"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "output",
+          "kind": "Option",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--output"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "summary",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--summary"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic circuit validate": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "manifest",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "manifest"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic component": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic component inspect": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "contract",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "contract"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic doctor": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "load_configured_adapters",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--load-configured-adapters"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic gate": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic gate adoption": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic gate adoption evaluate": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "target",
+          "kind": "Argument",
+          "type": "choice",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "choices": [
+            "matlab-runtime",
+            "matlab-comsol-livelink",
+            "matlab-lumerical",
+            "matlab-instrument",
+            "matlab-simulink",
+            "lumerical",
+            "real-pdk-drc-lvs"
+          ],
+          "options": [
+            "target"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic gate adoption init": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "target",
+          "kind": "Argument",
+          "type": "choice",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "choices": [
+            "matlab-runtime",
+            "matlab-comsol-livelink",
+            "matlab-lumerical",
+            "matlab-instrument",
+            "matlab-simulink",
+            "lumerical",
+            "real-pdk-drc-lvs"
+          ],
+          "options": [
+            "target"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "source",
+          "kind": "Option",
+          "type": "text",
+          "required": false,
+          "nargs": 1,
+          "default": "photonic gate adoption init",
+          "options": [
+            "--source"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic gate adoption inspect": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "target",
+          "kind": "Argument",
+          "type": "choice",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "choices": [
+            "matlab-runtime",
+            "matlab-comsol-livelink",
+            "matlab-lumerical",
+            "matlab-instrument",
+            "matlab-simulink",
+            "lumerical",
+            "real-pdk-drc-lvs"
+          ],
+          "options": [
+            "target"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic gate adoption list": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic gate adoption record": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "target",
+          "kind": "Argument",
+          "type": "choice",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "choices": [
+            "matlab-runtime",
+            "matlab-comsol-livelink",
+            "matlab-lumerical",
+            "matlab-instrument",
+            "matlab-simulink",
+            "lumerical",
+            "real-pdk-drc-lvs"
+          ],
+          "options": [
+            "target"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "check",
+          "kind": "Argument",
+          "type": "choice",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "choices": [
+            "capability-probe",
+            "interactive-user-context",
+            "dry-run-plan",
+            "authorized-smoke",
+            "matlab-batch-smoke",
+            "matlab-unittest",
+            "json-round-trip",
+            "mat-v7.3-hdf5-round-trip",
+            "complex-array-round-trip",
+            "legacy-gds-klayout-fixture",
+            "fdfd-fixture",
+            "rf-touchstone-fixture",
+            "timeout-failure-cleanup",
+            "timeout-cancellation-orphan-cleanup",
+            "redaction-audit",
+            "result-inspection",
+            "rollback",
+            "native-comsol-java-parity",
+            "direct-lumerical-parity",
+            "instrument-identity",
+            "physical-safety-limits",
+            "immutable-raw-data",
+            "model-io-contract",
+            "reduced-model-claim-boundary",
+            "reference-model-parity",
+            "product-specific-entitlement",
+            "solver-fixture",
+            "reference-fixture-parity",
+            "pdk-fingerprint",
+            "controlled-deck-identity",
+            "drc-execution",
+            "lvs-execution",
+            "extracted-logical-parity",
+            "signoff-scope"
+          ],
+          "options": [
+            "check"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "status",
+          "kind": "Argument",
+          "type": "choice",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "choices": [
+            "pass",
+            "fail",
+            "blocked"
+          ],
+          "options": [
+            "status"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "evidence",
+          "kind": "Option",
+          "type": "text",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--evidence"
+          ],
+          "secondary_options": [],
+          "multiple": true
+        },
+        {
+          "name": "reason",
+          "kind": "Option",
+          "type": "text",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--reason"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic gate list": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic gate set": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "gate",
+          "kind": "Argument",
+          "type": "choice",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "choices": [
+            "G0",
+            "G1",
+            "G2",
+            "G3",
+            "G4",
+            "G5",
+            "G6",
+            "G7",
+            "G8",
+            "M0",
+            "M1",
+            "M2",
+            "M3",
+            "M4"
+          ],
+          "options": [
+            "gate"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "status",
+          "kind": "Argument",
+          "type": "choice",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "choices": [
+            "pass",
+            "fail",
+            "blocked",
+            "not_applicable"
+          ],
+          "options": [
+            "status"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "evidence",
+          "kind": "Option",
+          "type": "text",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--evidence"
+          ],
+          "secondary_options": [],
+          "multiple": true
+        },
+        {
+          "name": "metric",
+          "kind": "Option",
+          "type": "text",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--metric"
+          ],
+          "secondary_options": [],
+          "multiple": true
+        },
+        {
+          "name": "reason",
+          "kind": "Option",
+          "type": "text",
+          "required": false,
+          "nargs": 1,
+          "default": "",
+          "options": [
+            "--reason"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "next_action",
+          "kind": "Option",
+          "type": "text",
+          "required": false,
+          "nargs": 1,
+          "default": "",
+          "options": [
+            "--next-action"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic init": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "project_root",
+          "kind": "Argument",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": ".",
+          "options": [
+            "project_root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "profile",
+          "kind": "Option",
+          "type": "choice",
+          "required": false,
+          "nargs": 1,
+          "default": "custom-device-first",
+          "choices": [
+            "pdk-first",
+            "layout-first",
+            "custom-device-first",
+            "matlab-legacy-layout",
+            "matlab-assisted-design"
+          ],
+          "options": [
+            "--profile"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "device_family",
+          "kind": "Option",
+          "type": "text",
+          "required": false,
+          "nargs": 1,
+          "default": "waveguide",
+          "options": [
+            "--device-family"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "project_name",
+          "kind": "Option",
+          "type": "text",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-name"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic inspect": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "target",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "target"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic layout": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic layout compare-backends": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "left",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "left"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "right",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "right"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic layout normalize": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "manifest",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "manifest"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "output",
+          "kind": "Option",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--output"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic matlab": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic matlab check": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "executable",
+          "kind": "Option",
+          "type": "text",
+          "required": false,
+          "nargs": 1,
+          "default": "matlab",
+          "options": [
+            "--executable"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "inventory",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--inventory"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "deep",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--deep"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic matlab doctor": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "executable",
+          "kind": "Option",
+          "type": "text",
+          "required": false,
+          "nargs": 1,
+          "default": "matlab",
+          "options": [
+            "--executable"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "inventory",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--inventory"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic matlab inspect": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "result",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "result"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic matlab plan": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "run_spec",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "run_spec"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic matlab products": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "executable",
+          "kind": "Option",
+          "type": "text",
+          "required": false,
+          "nargs": 1,
+          "default": "matlab",
+          "options": [
+            "--executable"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "inventory",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--inventory"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic matlab run": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "run_spec",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "run_spec"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "execute",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--execute"
+          ],
+          "secondary_options": [
+            "--dry-run"
+          ],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic matlab sessions": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic matlab test": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic matlab toolboxes": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "executable",
+          "kind": "Option",
+          "type": "text",
+          "required": false,
+          "nargs": 1,
+          "default": "matlab",
+          "options": [
+            "--executable"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "inventory",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--inventory"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic measurement": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic measurement inspect": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "manifest",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "manifest"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic model": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic model build": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "card",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "card"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": true,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic model compare": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "left",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "left"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "right",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "right"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic model ingest": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "card",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "card"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "destination",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "destination"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic model inspect": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "card",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "card"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic model release": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "card",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "card"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "output",
+          "kind": "Option",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--output"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic model validate": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "card",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "card"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic netlist": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic netlist backannotate": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "simulation_netlist",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "simulation_netlist"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "lengths_json",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "lengths_json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "output",
+          "kind": "Option",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--output"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic netlist compare": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "intended",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "intended"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "extracted",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "extracted"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic netlist extract": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "layout_manifest",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "layout_manifest"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": true,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic netlist validate": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "netlist",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "netlist"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic optimize": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic optimize compare": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "left",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "left"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "right",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "right"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic optimize inspect": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "spec",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "spec"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic optimize plan": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "spec",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "spec"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic optimize promote": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "decision",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "decision"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic optimize resume": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "spec",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "spec"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": true,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic optimize run": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "spec",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "spec"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": true,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic package": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic package inspect": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "constraint",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "constraint"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic pdk": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic pdk inspect": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "manifest",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "manifest"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic pdk validate": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "manifest",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "manifest"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic recipe": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic recipe inspect": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "recipe_id",
+          "kind": "Argument",
+          "type": "text",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "recipe_id"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "version",
+          "kind": "Option",
+          "type": "text",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--version"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic recipe list": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic recipe render": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "recipe_id",
+          "kind": "Argument",
+          "type": "text",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "recipe_id"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "input_path",
+          "kind": "Option",
+          "type": "file",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--input"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "renderer",
+          "kind": "Option",
+          "type": "choice",
+          "required": false,
+          "nargs": 1,
+          "default": "canonical-json",
+          "choices": [
+            "canonical-json",
+            "comsol-java-fragment"
+          ],
+          "options": [
+            "--renderer"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "output",
+          "kind": "Option",
+          "type": "file",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--output"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "instance_id",
+          "kind": "Option",
+          "type": "text",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--instance-id"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic report": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic report status": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic solver": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic solver check": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic solver plan": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "java_file",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "java_file"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "output_mph",
+          "kind": "Option",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--output-mph"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "batch_log",
+          "kind": "Option",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--batch-log"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "runtime_dir",
+          "kind": "Option",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--runtime-dir"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "timeout_s",
+          "kind": "Option",
+          "type": "integer range",
+          "required": false,
+          "nargs": 1,
+          "default": 3600,
+          "options": [
+            "--timeout-s"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic sparams": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic sparams validate": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "manifest",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "manifest"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "structure_only",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--structure-only"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic status": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "project_root",
+          "kind": "Option",
+          "type": "path",
+          "required": false,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--project-root"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic tapeout": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic tapeout freeze": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "manifest",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "manifest"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "output",
+          "kind": "Option",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--output"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "dry_run",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic tapeout inspect": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "manifest",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "manifest"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic testplan": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic testplan inspect": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "plan",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "plan"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic variation": {
+      "kind": "Group",
+      "parameters": []
+    },
+    "photonic variation validate": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "model",
+          "kind": "Argument",
+          "type": "path",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "model"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+* text=auto eol=lf
+
+*.css text eol=lf
+*.csv text eol=lf
+*.html text eol=lf
+*.java text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.m text eol=lf
+*.md text eol=lf
+*.ps1 text eol=lf
+*.py text eol=lf
+*.toml text eol=lf
+*.txt text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+
+*.gds binary
+*.h5 binary
+*.hdf5 binary
+*.mat binary
+*.mph binary
+*.oas binary
+*.oasis binary

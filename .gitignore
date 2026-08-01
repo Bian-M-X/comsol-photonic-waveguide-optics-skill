@@ -1,5 +1,8 @@
 Thumbs.db
 .DS_Store
+.env
+.env.*
+!.env.example
 *.log
 *.class
 *.mph
@@ -8,3 +11,14 @@ Thumbs.db
 *.csv.tmp
 __pycache__/
 *.pyc
+.coverage
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.venv/
+build/
+dist/
+htmlcov/
+*.egg-info/
+photonic.toml
+runs/

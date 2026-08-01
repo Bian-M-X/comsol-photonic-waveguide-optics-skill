@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "recipe_id": "scattering.two-port-common-basis",
+  "recipe_version": "1.0.0",
+  "parameters": {
+    "model_instance_id": "synthetic-through-v1",
+    "phase_basis_id": "synthetic-common-basis-v1",
+    "phase_basis_frozen": true,
+    "nonport_flux_sign_convention": "positive_outward",
+    "material_absorption_sign_convention": "positive_absorbed",
+    "source_conditioned_entries": [
+      {"row": 1, "column": 1, "source_solution_index": 1, "real": 0.0, "imag": 0.0, "power": 0.0},
+      {"row": 1, "column": 2, "source_solution_index": 2, "real": 1.0, "imag": 0.0, "power": 1.0},
+      {"row": 2, "column": 1, "source_solution_index": 1, "real": 1.0, "imag": 0.0, "power": 1.0},
+      {"row": 2, "column": 2, "source_solution_index": 2, "real": 0.0, "imag": 0.0, "power": 0.0}
+    ],
+    "power_ledgers": [
+      {
+        "source_port": 1,
+        "input_power_w": 1.0,
+        "reflection_power_fraction": 0.0,
+        "transmission_power_fraction": 1.0,
+        "signed_nonport_exterior_flux_w": 0.0,
+        "material_absorption_w": 0.0,
+        "accounted_power_fraction": 1.0,
+        "closure_residual_fraction": 0.0
+      },
+      {
+        "source_port": 2,
+        "input_power_w": 1.0,
+        "reflection_power_fraction": 0.0,
+        "transmission_power_fraction": 1.0,
+        "signed_nonport_exterior_flux_w": 0.0,
+        "material_absorption_w": 0.0,
+        "accounted_power_fraction": 1.0,
+        "closure_residual_fraction": 0.0
+      }
+    ]
+  }
+}

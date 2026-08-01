@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0",
+  "recipe_id": "materials.malitson-fused-silica-1965",
+  "recipe_version": "1.0.0",
+  "parameters": {
+    "wavelength_um": 1.55
+  }
+}

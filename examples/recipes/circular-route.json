@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "recipe_id": "geometry.circular-route",
+  "recipe_version": "1.0.0",
+  "parameters": {
+    "vertices_um": [[0.0, 0.0], [20.0, 0.0], [20.0, 20.0]],
+    "radius_um": 5.0,
+    "width_um": 0.5
+  }
+}

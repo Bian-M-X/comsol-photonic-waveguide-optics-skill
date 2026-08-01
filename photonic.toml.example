@@ -1,0 +1,33 @@
+# Project identity and runtime policy only. Physical design inputs belong in versioned contracts.
+schema_version = "1.0"
+stable_id = "example-photonic-project"
+name = "Example photonic project"
+revision = "1"
+source = "user configuration"
+created_at = "2026-07-29T00:00:00Z"
+provenance = []
+status = "draft"
+validity = "unknown"
+profile = "custom-device-first"
+workspace = "."
+pdk_alias = "mock-pdk"
+adapter_defaults = { comsol = "comsol-native-java-batch", matlab = "batch" }
+# Names here authorize importing reviewed third-party Python for diagnosis only.
+# They are imported only with `photonic doctor --load-configured-adapters`;
+# adapter SPI 1.0 does not authorize third-party solver execution.
+adapter_entrypoint_allowlist = []
+allowed_roots = ["."]
+dry_run = true
+timeout_s = 3600
+commercial_concurrency = 1
+commercial_parallel_authorized = false
+matlab_executable_alias = "matlab"
+matlab_execution_model = "batch"
+matlab_toolbox_path_aliases = {}
+matlab_product_requirements = []
+comsol_livelink = false
+instrument_aliases = {}
+redaction = true
+artifact_limit_mb = 25
+packaging_profile = "unverified"
+test_profile = "dry-run"

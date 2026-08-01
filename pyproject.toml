@@ -1,0 +1,98 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "photonic-workflow"
+dynamic = ["version"]
+description = "Auditable local workflow runtime for integrated-photonic design closure"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "Bian-M-X" }]
+dependencies = [
+  "click>=8.1,<9",
+  "numpy>=1.26,<3",
+  "pydantic>=2.7,<3",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Operating System :: Microsoft :: Windows",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Scientific/Engineering",
+]
+
+[project.urls]
+Repository = "https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill"
+Issues = "https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/issues"
+Changelog = "https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/blob/main/CHANGELOG.md"
+Releases = "https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/releases"
+
+[project.optional-dependencies]
+layout = ["gdsfactory", "kfactory", "gplugins"]
+circuit = ["sax"]
+sparams = ["scikit-rf"]
+comsol = []
+sim = []
+lumerical = []
+matlab = []
+matlab-layout = []
+matlab-fdfd = []
+matlab-comsol = []
+matlab-lumerical = []
+matlab-instrument = []
+matlab-simulink = []
+meep = []
+femwell = ["femwell"]
+tidy3d = ["tidy3d"]
+measurement = ["pyvisa"]
+dev = ["build", "mypy", "PyYAML>=6.0.3,<7", "pytest>=8", "pytest-cov", "ruff==0.16.1"]
+all = [
+  "femwell",
+  "gdsfactory",
+  "gplugins",
+  "kfactory",
+  "pyvisa",
+  "sax",
+  "scikit-rf",
+  "tidy3d",
+]
+
+[project.scripts]
+photonic = "photonic_workflow.cli:main"
+photonic-mcp = "photonic_workflow.mcp.server:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = { attr = "photonic_workflow._version.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+photonic_workflow = [
+  "data/templates/**/*.json",
+  "data/templates/**/*.csv",
+  "data/recipes/*.json",
+  "data/matlab/**/*.m",
+  "data/skill/references/*.md",
+  "data/skill/agents/*.md",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]

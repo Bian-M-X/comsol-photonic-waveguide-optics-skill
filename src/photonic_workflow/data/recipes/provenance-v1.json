@@ -1,0 +1,251 @@
+{
+  "schema_version": "1.0",
+  "recipes": [
+    {
+      "recipe_id": "geometry.circular-route",
+      "recipe_version": "1.0.0",
+      "origins": [
+        {
+          "project_alias": "lt-amzi-sfwm-robust",
+          "revision": "248c2d1",
+          "source_files": [
+            {
+              "path": "scripts/emit-analytic-bend-java-helper.py",
+              "sha256": "c585b27436d2df3b5156bd96350c1879d45a21b4e2422094a82dddcebcf28012"
+            }
+          ],
+          "evidence_files": [
+            {
+              "path": "tests/test_numeric_tools.py",
+              "sha256": "7e780c7b64acb5b0304ccf16ef62332fd9389bda0639e22ad50c6701f4c9c460",
+              "kind": "unit-test"
+            }
+          ]
+        },
+        {
+          "project_alias": "lt-amzi-portable-core-20260718",
+          "revision": "portable-manifest-sha256:01976ed839c9d37b1ee4845ee7b91fceea2db318ab0f9fda956373233ab1ba14",
+          "source_files": [
+            {
+              "path": "models/java/RunSmoothArcBendComparison_EWFD2D.java",
+              "sha256": "a8b421c59e67e1d265cd1b053cd865b67cb0fb9c66141ef1ae9738ce2c843009"
+            }
+          ],
+          "evidence_files": []
+        }
+      ],
+      "distillation": {
+        "method": "behavioral-reimplementation",
+        "copied_vendor_code": false
+      },
+      "supported_claims": [
+        "deterministic tangent-point geometry",
+        "analytic circular centerline length"
+      ],
+      "excluded_claims": [
+        "bend-loss qualification",
+        "mesh convergence",
+        "full-wave acceptance"
+      ]
+    },
+    {
+      "recipe_id": "geometry.symmetric-euler-bend",
+      "recipe_version": "1.0.0",
+      "origins": [
+        {
+          "project_alias": "lt-amzi-portable-core-20260718",
+          "revision": "portable-manifest-sha256:01976ed839c9d37b1ee4845ee7b91fceea2db318ab0f9fda956373233ab1ba14",
+          "source_files": [
+            {
+              "path": "runs/design4_gate2c_true_smooth_euler_dc_meshcounts_20260615_r3/BuildGate2cDesign4TrueSmoothEulerDCGap0165Lc5p0_EWFD2D.java",
+              "sha256": "7746e41f79d24e117831b8829ced235afb6870332a5612efadaf24948002629f"
+            }
+          ],
+          "evidence_files": [
+            {
+              "path": "runs/design4_gate2c_true_smooth_euler_dc_meshcounts_20260615_r3/gate2_true_smooth_euler_dc_summary.csv",
+              "sha256": "2cc43efcd66061ecf17d49840e0b9d48e4f16cea4272f424bb30e55706278d73",
+              "kind": "legacy-2d-eim-transport-fixture"
+            }
+          ]
+        }
+      ],
+      "distillation": {
+        "method": "behavioral-reimplementation",
+        "copied_vendor_code": false
+      },
+      "supported_claims": [
+        "deterministic symmetric Euler centerline",
+        "interpolation-solid boundary table",
+        "cutback and clearance precheck"
+      ],
+      "excluded_claims": [
+        "qualified directional-coupler matrix",
+        "3d validation",
+        "full-wave acceptance"
+      ]
+    },
+    {
+      "recipe_id": "waveguide.segmented-port-window",
+      "recipe_version": "1.0.0",
+      "origins": [
+        {
+          "project_alias": "lt-amzi-portable-core-20260718",
+          "revision": "portable-manifest-sha256:01976ed839c9d37b1ee4845ee7b91fceea2db318ab0f9fda956373233ab1ba14",
+          "source_files": [
+            {
+              "path": "runs/design4_gate1b_straight_diagnostics_20260614/BuildGate1bDesign4StraightDiagnostics_EWFD2D.java",
+              "sha256": "d785503c1ac55c007b2d9c9c6ebc48add4fa8b706741ee28132294982255d1b1"
+            }
+          ],
+          "evidence_files": [
+            {
+              "path": "runs/design4_gate1b_straight_diagnostics_20260614/gate1b_straight_diagnostics_summary.csv",
+              "sha256": "5c41ff485431e2770bb2108ea3a373e8b152c7ca266c0f21b8f546a45d292763",
+              "kind": "legacy-2d-eim-port-selection-fixture"
+            }
+          ]
+        }
+      ],
+      "distillation": {
+        "method": "behavioral-reimplementation",
+        "copied_vendor_code": false
+      },
+      "supported_claims": [
+        "segmented background plan",
+        "port exclusion from scattering boundaries",
+        "entity-count audit requirements"
+      ],
+      "excluded_claims": [
+        "numeric-port mode identity",
+        "power closure",
+        "G1 acceptance"
+      ]
+    },
+    {
+      "recipe_id": "materials.li-silicon-1980",
+      "recipe_version": "1.0.0",
+      "origins": [
+        {
+          "project_alias": "lt-amzi-sfwm-robust",
+          "revision": "248c2d1",
+          "source_files": [
+            {
+              "path": "scripts/parse_g1_v3_material_dispersion_audit.py",
+              "sha256": "75c60a5867ebc4e99fd71b31bc84d4ca803f128b7937186e57eb6bc6a2d847c3"
+            }
+          ],
+          "evidence_files": [
+            {
+              "path": "tests/test_g1_v3_material_dispersion_audit.py",
+              "sha256": "b51bdbd4350f433c30236a748632139766dc60c6e0b41b733a087747f07f9f0d",
+              "kind": "formula-regression"
+            },
+            {
+              "path": "verification/g1_v3_material_dispersion_audit.json",
+              "sha256": "524a55e9f6be414d1afdb83bf62d8d3fc73887565098aad298766837344e27fe",
+              "kind": "formula-api-readback-audit"
+            }
+          ]
+        }
+      ],
+      "distillation": {
+        "method": "public-formula-reimplementation",
+        "copied_vendor_code": false
+      },
+      "supported_claims": [
+        "bulk silicon refractive-index formula",
+        "bulk material group-index derivative"
+      ],
+      "excluded_claims": [
+        "waveguide modal group index",
+        "foundry material qualification",
+        "G1 acceptance"
+      ]
+    },
+    {
+      "recipe_id": "materials.malitson-fused-silica-1965",
+      "recipe_version": "1.0.0",
+      "origins": [
+        {
+          "project_alias": "lt-amzi-sfwm-robust",
+          "revision": "248c2d1",
+          "source_files": [
+            {
+              "path": "scripts/parse_g1_v3_material_dispersion_audit.py",
+              "sha256": "75c60a5867ebc4e99fd71b31bc84d4ca803f128b7937186e57eb6bc6a2d847c3"
+            }
+          ],
+          "evidence_files": [
+            {
+              "path": "tests/test_g1_v3_material_dispersion_audit.py",
+              "sha256": "b51bdbd4350f433c30236a748632139766dc60c6e0b41b733a087747f07f9f0d",
+              "kind": "formula-regression"
+            },
+            {
+              "path": "verification/g1_v3_material_dispersion_audit.json",
+              "sha256": "524a55e9f6be414d1afdb83bf62d8d3fc73887565098aad298766837344e27fe",
+              "kind": "formula-api-readback-audit"
+            }
+          ]
+        }
+      ],
+      "distillation": {
+        "method": "public-formula-reimplementation",
+        "copied_vendor_code": false
+      },
+      "supported_claims": [
+        "bulk fused-silica refractive-index formula",
+        "bulk material group-index derivative"
+      ],
+      "excluded_claims": [
+        "deposited-oxide metrology",
+        "waveguide modal group index",
+        "G1 acceptance"
+      ]
+    },
+    {
+      "recipe_id": "scattering.two-port-common-basis",
+      "recipe_version": "1.0.0",
+      "origins": [
+        {
+          "project_alias": "lt-amzi-sfwm-robust",
+          "revision": "248c2d1",
+          "source_files": [
+            {
+              "path": "scripts/parse_g1_v3_source_sweep.py",
+              "sha256": "cdad8858c4dc8540310cecaddd36c9b1cc3a74fbf817df623f89082bc97a87f1"
+            }
+          ],
+          "evidence_files": [
+            {
+              "path": "tests/test_g1_v3_source_sweep.py",
+              "sha256": "b74d1b739a0818c7cb9fc103701b7fa5721ffe54d086c61a696e9b0f2d91138d",
+              "kind": "fail-closed-parser-regression"
+            },
+            {
+              "path": "verification/g1_v3_source_sweep_1550.json",
+              "sha256": "3d82089590f33ff6e47f0fdb0fc4552fabcf1ecdc32b5c23bff2304c02dde8e3",
+              "kind": "single-wavelength-same-model-diagnostic"
+            }
+          ]
+        }
+      ],
+      "distillation": {
+        "method": "behavioral-reimplementation",
+        "copied_vendor_code": false
+      },
+      "supported_claims": [
+        "source-conditioned matrix mapping",
+        "stable two-port singular-value arithmetic",
+        "per-input algebraic power accounting"
+      ],
+      "excluded_claims": [
+        "proof of common port-mode gauge",
+        "broadband phase or group delay",
+        "mesh convergence",
+        "G1 acceptance"
+      ]
+    }
+  ]
+}

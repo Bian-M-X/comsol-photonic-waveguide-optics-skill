@@ -1,1 +1,3 @@
-numpy>=1.24
+click>=8.1,<9
+numpy>=1.26,<3
+pydantic>=2.7,<3

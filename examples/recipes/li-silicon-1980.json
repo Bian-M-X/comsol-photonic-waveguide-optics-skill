@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "recipe_id": "materials.li-silicon-1980",
+  "recipe_version": "1.0.0",
+  "parameters": {
+    "wavelength_um": 1.55,
+    "temperature_k": 293.15
+  }
+}

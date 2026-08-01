@@ -104,3 +104,9 @@ $batchExitCode = $LASTEXITCODE
 if ($batchExitCode -ne 0) {
   throw "Batch solver failed with exit code $batchExitCode."
 }
+if (-not (Test-Path -LiteralPath $OutputFile -PathType Leaf)) {
+  throw "Batch solver reported success but did not create the expected output model: $OutputFile"
+}
+if (-not (Test-Path -LiteralPath $BatchLog -PathType Leaf)) {
+  throw "Batch solver reported success but did not create the expected batch log: $BatchLog"
+}

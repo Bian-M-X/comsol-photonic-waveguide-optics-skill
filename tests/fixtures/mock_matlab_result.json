@@ -1,0 +1,48 @@
+{
+  "contract_type": "MatlabResultManifest",
+  "schema_version": "1.0",
+  "stable_id": "matlab-result:mock-run",
+  "name": "Mock MATLAB result",
+  "revision": "1",
+  "source": "test fixture only; no MATLAB process ran",
+  "created_at": "2026-07-29T00:00:00Z",
+  "provenance": [
+    "deterministic Phase-A mock"
+  ],
+  "status": "succeeded",
+  "validity": "unknown",
+  "run_id": "mock-run",
+  "execution_status": "succeeded",
+  "exit_code": 0,
+  "duration_s": 1.25,
+  "matlab_release": "R2025b",
+  "toolbox_versions": {
+    "MATLAB": "25.2"
+  },
+  "artifacts": [
+    {
+      "schema_version": "1.0",
+      "stable_id": "artifact:mock-sparameters",
+      "name": "Mock S-parameter CSV",
+      "revision": "1",
+      "source": "test fixture only",
+      "created_at": "2026-07-29T00:00:00Z",
+      "provenance": [
+        "not physical evidence"
+      ],
+      "status": "mock",
+      "validity": "unknown",
+      "relative_path": "data/processed/mock_sparameters.csv",
+      "media_type": "text/csv",
+      "byte_count": 128,
+      "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "immutable": true,
+      "parent_artifacts": []
+    }
+  ],
+  "warnings": [
+    "mock fixture; not MATLAB or physics validation"
+  ],
+  "errors": [],
+  "log_path": "runtime/matlab.log"
+}
