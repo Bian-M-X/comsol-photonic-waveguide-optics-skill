@@ -8,6 +8,84 @@
 - **Platform compatibility** — the same tests on Ubuntu, macOS, and Windows, plus building and installing the packaged wheel in a clean environment
 - **Agent compatibility** — skill metadata, agent card structure, and discovery layout for Claude Code, Codex, and ChatGPT
 
+**[English](README.md) | [简体中文](README.zh.md)**
+
+## Showcase: Prompt-to-COMSOL SOI Euler 50:50 Splitter
+
+This public-safe test case shows how the skill turns a natural-language request
+into an auditable COMSOL model, a coupling-length screen, a fine-mesh result,
+and field-image checks. The design is an SOI-based four-port evanescent
+directional coupler at 1550 nm. Eight solid Euler interpolation curves route
+the 500 nm waveguides into and out of a 200 nm gap; every bend has a 30 degree
+turn and a 5.0 um minimum radius.
+
+| Test item | Value |
+|---|---|
+| Model | `GPT-5.6sol high` |
+| Skill | `$photonic-waveguide-optics` |
+| Solver | COMSOL Multiphysics 6.4.0.293, Electromagnetic Waves, Frequency Domain |
+| Platform | 220 nm SOI context; 2D effective-index model (EIM) |
+| Wavelength | 1550 nm |
+| Selected coupling geometry | 0.20 um edge-to-edge gap; 2.50 um parallel coupling length |
+| Evidence level | Preliminary fine-mesh 2D EIM result at one wavelength |
+
+The original test prompt is reproduced verbatim. The local skill path is part
+of that prompt; readers should replace it with their own installation path.
+
+```text
+[$photonic-waveguide-optics](C:\\Users\\lenovo\\.codex\\skills\\photonic-waveguide-optics\\SKILL.md) 请使用此skill套件利用comsol给我一份SOI基础的回转半径5um的欧拉弯在1550nm波长下形成的50:50分束器的仿真，建议使用倏逝场耦合方案，最终给出场图
+```
+
+### Field result
+
+| Linear field, `ewfd.normE^2` | Log field, normalized `10 log10` scale |
+|---|---|
+| ![Linear electric-field intensity for the SOI Euler directional coupler](docs/images/showcase/soi-euler-50-50/field-linear.png) | ![Log-scale electric-field intensity for the SOI Euler directional coupler](docs/images/showcase/soi-euler-50-50/field-log.png) |
+
+The linear view shows the upper-port excitation coupling into two guided
+outputs. The log view exposes weak background radiation and was checked against
+the explicitly integrated open-boundary flux; it is not used by itself as proof
+of device qualification.
+
+### Final fine-mesh result
+
+| Metric | Result |
+|---|---:|
+| P3 transmission, `T31` | 0.485296 |
+| P4 transmission, `T41` | 0.513588 |
+| Collected-output split | 48.5839% / 51.4161% |
+| Collected power, `T31 + T41` | 0.998884 |
+| Collected excess loss | 0.00485 dB |
+| Input reflection, `R11` | 5.15e-6 (about -52.88 dB) |
+| Open-boundary outward flux | 0.001112 W/m (about 0.111% of input power per metre) |
+| Port-mode effective index | 2.22879723 |
+| Mesh / frequency-domain DOF | 558,912 triangles / 3,913,885 DOF |
+
+The 2.50 um result meets this test's 50:50 +/- 2 percentage-point acceptance
+target. A coarse-to-fine mesh comparison changed the collected upper fraction
+by only 0.00327 percentage points.
+
+### Coupling-length screen at 1550 nm
+
+| Coupling length (um) | `T31` | `T41` | Collected upper fraction | `T31 + T41` |
+|---:|---:|---:|---:|---:|
+| 1.0 | 0.673455 | 0.325021 | 0.674483 | 0.998476 |
+| 2.5, coarse | 0.485277 | 0.513634 | 0.485806 | 0.998911 |
+| 4.0 | 0.299400 | 0.699629 | 0.299691 | 0.999029 |
+| 10.0 | 0.035454 | 0.963388 | 0.035495 | 0.998842 |
+
+The monotonic transfer from P3 to P4 is consistent with evanescent directional
+coupling. The workflow first froze the device contract and acceptance rule,
+qualified a straight-waveguide/numerical-port baseline, checked disjoint and
+complete port/open-boundary selections, screened coupling length, reran the
+selected design on a finer mesh, and audited both field views and power
+bookkeeping.
+
+> **Claim boundary:** this is a single-input, single-wavelength, preliminary
+> 2D EIM engineering result. Full component qualification remains blocked until
+> a same-model four-input complex S-matrix sweep, wavelength bandwidth,
+> boundary/PML sensitivity, fabrication corners, and 3D validation are supplied.
+
 `photonic-workflow` is an installable local Python runtime and Codex skill for
 auditable photonic-integrated-circuit design closure. It connects design
 intent, PDK aliases, component and compact-model contracts, complex
