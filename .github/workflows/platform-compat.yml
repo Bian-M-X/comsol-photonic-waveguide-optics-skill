@@ -1,0 +1,110 @@
+name: Platform compatibility
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: platform-compat-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  portable:
+    name: Portable core ${{ matrix.os }} / Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.11", "3.14"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install editable core
+        run: python -m pip install --disable-pip-version-check -e .
+
+      - name: Test portable Python contracts and services
+        run: python -B -m unittest discover -s tests -p "test_*.py"
+
+      - name: Verify public compatibility snapshot
+        run: python -B scripts/update_contract_surface_snapshot.py
+
+  package:
+    name: Build and test installed artifacts
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+
+      - name: Build wheel and source distribution
+        shell: pwsh
+        run: |
+          python -m pip install --disable-pip-version-check build
+          python -m build
+          $wheelCount = @(Get-ChildItem -LiteralPath dist -Filter '*.whl').Count
+          $sdistCount = @(Get-ChildItem -LiteralPath dist -Filter '*.tar.gz').Count
+          if ($wheelCount -ne 1 -or $sdistCount -ne 1) {
+            throw "Expected one wheel and one sdist; found $wheelCount and $sdistCount"
+          }
+          python -B scripts/test_distribution_contents.py dist
+
+      - name: Install wheel in a clean environment outside the checkout
+        shell: pwsh
+        run: |
+          $repository = (Get-Location).Path
+          $venv = Join-Path $env:RUNNER_TEMP 'photonic-wheel-venv'
+          $outside = Join-Path $env:RUNNER_TEMP 'photonic-wheel-cwd'
+          python -m venv $venv
+          $wheel = Get-ChildItem -LiteralPath dist -Filter '*.whl' | Select-Object -First 1
+          & "$venv\Scripts\python.exe" -m pip install --disable-pip-version-check $wheel.FullName
+          if ($LASTEXITCODE -ne 0) { throw "wheel installation failed" }
+          & "$venv\Scripts\python.exe" -m pip install --disable-pip-version-check --no-cache-dir --no-deps "$repository\examples\minimal-adapter-provider"
+          if ($LASTEXITCODE -ne 0) { throw "example provider installation failed" }
+          & "$venv\Scripts\python.exe" -m pip check
+          if ($LASTEXITCODE -ne 0) { throw "installed dependency check failed" }
+          New-Item -ItemType Directory -Force -Path $outside | Out-Null
+          Push-Location $outside
+          try {
+            $installedLines = & "$venv\Scripts\python.exe" "$repository\scripts\test_installed_artifact.py" --forbid-root $repository
+            if ($LASTEXITCODE -ne 0) { throw "installed artifact smoke failed" }
+            $installedSmoke = ($installedLines -join "`n") | ConvertFrom-Json
+            & "$venv\Scripts\python.exe" "$repository\scripts\test_installed_adapter_provider.py"
+            if ($LASTEXITCODE -ne 0) { throw "installed provider contract smoke failed" }
+            & "$venv\Scripts\photonic.exe" --version
+            if ($LASTEXITCODE -ne 0) { throw "installed photonic command failed" }
+            $request = '{"jsonrpc":"2.0","id":1,"method":"resources/list","params":{}}'
+            $response = $request | & "$venv\Scripts\photonic-mcp.exe"
+            if ($LASTEXITCODE -ne 0) { throw "installed photonic-mcp command failed" }
+            $payload = ($response -join "`n") | ConvertFrom-Json
+            if (@($payload.result.resources).Count -ne $installedSmoke.mcp_resource_count) {
+              throw "Installed MCP resource list differs from the package registry smoke"
+            }
+          }
+          finally {
+            Pop-Location
+          }

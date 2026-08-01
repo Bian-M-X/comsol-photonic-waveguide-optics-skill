@@ -1,4 +1,4 @@
-name: CI: validate and test
+name: Python compatibility
 
 on:
   push:
@@ -10,11 +10,11 @@ permissions:
   contents: read
 
 concurrency:
-  group: validate-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: python-compat-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  validate-quality:
+  quality:
     name: Static quality
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -42,18 +42,12 @@ jobs:
       - name: Enforce the repository lint baseline
         run: ruff check src tests scripts
 
-      - name: Validate skill and UI metadata schemas
-        run: python -B scripts/test_skill_metadata.py
-
-      - name: Verify cross-agent skill compatibility
-        run: python -B scripts/test_agent_compatibility.py
-
       - name: Compile maximum-bound generated Java fragments
         env:
           PYTHONPATH: src
         run: python -B -m unittest tests.unit.test_comsol_recipe_renderer
 
-  validate-core:
+  core:
     name: Core Python ${{ matrix.python-version }}
     runs-on: windows-latest
     timeout-minutes: 30
@@ -204,122 +198,3 @@ jobs:
           else {
             git show --check --oneline HEAD
           }
-
-  validate-portable-core:
-    name: Portable core ${{ matrix.os }} / Python ${{ matrix.python-version }}
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        python-version: ["3.11", "3.14"]
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-        with:
-          persist-credentials: false
-
-      - name: Set up Python
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install editable core
-        run: python -m pip install --disable-pip-version-check -e .
-
-      - name: Test portable Python contracts and services
-        run: python -B -m unittest discover -s tests -p "test_*.py"
-
-      - name: Verify public compatibility snapshot
-        run: python -B scripts/update_contract_surface_snapshot.py
-
-  validate-package:
-    name: Build and test installed artifacts
-    runs-on: windows-latest
-    timeout-minutes: 30
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-
-      - name: Set up Python
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
-        with:
-          python-version: "3.11"
-
-      - name: Build wheel and source distribution
-        shell: pwsh
-        run: |
-          python -m pip install --disable-pip-version-check build
-          python -m build
-          $wheelCount = @(Get-ChildItem -LiteralPath dist -Filter '*.whl').Count
-          $sdistCount = @(Get-ChildItem -LiteralPath dist -Filter '*.tar.gz').Count
-          if ($wheelCount -ne 1 -or $sdistCount -ne 1) {
-            throw "Expected one wheel and one sdist; found $wheelCount and $sdistCount"
-          }
-          python -B scripts/test_distribution_contents.py dist
-
-      - name: Install wheel in a clean environment outside the checkout
-        shell: pwsh
-        run: |
-          $repository = (Get-Location).Path
-          $venv = Join-Path $env:RUNNER_TEMP 'photonic-wheel-venv'
-          $outside = Join-Path $env:RUNNER_TEMP 'photonic-wheel-cwd'
-          python -m venv $venv
-          $wheel = Get-ChildItem -LiteralPath dist -Filter '*.whl' | Select-Object -First 1
-          & "$venv\Scripts\python.exe" -m pip install --disable-pip-version-check $wheel.FullName
-          if ($LASTEXITCODE -ne 0) { throw "wheel installation failed" }
-          & "$venv\Scripts\python.exe" -m pip install --disable-pip-version-check --no-cache-dir --no-deps "$repository\examples\minimal-adapter-provider"
-          if ($LASTEXITCODE -ne 0) { throw "example provider installation failed" }
-          & "$venv\Scripts\python.exe" -m pip check
-          if ($LASTEXITCODE -ne 0) { throw "installed dependency check failed" }
-          New-Item -ItemType Directory -Force -Path $outside | Out-Null
-          Push-Location $outside
-          try {
-            $installedLines = & "$venv\Scripts\python.exe" "$repository\scripts\test_installed_artifact.py" --forbid-root $repository
-            if ($LASTEXITCODE -ne 0) { throw "installed artifact smoke failed" }
-            $installedSmoke = ($installedLines -join "`n") | ConvertFrom-Json
-            & "$venv\Scripts\python.exe" "$repository\scripts\test_installed_adapter_provider.py"
-            if ($LASTEXITCODE -ne 0) { throw "installed provider contract smoke failed" }
-            & "$venv\Scripts\photonic.exe" --version
-            if ($LASTEXITCODE -ne 0) { throw "installed photonic command failed" }
-            $request = '{"jsonrpc":"2.0","id":1,"method":"resources/list","params":{}}'
-            $response = $request | & "$venv\Scripts\photonic-mcp.exe"
-            if ($LASTEXITCODE -ne 0) { throw "installed photonic-mcp command failed" }
-            $payload = ($response -join "`n") | ConvertFrom-Json
-            if (@($payload.result.resources).Count -ne $installedSmoke.mcp_resource_count) {
-              throw "Installed MCP resource list differs from the package registry smoke"
-            }
-          }
-          finally {
-            Pop-Location
-          }
-
-  validate:
-    name: validate
-    if: ${{ always() }}
-    needs:
-      - validate-quality
-      - validate-core
-      - validate-portable-core
-      - validate-package
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-
-    steps:
-      - name: Require every validation lane
-        env:
-          QUALITY_RESULT: ${{ needs.validate-quality.result }}
-          CORE_RESULT: ${{ needs.validate-core.result }}
-          PORTABLE_RESULT: ${{ needs.validate-portable-core.result }}
-          PACKAGE_RESULT: ${{ needs.validate-package.result }}
-        run: |
-          test "$QUALITY_RESULT" = "success"
-          test "$CORE_RESULT" = "success"
-          test "$PORTABLE_RESULT" = "success"
-          test "$PACKAGE_RESULT" = "success"

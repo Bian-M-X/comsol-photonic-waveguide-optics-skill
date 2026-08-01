@@ -67,8 +67,8 @@ After the pull request and the pushed `main` commit are green:
 2. create `v<package-version>` at that exact commit, using an annotated signed
    tag when a pre-associated signing key is available;
 3. push only that tag and let `.github/workflows/release.yml` first require it
-   to equal the current GitHub-verified `main` commit with a successful
-   `validate.yml` push run, then rebuild and revalidate under read-only
+   to equal the current GitHub-verified `main` commit with successful
+   `python-compat.yml` push runs, then rebuild and revalidate under read-only
    permissions, upload the wheel, sdist, and SHA-256 inventory as one immutable
    artifact, and pass that exact artifact ID through separately permissioned
    attestation and publication jobs;

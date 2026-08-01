@@ -41,10 +41,12 @@ jobs:
           test "$release_sha" = "$(git rev-parse origin/main)"
           verified="$(gh api "repos/$GITHUB_REPOSITORY/commits/$release_sha" --jq '.commit.verification.verified')"
           test "$verified" = "true"
-          successful_runs="$(gh api \
-            "repos/$GITHUB_REPOSITORY/actions/workflows/validate.yml/runs?head_sha=$release_sha&status=completed&per_page=100" \
-            --jq '[.workflow_runs[] | select(.event == "push" and .head_branch == "main" and .conclusion == "success")] | length')"
-          test "$successful_runs" -ge 1
+          for workflow in python-compat platform-compat agent-compat; do
+            successful_runs="$(gh api \
+              "repos/$GITHUB_REPOSITORY/actions/workflows/$workflow.yml/runs?head_sha=$release_sha&status=completed&per_page=100" \
+              --jq '[.workflow_runs[] | select(.event == "push" and .head_branch == "main" and .conclusion == "success")] | length')"
+            test "$successful_runs" -ge 1
+          done
           echo "release_sha=$release_sha" >> "$GITHUB_OUTPUT"
 
       - name: Set up Python
@@ -171,10 +173,12 @@ jobs:
           test "$main_sha" = "$RELEASE_SHA"
           verified="$(gh api "repos/$GITHUB_REPOSITORY/commits/$RELEASE_SHA" --jq '.commit.verification.verified')"
           test "$verified" = "true"
-          successful_runs="$(gh api \
-            "repos/$GITHUB_REPOSITORY/actions/workflows/validate.yml/runs?head_sha=$RELEASE_SHA&status=completed&per_page=100" \
-            --jq '[.workflow_runs[] | select(.event == "push" and .head_branch == "main" and .conclusion == "success")] | length')"
-          test "$successful_runs" -ge 1
+          for workflow in python-compat platform-compat agent-compat; do
+            successful_runs="$(gh api \
+              "repos/$GITHUB_REPOSITORY/actions/workflows/$workflow.yml/runs?head_sha=$RELEASE_SHA&status=completed&per_page=100" \
+              --jq '[.workflow_runs[] | select(.event == "push" and .head_branch == "main" and .conclusion == "success")] | length')"
+            test "$successful_runs" -ge 1
+          done
           test "$(find dist -maxdepth 1 -type f -name '*.whl' | wc -l)" -eq 1
           test "$(find dist -maxdepth 1 -type f -name '*.tar.gz' | wc -l)" -eq 1
           test "$(find dist -maxdepth 1 -type f | wc -l)" -eq 3

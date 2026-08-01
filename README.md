@@ -1,6 +1,12 @@
 # Photonic Waveguide Optics Skill and Workflow
 
-[![CI: validate and test](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/validate.yml/badge.svg)](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/validate.yml)
+[![Python compatibility](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/python-compat.yml/badge.svg)](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/python-compat.yml)
+[![Platform compatibility](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/platform-compat.yml/badge.svg)](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/platform-compat.yml)
+[![Agent compatibility](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/agent-compat.yml/badge.svg)](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/agent-compat.yml)
+
+- **Python compatibility** — lint, generated Java fragment compilation, and the full unit/integration suite on Python 3.11–3.14
+- **Platform compatibility** — the same tests on Ubuntu, macOS, and Windows, plus building and installing the packaged wheel in a clean environment
+- **Agent compatibility** — skill metadata, agent card structure, and discovery layout for Claude Code, Codex, and ChatGPT
 
 `photonic-workflow` is an installable local Python runtime and Codex skill for
 auditable photonic-integrated-circuit design closure. It connects design
