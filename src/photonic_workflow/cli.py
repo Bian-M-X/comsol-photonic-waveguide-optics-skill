@@ -725,10 +725,12 @@ def solver_group() -> None:
 @click.option("--json", "json_output", is_flag=True)
 def solver_check(json_output: bool) -> None:
     solver_root = os.environ.get("PHOTONIC_SOLVER_ROOT")
-    expected = {
+    required = {
         "batch": bool(solver_root and (Path(solver_root) / "bin" / "win64" / "comsolbatch.exe").is_file()),
-        "javac": bool(solver_root and (Path(solver_root) / "java" / "win64" / "jre" / "bin" / "javac.exe").is_file()),
-        "plugins": bool(solver_root and (Path(solver_root) / "plugins").is_dir()),
+        "compiler": bool(solver_root and (Path(solver_root) / "bin" / "win64" / "comsolcompile.exe").is_file()),
+    }
+    diagnostics = {
+        "desktop": bool(solver_root and (Path(solver_root) / "bin" / "win64" / "comsol.exe").is_file()),
     }
     report = CapabilityReport(
         stable_id="capability:comsol-native-java-batch",
@@ -738,10 +740,10 @@ def solver_check(json_output: bool) -> None:
         validity="valid",
         capability="comsol-native-java-batch",
         implementation=ImplementationStatus.IMPLEMENTED,
-        availability="available" if all(expected.values()) else "unavailable",
-        features={**expected, "solver_root_redacted": bool(solver_root)},
-        reasons=[] if all(expected.values()) else ["PHOTONIC_SOLVER_ROOT is unset or incomplete"],
-        probe_method="version-insensitive expected-file probe; no solver execution",
+        availability="available" if all(required.values()) else "unavailable",
+        features={**required, **diagnostics, "solver_root_redacted": bool(solver_root)},
+        reasons=[] if all(required.values()) else ["PHOTONIC_SOLVER_ROOT is unset or lacks comsolcompile/comsolbatch"],
+        probe_method="version-insensitive official-entrypoint probe; no solver or license execution",
     )
     _emit("photonic solver check", contract_payload(report), json_output=json_output)
 

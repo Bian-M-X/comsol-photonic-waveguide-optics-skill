@@ -12,7 +12,7 @@ Compile and run approved COMSOL Java API batch jobs and report exact execution s
 ## Required Skills
 
 - Resolve `PHOTONIC_SOLVER_ROOT` or accept an explicit solver root from the orchestrator.
-- Compile Java with solver-bundled `javac.exe` and plugin jars.
+- Compile model Java with the version-matched COMSOL `comsolcompile` entrypoint.
 - Run `comsolbatch.exe` with isolated `prefs`, `configuration`, and `tmp` directories.
 - Capture logs, status files, output tables, and model output paths.
 - Stop and report nonconvergence, missing output files, or security/file-write failures.

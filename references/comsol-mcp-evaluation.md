@@ -8,7 +8,7 @@ interactive vendor APIs, the `photonic` CLI, and the local MCP transport.
 | Route | Current role | Claim boundary |
 |---|---|---|
 | `photonic` CLI | Workflow authority for contracts, status, validation, composition, audit, and bounded plans | A successful command is workflow evidence, not solver or physics evidence |
-| Java API source + `javac` + `comsolbatch` | Trusted legacy local COMSOL execution route after explicit review and authorization | Requires declared outputs, logs, convergence, mesh/boundary/mode checks, and independent acceptance |
+| Java API source + `comsolcompile` + `comsolbatch` | Trusted local COMSOL execution route after explicit review and authorization | Requires declared outputs, logs, convergence, mesh/boundary/mode checks, and independent acceptance |
 | `photonic-workflow` MCP 0.4.0 | Narrow assistant integration for resources and non-executing package services | No COMSOL, MATLAB, instrument, Python, or shell execution |
 | `mphserver` / LiveLink-style control | Optional stateful Phase C integration | Unverified until version, lifecycle, cleanup, redaction, failure, and parity adoption gates pass |
 

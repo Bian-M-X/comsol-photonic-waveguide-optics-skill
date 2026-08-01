@@ -45,6 +45,7 @@ Read the minimum relevant set, but read each selected file completely.
 | Current MATLAB tool research | `docs/research/matlab-tool-landscape.md` |
 | Solver paths, Java compilation, batch execution | `references/environment-and-runner.md` |
 | Materials, ports, mode studies, mesh, datasets | `references/wave-optics-port-models.md` |
+| COMSOL mode/field images and physical sanity | `references/comsol-field-physical-audit.md` |
 | Complete complex S matrices and source sweeps | `references/frequency-domain-source-sweeps.md` |
 | Waveguides, bends, tapers, couplers, rings, gratings | `references/device-family-workflows.md` |
 | MZI, aMZI, LT-aMZI, couplers, FSR | `references/interferometer-workflows.md` |
@@ -121,6 +122,14 @@ shape, `S21`, `S11`, phase, mesh, boundaries/PML, and reference planes. Numeric
 ports require one Boundary Mode Analysis per port before the driven study.
 Exclude ports from scattering/radiation selections.
 
+After geometry finalization, audit the exterior as an exact partition: port
+selections are mutually disjoint; port and open-boundary selections do not
+overlap; and their union is every exterior boundary, with no internal boundary.
+In a reduced 2D EIM model a validated core-only terminal segment may be the
+correct port face. If the numeric mode needs cladding support, use an explicitly
+segmented local modal window containing only that guide and justified cladding
+margin, never an arbitrary whole device side.
+
 After materials, boundaries, ports, PML, or mesh change, invalidate stale mode
 selection and phase evidence.
 
@@ -195,8 +204,9 @@ Check, in order:
 4. boundaries, background/PML, and missing channels;
 5. mesh and wavelength sampling;
 6. physics tag, expression, dataset, and source column;
-7. energy/passivity budget;
-8. only then geometry or optimizer settings.
+7. field-image physical sanity, including confinement and full-domain leakage;
+8. energy/passivity budget;
+9. only then geometry or optimizer settings.
 
 For each independent input, account for every intended output. Do not combine
 different excitations and label the sum one energy balance.

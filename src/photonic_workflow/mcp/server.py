@@ -35,6 +35,7 @@ REFERENCE_RESOURCES = {
     name: f"references/{name}.md"
     for name in (
         "comsol-mcp-evaluation",
+        "comsol-field-physical-audit",
         "device-family-workflows",
         "environment-and-runner",
         "frequency-domain-source-sweeps",

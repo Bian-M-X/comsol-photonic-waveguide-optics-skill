@@ -195,7 +195,8 @@ recipe evaluation: Euler Java output accepts at most 256 samples, circular
 route Java output accepts at most 16 vertices, and every fragment is capped at
 48,000 UTF-8 bytes. Use multiple uniquely named instances or a solver-owned
 table/file ingestion adapter for larger geometry; do not raise these limits
-without a maximum-bound `javac` regression and a reviewed COMSOL compile test.
+without a maximum-bound Java syntax regression and a reviewed
+`comsolcompile` test against the target COMSOL version.
 
 Treat a fragment as a configuration artifact. Compile/run it only through an
 authorized solver workflow after selections, materials, physics, mesh, modes,

@@ -6,7 +6,19 @@ the host package version.
 
 ## [Unreleased]
 
-No changes yet.
+### Changed
+
+- Tightened numeric-port and open-boundary selection guidance with an exact,
+  fail-closed exterior partition audit derived from corrected SOI splitter
+  modeling experience and reconciled with COMSOL's local cross-section model.
+- Added mandatory physical field-image review rules so implausible confinement,
+  launch area, leakage, PML concentration, or plot context blocks acceptance.
+- Switched the trusted Windows Java compile route to COMSOL's official
+  `comsolcompile` entrypoint before `comsolbatch`, retaining the legacy wrapper
+  parameter alias for compatibility and safely normalizing COMSOL's unique
+  named-model output suffix.
+
+Implementation and validation: OpenAI Codex.
 
 ## [0.4.0] - 2026-08-01
 

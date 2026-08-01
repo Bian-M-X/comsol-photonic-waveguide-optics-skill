@@ -87,7 +87,8 @@ For port-based frequency-domain simulations:
 
 1. Put ports on exterior computational boundaries.
 2. Make each port boundary perpendicular to a local straight waveguide.
-3. Ensure the port boundary cuts through the full waveguide and enough surrounding background for the mode.
+3. Select the intended local modal cross-section, not an arbitrary whole outer
+   edge shared by unrelated guides or background.
 4. Create one boundary mode analysis step per numeric port when numeric ports are used.
 5. Bind each port to the correct boundary mode analysis result.
 6. Run final frequency-domain or wavelength-domain study after port modes are available.
@@ -99,7 +100,29 @@ Port mistakes are common. Check:
 - excitation is enabled only on the intended input port
 - non-excited output ports are terminated, not excited
 - scattering/radiation boundary does not include port boundaries
+- distinct ports do not share any boundary entity
+- ports plus open-boundary treatment cover the complete exterior, with no
+  missing exterior and no selected internal boundary
 - final study uses the port mode solution, not a stale or missing mode
+
+The exact local cross-section is model-class dependent:
+
+- In a reduced 2D EIM topology where geometry segmentation makes the silicon or
+  effective-core terminal segment the validated port face, select only that
+  segment. This prevents a numeric port from launching across the entire outer
+  side of the computational domain.
+- When the boundary-mode problem needs the evanescent cladding field, create a
+  bounded local window containing exactly that guide/core and a justified
+  cladding margin. Confirm field decay at the window edge.
+- A COMSOL example may use core plus cladding segments across one local slab
+  cross-section. This supports a local modal window; it does not justify
+  selecting an outer boundary that also contains unrelated terminals or open
+  background.
+
+After geometry finalization, call the pure
+`audit_exterior_boundary_partition` helper or implement the same set equality
+in Java: every exterior boundary must appear exactly once in either one port or
+the open-boundary selection.
 
 For a complete complex S matrix, keep all source columns in one model and one
 declared port-mode phase basis. Read
@@ -117,7 +140,11 @@ Start with scattering/radiation boundaries for quick models. For engineering cla
 - scattering boundary
 - mesh refinement near boundaries
 
-Critical rule: do not include port boundaries in scattering/radiation selections.
+Critical rule: without PML, scattering/radiation selections contain every
+exterior boundary except the port boundaries. With PML, document which exterior
+faces are handled by the PML construction and its outer termination. In either
+case, port and open-boundary treatments are mutually exclusive and jointly
+complete over the exterior.
 
 If S parameters are undefined, zero, or flat:
 
@@ -196,6 +223,12 @@ Debug order for plotting:
 3. Select final solution dataset.
 4. Evaluate one expression at a time.
 5. Only then build derived plots or reports.
+
+Before accepting any plot, apply `comsol-field-physical-audit.md`. For a guided
+SOI mode, most energy should be associated with the intended high-index core
+and connected guide, with physically plausible evanescent tails and leakage.
+Broad high-amplitude background excitation or a field concentrated in an
+unrelated boundary/PML is a model error even if an S value looks attractive.
 
 ## Energy Diagnostics
 

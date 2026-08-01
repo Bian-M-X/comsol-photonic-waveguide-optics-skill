@@ -10,8 +10,8 @@ Expected Windows relative files under the solver root:
 
 ```text
 bin\win64\comsolbatch.exe
-java\win64\jre\bin\javac.exe
-plugins\*.jar
+bin\win64\comsolcompile.exe
+bin\win64\comsol.exe
 ```
 
 These are compatibility references only. This repository does not include solver binaries, plugins, license files, or proprietary documentation.
@@ -54,11 +54,20 @@ Run these checks after setting `PHOTONIC_SOLVER_ROOT`:
 ```powershell
 $root = $env:PHOTONIC_SOLVER_ROOT
 Test-Path (Join-Path $root 'bin\win64\comsolbatch.exe')
-Test-Path (Join-Path $root 'java\win64\jre\bin\javac.exe')
-Test-Path (Join-Path $root 'plugins')
+Test-Path (Join-Path $root 'bin\win64\comsolcompile.exe')
+Test-Path (Join-Path $root 'bin\win64\comsol.exe')
 ```
 
-Expected result: all three commands return `True`.
+Expected result: all three commands return `True`. Then run the package probe:
+
+```powershell
+photonic solver check --json
+```
+
+This proves path-level availability only. A fresh `comsolbatch -version` or the
+smoke model below is required to prove that the native entrypoint actually
+starts in the current environment; a successful real model remains separate
+solver/physics evidence.
 
 If any check returns `False`, ask the user to provide the correct solver root. Do not guess by publishing local machine paths. If searching the machine is necessary, keep results local and do not commit them.
 
@@ -67,7 +76,7 @@ If any check returns `False`, ask the user to provide the correct solver root. D
 Use Java API plus batch execution:
 
 1. Generate or patch a Java source file.
-2. Compile it with the solver-bundled `javac.exe`.
+2. Compile it with COMSOL's version-matched `comsolcompile.exe` entrypoint.
 3. Run the compiled `.class` with `comsolbatch.exe`.
 4. Save the `.mph` model inside the solver-side Java run.
 5. Print key metrics to stdout or write CSV/TXT outputs.
@@ -79,21 +88,21 @@ Avoid these as first choices:
 - Running standalone Java outside the solver batch runtime.
 - Large external config reads inside solver-side Java. Prefer generated source or small embedded parameters.
 
-## Compile Pattern
+## Official Compile Pattern
 
 ```powershell
 $solverRoot = $env:PHOTONIC_SOLVER_ROOT
 if (-not $solverRoot) { throw 'Set PHOTONIC_SOLVER_ROOT first.' }
 
-$plugins = Join-Path $solverRoot 'plugins'
-$javac = Join-Path $solverRoot 'java\win64\jre\bin\javac.exe'
-$cp = (Get-ChildItem -LiteralPath $plugins -Filter '*.jar' | ForEach-Object { $_.FullName }) -join ';'
+$compiler = Join-Path $solverRoot 'bin\win64\comsolcompile.exe'
 
-& $javac -proc:none -cp $cp 'C:\Path\To\ModelSource.java'
-if ($LASTEXITCODE -ne 0) { throw "javac failed with exit code $LASTEXITCODE" }
+& $compiler 'C:\Path\To\ModelSource.java'
+if ($LASTEXITCODE -ne 0) { throw "COMSOL compiler failed with exit code $LASTEXITCODE" }
 ```
 
-`-proc:none` avoids annotation-processing noise and should be kept unless there is a clear reason to remove it.
+Do not manually concatenate every installed plugin JAR unless a reviewed,
+version-specific exception requires it. `comsolcompile` is the documented
+vendor entrypoint and owns the installed Java classpath and compatibility.
 
 ## Batch Pattern
 
@@ -137,7 +146,35 @@ Privacy-safe preview:
   -DryRun
 ```
 
-`-DryRun` hides the full plugin classpath by default. Use `-ShowFullPaths` only in private local debugging. The wrapper removes a stale target `.class` before compilation, stops immediately on a nonzero `javac` exit, requires a newly generated class file, and propagates a nonzero batch exit.
+`-DryRun` hides the local solver root by default. Use `-ShowFullPaths` only in
+private local debugging. The wrapper removes a stale target `.class` before
+compilation, stops immediately on a nonzero `comsolcompile` exit, requires a
+newly generated class file, rejects unchanged stale MPH/log artifacts, and
+propagates a nonzero batch exit. The deprecated
+`-JavacExecutable` parameter remains an alias for the compiler executable so
+existing automation does not fail at argument binding; new callers use
+`-CompilerExecutable`. If a class produces COMSOL's single named-model suffix
+(`requested_Model.mph`), the wrapper accepts only a unique file created or
+changed by the current invocation and normalizes it to the requested output
+path. Multiple named outputs or stale files fail closed.
+
+## Direct-Activation Smoke Test
+
+Use `examples/comsol-runtime-smoke/ComsolRuntimeSmoke.java` to prove the local
+compiler, batch process, license startup, Java API, and MPH output path without
+building a photonic device:
+
+```powershell
+$env:PHOTONIC_SOLVER_ROOT = 'C:\Path\To\LicensedSolverRoot'
+& .\scripts\invoke-waveguide-java-batch.ps1 `
+  -JavaFile .\examples\comsol-runtime-smoke\ComsolRuntimeSmoke.java `
+  -OutputFile .\artifacts\comsol-runtime-smoke.mph `
+  -BatchLog .\artifacts\comsol-runtime-smoke.log
+```
+
+Pass requires a fresh `.class`, `.mph`, and batch log from this invocation plus
+zero native exit codes. It proves runtime activation only, not Wave Optics
+availability, correct ports, convergence, or physical validity.
 
 ## Long-Run Discipline
 
@@ -152,9 +189,9 @@ Privacy-safe preview:
 | Symptom | Likely cause | First action |
 |---|---|---|
 | `Set PHOTONIC_SOLVER_ROOT first` | no solver root configured | set env var or pass `-SolverRoot` |
-| `javac not found` | wrong solver root or different install layout | verify `java\win64\jre\bin\javac.exe` |
+| `COMSOL compiler not found` | wrong solver root or different install layout | verify `bin\win64\comsolcompile.exe` |
 | `batch executable not found` | wrong solver root or missing batch tool | verify `bin\win64\comsolbatch.exe` |
-| no plugin jars | wrong solver root | verify `plugins` directory |
+| compile succeeds but no fresh class | unsupported source or compiler/output mismatch | inspect compiler output and source class name |
 | solver-side file read fails | Java security or path policy | embed small config in source or write outputs externally |
 | parallel jobs corrupt runtime state | shared prefs/config/tmp | use per-worker runtime dirs |
 | public logs expose local machine data | full classpath or absolute paths printed | use `-DryRun` without `-ShowFullPaths` |

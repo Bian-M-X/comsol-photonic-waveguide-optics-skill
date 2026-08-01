@@ -12,6 +12,8 @@ param(
   [string]$PrefsDir = $env:PHOTONIC_SOLVER_PREFS,
   [string]$ConfigDir = $env:PHOTONIC_SOLVER_CONFIG,
   [string]$TmpDir = $env:PHOTONIC_SOLVER_TMP,
+  [string]$CompilerExecutable,
+  # Backward-compatible alias retained for callers of the pre-0.4 wrapper.
   [string]$JavacExecutable,
   [string]$BatchExecutable,
   [switch]$DryRun,
@@ -19,6 +21,13 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+
+function Get-FileSignature {
+  param([Parameter(Mandatory=$true)][string]$Path)
+  if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return $null }
+  $item = Get-Item -LiteralPath $Path
+  return "$($item.Length):$($item.LastWriteTimeUtc.Ticks)"
+}
 
 if ([string]::IsNullOrWhiteSpace($SolverRoot)) {
   throw "Set -SolverRoot or PHOTONIC_SOLVER_ROOT to your licensed solver installation root."
@@ -29,24 +38,21 @@ if ([string]::IsNullOrWhiteSpace($PrefsDir)) { $PrefsDir = Join-Path $runtimeRoo
 if ([string]::IsNullOrWhiteSpace($ConfigDir)) { $ConfigDir = Join-Path $runtimeRoot "config" }
 if ([string]::IsNullOrWhiteSpace($TmpDir)) { $TmpDir = Join-Path $runtimeRoot "tmp" }
 
-$javac = if ([string]::IsNullOrWhiteSpace($JavacExecutable)) {
-  Join-Path $SolverRoot "java\win64\jre\bin\javac.exe"
-} else {
+$compiler = if (-not [string]::IsNullOrWhiteSpace($CompilerExecutable)) {
+  $CompilerExecutable
+} elseif (-not [string]::IsNullOrWhiteSpace($JavacExecutable)) {
   $JavacExecutable
+} else {
+  Join-Path $SolverRoot "bin\win64\comsolcompile.exe"
 }
 $batch = if ([string]::IsNullOrWhiteSpace($BatchExecutable)) {
   Join-Path $SolverRoot "bin\win64\comsolbatch.exe"
 } else {
   $BatchExecutable
 }
-$plugins = Join-Path $SolverRoot "plugins"
-$cp = ""
-if (Test-Path -LiteralPath $plugins) {
-  $cp = (Get-ChildItem -LiteralPath $plugins -Filter "*.jar" | ForEach-Object { $_.FullName }) -join ";"
-}
 $classFile = [System.IO.Path]::ChangeExtension($JavaFile, ".class")
 
-$compileArgs = @("-proc:none", "-cp", $cp, $JavaFile)
+$compileArgs = @($JavaFile)
 $batchArgs = @(
   "-prefsdir", $PrefsDir,
   "-configuration", $ConfigDir,
@@ -55,17 +61,15 @@ $batchArgs = @(
   "-outputfile", $OutputFile,
   "-batchlog", $BatchLog
 )
+$outputDirectory = Split-Path -Parent $OutputFile
+$outputStem = [System.IO.Path]::GetFileNameWithoutExtension($OutputFile)
 
 if ($DryRun) {
-  $pluginCount = 0
-  if (Test-Path -LiteralPath $plugins) {
-    $pluginCount = @(Get-ChildItem -LiteralPath $plugins -Filter "*.jar").Count
-  }
   Write-Host "Compile:"
   if ($ShowFullPaths) {
-    Write-Host "`"$javac`" $($compileArgs -join ' ')"
+    Write-Host "`"$compiler`" $($compileArgs -join ' ')"
   } else {
-    Write-Host "javac -proc:none -cp <plugin jars: $pluginCount> `"$JavaFile`""
+    Write-Host "comsolcompile `"$JavaFile`""
   }
   Write-Host "Batch:"
   if ($ShowFullPaths) {
@@ -77,36 +81,60 @@ if ($DryRun) {
 }
 
 if (-not (Test-Path -LiteralPath $JavaFile)) { throw "Java file not found: $JavaFile" }
-if (-not (Test-Path -LiteralPath $javac)) { throw "javac not found: $javac" }
+if (-not (Test-Path -LiteralPath $compiler)) { throw "COMSOL compiler not found: $compiler" }
 if (-not (Test-Path -LiteralPath $batch)) { throw "batch executable not found: $batch" }
-if ([string]::IsNullOrWhiteSpace($cp)) { throw "No plugin jars found under: $plugins" }
 
 New-Item -ItemType Directory -Force -Path $PrefsDir, $ConfigDir, $TmpDir | Out-Null
-New-Item -ItemType Directory -Force -Path (Split-Path -Parent $OutputFile), (Split-Path -Parent $BatchLog) | Out-Null
+New-Item -ItemType Directory -Force -Path $outputDirectory, (Split-Path -Parent $BatchLog) | Out-Null
 
 # Never allow a failed or incomplete compilation to leave a stale class as the
-# batch input. javac should recreate this file during the current invocation.
+# batch input. comsolcompile should recreate this file during this invocation.
 if (Test-Path -LiteralPath $classFile) {
   Remove-Item -LiteralPath $classFile -Force
 }
 
-& $javac @compileArgs
-$javacExitCode = $LASTEXITCODE
-if ($javacExitCode -ne 0) {
-  throw "javac failed with exit code $javacExitCode. Batch execution was not started."
+& $compiler @compileArgs
+$compilerExitCode = $LASTEXITCODE
+if ($compilerExitCode -ne 0) {
+  throw "COMSOL compiler failed with exit code $compilerExitCode. Batch execution was not started."
 }
 if (-not (Test-Path -LiteralPath $classFile -PathType Leaf)) {
-  throw "javac reported success but did not create the expected class file: $classFile. Batch execution was not started."
+  throw "COMSOL compiler reported success but did not create the expected class file: $classFile. Batch execution was not started."
 }
+
+$beforeNamedOutputs = @{}
+Get-ChildItem -LiteralPath $outputDirectory -Filter "$outputStem`_*.mph" -File -ErrorAction SilentlyContinue | ForEach-Object {
+  $beforeNamedOutputs[$_.FullName] = "$($_.Length):$($_.LastWriteTimeUtc.Ticks)"
+}
+$beforeOutputSignature = Get-FileSignature -Path $OutputFile
+$beforeLogSignature = Get-FileSignature -Path $BatchLog
 
 & $batch @batchArgs
 $batchExitCode = $LASTEXITCODE
 if ($batchExitCode -ne 0) {
   throw "Batch solver failed with exit code $batchExitCode."
 }
-if (-not (Test-Path -LiteralPath $OutputFile -PathType Leaf)) {
-  throw "Batch solver reported success but did not create the expected output model: $OutputFile"
+$afterOutputSignature = Get-FileSignature -Path $OutputFile
+$exactOutputIsFresh = (
+  $null -ne $afterOutputSignature -and
+  $afterOutputSignature -ne $beforeOutputSignature
+)
+if (-not $exactOutputIsFresh) {
+  $freshNamedOutputs = @(
+    Get-ChildItem -LiteralPath $outputDirectory -Filter "$outputStem`_*.mph" -File -ErrorAction SilentlyContinue |
+      Where-Object {
+        $signature = "$($_.Length):$($_.LastWriteTimeUtc.Ticks)"
+        -not $beforeNamedOutputs.ContainsKey($_.FullName) -or $beforeNamedOutputs[$_.FullName] -ne $signature
+      }
+  )
+  if ($freshNamedOutputs.Count -eq 1) {
+    Move-Item -LiteralPath $freshNamedOutputs[0].FullName -Destination $OutputFile -Force
+  } elseif ($freshNamedOutputs.Count -gt 1) {
+    throw "Batch solver created multiple named model outputs; cannot normalize one output safely: $($freshNamedOutputs.FullName -join ', ')"
+  } else {
+    throw "Batch solver reported success but did not create the expected output model: $OutputFile"
+  }
 }
-if (-not (Test-Path -LiteralPath $BatchLog -PathType Leaf)) {
+if ((Get-FileSignature -Path $BatchLog) -eq $beforeLogSignature) {
   throw "Batch solver reported success but did not create the expected batch log: $BatchLog"
 }

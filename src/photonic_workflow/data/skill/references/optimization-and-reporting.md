@@ -92,7 +92,8 @@ For parameter sweeps or inverse design:
 
 1. Python/PowerShell creates candidate parameters.
 2. Candidate parameters are embedded into generated Java source or passed through a safe patching step.
-3. Java source is compiled with the solver-bundled `javac.exe`.
+3. Java source is compiled with the version-matched COMSOL `comsolcompile`
+   entrypoint.
 4. Batch solver runs one candidate.
 5. Metrics are exported to stdout or CSV/TXT.
 6. Python aggregates, ranks, plots, and chooses next candidates.

@@ -45,17 +45,15 @@ try {
   New-Item -ItemType Directory -Force -Path $tempRoot | Out-Null
 
   $solverRoot = Join-Path $tempRoot "solver"
-  $pluginDir = Join-Path $solverRoot "plugins"
   $sourceDir = Join-Path $tempRoot "source"
   $stubDir = Join-Path $tempRoot "stubs"
-  New-Item -ItemType Directory -Force -Path $pluginDir, $sourceDir, $stubDir | Out-Null
-  Set-Content -LiteralPath (Join-Path $pluginDir "dummy.jar") -Value "test fixture" -Encoding ASCII
+  New-Item -ItemType Directory -Force -Path $solverRoot, $sourceDir, $stubDir | Out-Null
 
   $javaFile = Join-Path $sourceDir "SafetyFixture.java"
   $classFile = [System.IO.Path]::ChangeExtension($javaFile, ".class")
   Set-Content -LiteralPath $javaFile -Value "public class SafetyFixture {}" -Encoding ASCII
 
-  $javacStub = Join-Path $stubDir "fake-javac.cmd"
+  $compilerStub = Join-Path $stubDir "fake-comsolcompile.cmd"
   $batchStub = Join-Path $stubDir "fake-batch.cmd"
   $traceFile = Join-Path $tempRoot "native-trace.txt"
   $env:PHOTONIC_TEST_TRACE = $traceFile
@@ -68,15 +66,15 @@ try {
     PrefsDir = (Join-Path $tempRoot "runtime\prefs")
     ConfigDir = (Join-Path $tempRoot "runtime\config")
     TmpDir = (Join-Path $tempRoot "runtime\tmp")
-    JavacExecutable = $javacStub
+    CompilerExecutable = $compilerStub
     BatchExecutable = $batchStub
   }
 
   # A failing compiler must remove any stale class and must not start batch.
   Set-Content -LiteralPath $classFile -Value "stale" -Encoding ASCII
-  Set-Content -LiteralPath $javacStub -Encoding ASCII -Value @(
+  Set-Content -LiteralPath $compilerStub -Encoding ASCII -Value @(
     "@echo off",
-    "echo javac>>`"%PHOTONIC_TEST_TRACE%`"",
+    "echo compiler>>`"%PHOTONIC_TEST_TRACE%`"",
     "exit /b 17"
   )
   Set-Content -LiteralPath $batchStub -Encoding ASCII -Value @(
@@ -87,15 +85,15 @@ try {
 
   Invoke-ExpectedFailure -ExpectedMessage "exit code 17" -Action { & $runner @runnerArgs }
   $compileFailureTrace = @(Get-Content -LiteralPath $traceFile)
-  Assert-True -Condition ($compileFailureTrace.Count -eq 1 -and $compileFailureTrace[0] -eq "javac") -Message "Batch ran after javac failed."
+  Assert-True -Condition ($compileFailureTrace.Count -eq 1 -and $compileFailureTrace[0] -eq "compiler") -Message "Batch ran after COMSOL compiler failed."
   Assert-True -Condition (-not (Test-Path -LiteralPath $classFile)) -Message "A stale class survived a failed compilation."
 
   # A successful fake compiler creates a fresh class; a batch failure must surface.
   Remove-Item -LiteralPath $traceFile -Force
-  Set-Content -LiteralPath $javacStub -Encoding ASCII -Value @(
+  Set-Content -LiteralPath $compilerStub -Encoding ASCII -Value @(
     "@echo off",
-    "echo javac>>`"%PHOTONIC_TEST_TRACE%`"",
-    "type nul > `"%~dpn4.class`"",
+    "echo compiler>>`"%PHOTONIC_TEST_TRACE%`"",
+    "type nul > `"%~dpn1.class`"",
     "exit /b 0"
   )
   Set-Content -LiteralPath $batchStub -Encoding ASCII -Value @(
@@ -106,7 +104,7 @@ try {
 
   Invoke-ExpectedFailure -ExpectedMessage "exit code 23" -Action { & $runner @runnerArgs }
   $batchFailureTrace = @(Get-Content -LiteralPath $traceFile)
-  Assert-True -Condition (($batchFailureTrace -join ",") -eq "javac,batch") -Message "Expected javac and batch to run exactly once."
+  Assert-True -Condition (($batchFailureTrace -join ",") -eq "compiler,batch") -Message "Expected compiler and batch to run exactly once."
 
   # Exit code zero is insufficient when the expected solver artifacts were
   # not created by this invocation.
@@ -117,6 +115,26 @@ try {
     "exit /b 0"
   )
   Invoke-ExpectedFailure -ExpectedMessage "did not create the expected output model" -Action { & $runner @runnerArgs }
+
+  # A stale exact output must not turn exit code zero into a false success.
+  Set-Content -LiteralPath $runnerArgs.OutputFile -Value "stale model" -Encoding ASCII
+  Invoke-ExpectedFailure -ExpectedMessage "did not create the expected output model" -Action { & $runner @runnerArgs }
+
+  # A Java class can cause COMSOL to append its model tag to -outputfile.
+  # Accept only one fresh named output and normalize it to the requested path.
+  Remove-Item -LiteralPath $traceFile -Force
+  $requestedOutput = $runnerArgs.OutputFile
+  $namedOutput = Join-Path (Split-Path -Parent $requestedOutput) "model_Model.mph"
+  Set-Content -LiteralPath $batchStub -Encoding ASCII -Value @(
+    "@echo off",
+    "echo batch>>`"%PHOTONIC_TEST_TRACE%`"",
+    "type nul > `"$namedOutput`"",
+    "type nul > `"$($runnerArgs.BatchLog)`"",
+    "exit /b 0"
+  )
+  & $runner @runnerArgs
+  Assert-True -Condition (Test-Path -LiteralPath $requestedOutput -PathType Leaf) -Message "Fresh named COMSOL output was not normalized."
+  Assert-True -Condition (-not (Test-Path -LiteralPath $namedOutput)) -Message "Named output remained after normalization."
 
   # Dry-run must not execute either native command or delete an existing class.
   Remove-Item -LiteralPath $traceFile -Force
@@ -152,7 +170,7 @@ try {
   Assert-Contains -Text $auditText -Expected "config" -Message "The extensionless config file was not scanned."
   Assert-True -Condition (-not $auditText.Contains("binaryblob")) -Message "The obvious binary file was read as text."
 
-  Write-Host "PowerShell safety regression tests passed (javac gate, batch gate, dry-run, hidden/config audit, binary skip)."
+  Write-Host "PowerShell safety regression tests passed (COMSOL compiler gate, batch gate, dry-run, hidden/config audit, binary skip)."
 } finally {
   $env:PHOTONIC_TEST_TRACE = $previousTrace
   if (Test-Path -LiteralPath $tempRoot) {

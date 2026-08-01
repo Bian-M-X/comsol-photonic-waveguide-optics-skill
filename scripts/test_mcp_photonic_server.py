@@ -141,6 +141,17 @@ def main() -> None:
                     },
                 },
             )
+            field_physics_reference = send(
+                proc,
+                {
+                    "jsonrpc": "2.0",
+                    "id": 32,
+                    "method": "resources/read",
+                    "params": {
+                        "uri": "photonic://skill/reference/comsol-field-physical-audit"
+                    },
+                },
+            )
             manifest = send(
                 proc,
                 {
@@ -321,6 +332,9 @@ def main() -> None:
     modeling_recipe_text = modeling_recipe_reference["result"]["contents"][0]["text"]
     if "geometry.symmetric-euler-bend" not in modeling_recipe_text:
         raise RuntimeError("modeling-recipe reference was not exposed through MCP")
+    field_physics_text = field_physics_reference["result"]["contents"][0]["text"]
+    if "Fail-Closed Visual Red Flags" not in field_physics_text:
+        raise RuntimeError("field-physics reference was not exposed through MCP")
     manifest_payload = json.loads(
         manifest["result"]["contents"][0]["text"],
         parse_constant=reject_json_constant,
@@ -331,6 +345,7 @@ def main() -> None:
         "manifest_resource_count": len(manifest_payload["resources"]),
         "source_sweep_reference_verified": True,
         "modeling_recipe_reference_verified": True,
+        "field_physics_reference_verified": True,
         "tool_names": [tool["name"] for tool in tools["result"]["tools"]],
         "manifest_bytes": len(manifest["result"]["contents"][0]["text"]),
         "parse_summary": summary,

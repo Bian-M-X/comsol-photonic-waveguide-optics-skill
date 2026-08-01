@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import io
 import json
+import os
 import tempfile
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
+from unittest.mock import patch
 
 from photonic_workflow import __version__
 from photonic_workflow.cli import main
@@ -22,6 +24,28 @@ def invoke(arguments: list[str]) -> tuple[int, str, str]:
 
 
 class CliIntegrationTests(unittest.TestCase):
+    def test_solver_check_requires_official_compile_and_batch_entrypoints(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            solver_root = Path(temporary) / "solver"
+            executable_dir = solver_root / "bin" / "win64"
+            executable_dir.mkdir(parents=True)
+            for name in ("comsolcompile.exe", "comsolbatch.exe", "comsol.exe"):
+                (executable_dir / name).touch()
+            with patch.dict(
+                os.environ,
+                {"PHOTONIC_SOLVER_ROOT": str(solver_root)},
+                clear=False,
+            ):
+                exit_code, output, error = invoke(["solver", "check", "--json"])
+
+        self.assertEqual((exit_code, error), (0, ""))
+        report = json.loads(output)["data"]
+        self.assertEqual(report["availability"], "available")
+        self.assertTrue(report["features"]["compiler"])
+        self.assertTrue(report["features"]["batch"])
+        self.assertTrue(report["features"]["desktop"])
+        self.assertNotIn(str(solver_root), output)
+
     def test_version_init_check_status_and_mock_pdk_json(self) -> None:
         version_exit, version_output, _ = invoke(["--version"])
         self.assertEqual(version_exit, 0)

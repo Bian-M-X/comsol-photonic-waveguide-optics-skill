@@ -21,6 +21,7 @@ Require:
 
 - solved input/output modes;
 - stable port orientation and numbering;
+- exact disjoint and complete exterior-boundary partition audit;
 - `S21`, `S11`, phase, and mode profile;
 - one declared power normalization, reference-plane convention, and complex
   port-mode phase basis;
@@ -28,6 +29,8 @@ Require:
   independently verified gauge-alignment transform;
 - per-input modal, signed exterior-flux, and material-absorption accounting;
 - acceptable boundary and mesh sensitivity;
+- driven-field physical audit from the final dataset, with geometry, ports,
+  scale, and full exterior visible;
 - reference-plane locations recorded.
 
 This gate establishes the normalization inherited by all component models.
@@ -46,6 +49,9 @@ For every reusable block require:
 - limits outside which the model must not be used.
 
 Do not qualify a component from a field plot or one transmission curve alone.
+Also do not qualify a component from attractive S values when the field plot
+has an unexplained physical red flag. Visual plausibility is necessary
+diagnostic evidence for field-based work but is never sufficient by itself.
 
 ## G3 Assembly Contract
 

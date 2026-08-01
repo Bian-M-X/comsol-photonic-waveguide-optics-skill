@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from numbers import Real
 from typing import Any
 
@@ -34,8 +34,10 @@ def segmented_port_window_plan(
     """Plan segmented cladding and two exterior port selections.
 
     The horizontal background slabs create explicit y-cuts at the lower and
-    upper edges of the port window.  The plan also requires the two port
-    selections to be subtracted from the exterior scattering-boundary set.
+    upper edges of the local modal cross-section window.  The window must not
+    be an arbitrary full exterior side shared by unrelated guides or open
+    background.  The plan also requires the two port selections to be
+    subtracted from the complete exterior scattering-boundary set.
 
     This function performs no geometry build and no solver execution.  Entity
     counts and zero overlap with the scattering set must be checked after a
@@ -145,6 +147,21 @@ def segmented_port_window_plan(
             "operator": "eq",
             "expected": 0,
         },
+        {
+            "metric": "port_port_overlap_count",
+            "operator": "eq",
+            "expected": 0,
+        },
+        {
+            "metric": "exterior_boundary_missing_count",
+            "operator": "eq",
+            "expected": 0,
+        },
+        {
+            "metric": "nonexterior_boundary_selected_count",
+            "operator": "eq",
+            "expected": 0,
+        },
     )
     return {
         "claim_level": "configuration-only-2d-eim",
@@ -154,6 +171,85 @@ def segmented_port_window_plan(
         "port_windows": port_windows,
         "scattering_boundary_difference": scattering_boundary_difference,
         "entity_count_rules": entity_count_rules,
+    }
+
+
+def _boundary_ids(name: str, values: Sequence[int]) -> tuple[int, ...]:
+    if isinstance(values, (str, bytes)) or not isinstance(values, Sequence):
+        raise InvalidInputError(f"{name} must be an array of positive boundary IDs")
+    normalized: list[int] = []
+    for value in values:
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise InvalidInputError(
+                f"{name} must contain only positive integer boundary IDs"
+            )
+        normalized.append(value)
+    if len(normalized) != len(set(normalized)):
+        raise InvalidInputError(f"{name} contains duplicate boundary IDs")
+    return tuple(normalized)
+
+
+def audit_exterior_boundary_partition(
+    *,
+    exterior_boundary_ids: Sequence[int],
+    port_boundary_ids: Mapping[str, Sequence[int]],
+    open_boundary_ids: Sequence[int],
+) -> dict[str, object]:
+    """Fail closed unless ports and open boundaries exactly partition the exterior.
+
+    ``open_boundary_ids`` represents the scattering/radiation or PML-facing
+    exterior selection.  This is a pure post-geometry entity audit: it does not
+    decide whether a port window contains the correct modal support and it does
+    not execute a solver.
+    """
+
+    exterior = set(_boundary_ids("exterior_boundary_ids", exterior_boundary_ids))
+    if not exterior:
+        raise InvalidInputError("exterior_boundary_ids must not be empty")
+    if not isinstance(port_boundary_ids, Mapping) or not port_boundary_ids:
+        raise InvalidInputError("port_boundary_ids must contain at least one port")
+
+    normalized_ports: dict[str, tuple[int, ...]] = {}
+    occupied: set[int] = set()
+    for raw_name, raw_ids in port_boundary_ids.items():
+        if not isinstance(raw_name, str) or not raw_name.strip():
+            raise InvalidInputError("every port selection needs a nonblank name")
+        ids = _boundary_ids(f"port_boundary_ids[{raw_name!r}]", raw_ids)
+        if not ids:
+            raise InvalidInputError(f"port {raw_name!r} must select at least one boundary")
+        overlap = occupied.intersection(ids)
+        if overlap:
+            raise InvalidInputError(
+                f"port selections overlap on boundary IDs: {sorted(overlap)}"
+            )
+        normalized_ports[raw_name] = ids
+        occupied.update(ids)
+
+    open_ids = set(_boundary_ids("open_boundary_ids", open_boundary_ids))
+    port_open_overlap = occupied.intersection(open_ids)
+    selected = occupied.union(open_ids)
+    missing = exterior - selected
+    nonexterior = selected - exterior
+    if port_open_overlap or missing or nonexterior:
+        raise InvalidInputError(
+            "exterior boundary partition failed; "
+            f"port_open_overlap={sorted(port_open_overlap)}, "
+            f"missing={sorted(missing)}, nonexterior={sorted(nonexterior)}"
+        )
+
+    return {
+        "status": "pass",
+        "claim_level": "configuration-only-boundary-selection",
+        "will_execute": False,
+        "exterior_boundary_count": len(exterior),
+        "port_boundary_count": len(occupied),
+        "open_boundary_count": len(open_ids),
+        "port_count": len(normalized_ports),
+        "port_boundary_ids": normalized_ports,
+        "open_boundary_ids": tuple(sorted(open_ids)),
+        "port_open_overlap_count": 0,
+        "exterior_boundary_missing_count": 0,
+        "nonexterior_boundary_selected_count": 0,
     }
 
 
@@ -197,4 +293,8 @@ def evaluate_segmented_port_window(parameters: Mapping[str, Any]) -> dict[str, o
     )
 
 
-__all__ = ["evaluate_segmented_port_window", "segmented_port_window_plan"]
+__all__ = [
+    "audit_exterior_boundary_partition",
+    "evaluate_segmented_port_window",
+    "segmented_port_window_plan",
+]

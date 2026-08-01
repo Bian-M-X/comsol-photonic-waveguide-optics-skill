@@ -6,6 +6,18 @@ Use this as a source index, not as a substitute for reading the original materia
 
 - COMSOL 6.4 Port: `https://doc.comsol.com/6.4/doc/com.comsol.help.woptics/woptics_ug_optics.6.20.html`
   - Numeric ports require Boundary Mode Analysis; port sweeps calculate the S matrix and can export Touchstone data.
+- COMSOL 6.4 Dielectric Slab Waveguide: `https://doc.comsol.com/6.4/doc/com.comsol.help.models.woptics.dielectric_slab_waveguide/dielectric_slab_waveguide.html`
+  - Shows a guided field concentrated in the high-index core with exponential
+    cladding decay and uses a local core-plus-cladding port cross-section.
+- COMSOL 6.4 Scattering Boundary Condition: `https://doc.comsol.com/6.4/doc/com.comsol.help.rf/rf_ug_radio_frequency.07.036.html`
+  - Documents the outgoing-wave approximation and its incidence limitations;
+    use PML and boundary-sensitivity evidence for more general radiation.
+- COMSOL 6.4 Perfectly Matched Layer: `https://doc.comsol.com/6.4/doc/com.comsol.help.comsol/comsol_ref_definitions.21.139.html`
+  - Documents complex coordinate scaling for absorbing outgoing waves.
+- COMSOL 6.4 Java compilation: `https://doc.comsol.com/6.4/doc/com.comsol.help.comsol/comsol_api_intro.46.07.html`
+  - Uses the Windows `comsolcompile <model.java>` entrypoint.
+- COMSOL 6.4 compiled Java batch: `https://doc.comsol.com/6.4/doc/com.comsol.help.comsol/comsol_api_intro.46.11.html`
+  - Runs the compiled model class with `comsolbatch -inputfile <model.class>`.
 - COMSOL 6.4 S-Parameter Variables: `https://doc.comsol.com/6.4/doc/com.comsol.help.woptics/woptics_ug_modeling.5.33.html`
   - Defines port-derived complex S variables and power quantities.
 - COMSOL 6.4 Geometry Parts: `https://doc.comsol.com/6.4/doc/com.comsol.help.comsol/comsol_ref_definitions.21.004.html`

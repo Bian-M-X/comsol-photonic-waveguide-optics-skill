@@ -50,10 +50,7 @@ def build_java_batch_plan(
         },
         "timeout_s": timeout_s,
         "compile_command_shape": [
-            "<PHOTONIC_SOLVER_ROOT>\\java\\win64\\jre\\bin\\javac.exe",
-            "-proc:none",
-            "-cp",
-            "<PHOTONIC_SOLVER_ROOT>\\plugins\\*.jar",
+            "<PHOTONIC_SOLVER_ROOT>\\bin\\win64\\comsolcompile.exe",
             str(java),
         ],
         "batch_command_shape": [
@@ -74,5 +71,9 @@ def build_java_batch_plan(
         "safety_gate": (
             "dry-run only here; trusted execution remains scripts/invoke-waveguide-java-batch.ps1 "
             "until direct-batch parity is proven"
+        ),
+        "compiler_policy": (
+            "use the vendor comsolcompile entrypoint so the installed COMSOL version owns "
+            "its Java classpath and compatibility"
         ),
     }

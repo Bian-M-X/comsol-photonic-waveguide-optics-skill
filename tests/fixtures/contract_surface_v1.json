@@ -2075,6 +2075,7 @@
   "mcp": {
     "resources": [
       "photonic://server/manifest",
+      "photonic://skill/reference/comsol-field-physical-audit",
       "photonic://skill/reference/comsol-mcp-evaluation",
       "photonic://skill/reference/device-family-workflows",
       "photonic://skill/reference/environment-and-runner",

@@ -188,6 +188,9 @@ Useful artifacts:
 ## General Failure Patterns
 
 - field plot looks plausible but no quantitative sweep exists
+- S parameters look plausible but the field is launched across the full outer
+  boundary, lives mainly outside the intended core, or conflicts with the
+  declared source/topology
 - port mode is wrong or evaluated on the wrong dataset
 - material selections are lost after geometry rebuild
 - boundary or PML absorbs guided power unintentionally

@@ -5,6 +5,7 @@ import unittest
 
 from photonic_workflow.exceptions import InvalidInputError
 from photonic_workflow.recipes.ports import (
+    audit_exterior_boundary_partition,
     evaluate_segmented_port_window,
     segmented_port_window_plan,
 )
@@ -42,8 +43,56 @@ class SegmentedPortWindowRecipeTests(unittest.TestCase):
         rules = {rule["metric"]: rule for rule in plan["entity_count_rules"]}
         self.assertEqual(rules["background_slab_domain_count"]["expected"], 3)
         self.assertEqual(rules["port_scattering_overlap_count"]["expected"], 0)
+        self.assertEqual(rules["port_port_overlap_count"]["expected"], 0)
+        self.assertEqual(rules["exterior_boundary_missing_count"]["expected"], 0)
+        self.assertEqual(rules["nonexterior_boundary_selected_count"]["expected"], 0)
         self.assertEqual(rules["port_1_boundary_count"]["operator"], "gte")
         self.assertIn("port_boundary_count_symmetry", rules)
+
+    def test_exterior_partition_accepts_only_complete_disjoint_selection(self) -> None:
+        audit = audit_exterior_boundary_partition(
+            exterior_boundary_ids=[3, 5, 12, 20, 48, 51],
+            port_boundary_ids={"port_1": [3, 5], "port_2": [51]},
+            open_boundary_ids=[12, 20, 48],
+        )
+        self.assertEqual(audit["status"], "pass")
+        self.assertEqual(audit["port_boundary_count"], 3)
+        self.assertEqual(audit["open_boundary_count"], 3)
+        self.assertEqual(audit["exterior_boundary_missing_count"], 0)
+
+    def test_exterior_partition_rejects_overlap_missing_and_nonexterior(self) -> None:
+        cases = (
+            (
+                {"port_1": [3, 5], "port_2": [51]},
+                [12, 20, 48, 51],
+                "port_open_overlap",
+            ),
+            (
+                {"port_1": [3, 5], "port_2": [51]},
+                [12, 20],
+                "missing",
+            ),
+            (
+                {"port_1": [3, 5], "port_2": [51]},
+                [12, 20, 48, 99],
+                "nonexterior",
+            ),
+            (
+                {"port_1": [3, 5], "port_2": [5]},
+                [12, 20, 48, 51],
+                "port selections overlap",
+            ),
+        )
+        for ports, open_ids, message in cases:
+            with self.subTest(message=message), self.assertRaisesRegex(
+                InvalidInputError,
+                message,
+            ):
+                audit_exterior_boundary_partition(
+                    exterior_boundary_ids=[3, 5, 12, 20, 48, 51],
+                    port_boundary_ids=ports,
+                    open_boundary_ids=open_ids,
+                )
 
     def test_evaluator_rejects_unknown_and_missing_parameters(self) -> None:
         parameters = self.parameters()
