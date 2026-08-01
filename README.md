@@ -1,6 +1,6 @@
 # Photonic Waveguide Optics Skill and Workflow
 
-[![Validate skill](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/validate.yml/badge.svg)](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/validate.yml)
+[![CI: validate and test](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/validate.yml/badge.svg)](https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/actions/workflows/validate.yml)
 
 `photonic-workflow` is an installable local Python runtime and Codex skill for
 auditable photonic-integrated-circuit design closure. It connects design

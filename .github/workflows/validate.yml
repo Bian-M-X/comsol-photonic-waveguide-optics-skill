@@ -1,4 +1,4 @@
-name: Validate skill and runtime
+name: CI: validate and test
 
 on:
   push:
@@ -44,6 +44,9 @@ jobs:
 
       - name: Validate skill and UI metadata schemas
         run: python -B scripts/test_skill_metadata.py
+
+      - name: Verify cross-agent skill compatibility
+        run: python -B scripts/test_agent_compatibility.py
 
       - name: Compile maximum-bound generated Java fragments
         env:
