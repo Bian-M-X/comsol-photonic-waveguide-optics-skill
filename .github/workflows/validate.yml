@@ -190,7 +190,13 @@ jobs:
             "${{ github.event_name }}" -eq "push" -and
             "${{ github.event.before }}" -notmatch '^0+$'
           ) {
-            git diff --check "${{ github.event.before }}...${{ github.sha }}"
+            $before = "${{ github.event.before }}"
+            git cat-file -e "$before" 2>$null
+            if ($LASTEXITCODE -eq 0) {
+              git diff --check "$before...${{ github.sha }}"
+            } else {
+              Write-Output "Skipping whitespace check: before SHA $before is not resolvable (rewritten history)."
+            }
           }
           else {
             git show --check --oneline HEAD
