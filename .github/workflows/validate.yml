@@ -167,6 +167,11 @@ jobs:
           if ($payload.data.batch_capable -ne $false) {
             throw "Missing MATLAB was incorrectly reported batch-capable"
           }
+          Write-Output "MATLAB-UNAVAILABLE-CHECK-PASSED"
+          # PowerShell 7 otherwise propagates the captured nonzero child exit
+          # code (exit 3 from the expected unavailable probe) as the process
+          # exit code even though every check above passed.
+          exit 0
 
       - name: Audit repository artifacts
         shell: pwsh
