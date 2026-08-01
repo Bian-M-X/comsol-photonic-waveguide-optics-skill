@@ -37,7 +37,7 @@ jobs:
           java-version: "21"
 
       - name: Install pinned validation tooling
-        run: python -m pip install --disable-pip-version-check "PyYAML>=6.0.3,<7" ruff==0.16.1
+        run: python -m pip install --disable-pip-version-check -e . "PyYAML>=6.0.3,<7" ruff==0.16.1
 
       - name: Enforce the repository lint baseline
         run: ruff check src tests scripts
@@ -153,9 +153,11 @@ jobs:
       - name: Verify structured MATLAB-unavailable behavior
         shell: pwsh
         run: |
-          $lines = & photonic matlab check --executable matlab_photonic_ci_missing.exe --json
+          $raw = & photonic matlab check --executable matlab_photonic_ci_missing.exe --json 2>&1
           $code = $LASTEXITCODE
-          $payload = ($lines -join "`n") | ConvertFrom-Json
+          Write-Output "exit_code=$code captured_lines=$($raw.Count)"
+          Write-Output ($raw -join "`n")
+          $payload = $raw | Out-String | ConvertFrom-Json
           if ($code -ne 3) {
             throw "Missing MATLAB must exit 3, found $code"
           }
