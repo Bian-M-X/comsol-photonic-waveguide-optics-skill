@@ -42,6 +42,7 @@ from .models import (
     MeasurementManifest,
     ModelCard,
     OptimizationSpec,
+    OptimizationTrial,
     PackagingConstraint,
     PdkManifest,
     PromotionDecision,
@@ -59,7 +60,7 @@ from .models.io import (
     revalidate_internal,
     write_contract,
 )
-from .optimization import plan_optimization
+from .optimization import plan_optimization, suggest_candidate
 from .packaging import assert_tapeout_editable
 from .pdk import validate_pdk_manifest
 from .project import create_project_scaffold
@@ -759,6 +760,23 @@ def optimize_group() -> None:
 def optimize_plan(spec: Path, json_output: bool) -> None:
     model = _typed(spec, "OptimizationSpec", OptimizationSpec)
     _emit("photonic optimize plan", plan_optimization(model), json_output=json_output)
+
+
+@optimize_group.command("suggest")
+@click.argument("spec", type=click.Path(exists=True, dir_okay=False, path_type=Path))
+@click.option("--trials", type=click.Path(exists=True, file_okay=False, path_type=Path), required=True)
+@click.option("--pool-size", type=click.IntRange(64, 4096), default=1024, show_default=True)
+@click.option("--local-radius", type=click.FloatRange(min=0, max=1, min_open=True), default=0.25, show_default=True)
+@click.option("--json", "json_output", is_flag=True)
+def optimize_suggest(spec: Path, trials: Path, pool_size: int, local_radius: float, json_output: bool) -> None:
+    """Suggest one continuous candidate from frozen trials; read-only, no solver."""
+    model = _typed(spec, "OptimizationSpec", OptimizationSpec)
+    trial_files = sorted(trials.glob("*.json"))
+    if len(trial_files) > 512:
+        raise InvalidInputError("suggest reads at most 512 trial files")
+    history = [_typed(path, "OptimizationTrial", OptimizationTrial) for path in trial_files]
+    data = suggest_candidate(model, history, pool_size=pool_size, local_radius=local_radius)
+    _emit("photonic optimize suggest", data, json_output=json_output)
 
 
 def _optimization_execution_unavailable(command: str, spec: Path, json_output: bool) -> None:

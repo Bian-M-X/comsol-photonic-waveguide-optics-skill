@@ -45,16 +45,22 @@ SERVER_NAME = "photonic-waveguide-optics-mcp"
 REFERENCE_RESOURCES = {
     name: f"references/{name}.md"
     for name in (
+        "adjoint-and-fabrication",
+        "comsol-adjoint-inverse-design",
         "comsol-mcp-evaluation",
         "comsol-field-physical-audit",
+        "comsol-performance",
         "device-family-workflows",
         "engineering-workflow",
         "environment-and-runner",
         "frequency-domain-source-sweeps",
         "hierarchical-device-workflow",
         "interferometer-workflows",
+        "inverse-design-evidence",
         "legal-and-trademark-notes",
+        "low-cost-optimization",
         "modeling-recipes",
+        "multifidelity-and-error-budgets",
         "optimization-and-reporting",
         "project-structure-and-git",
         "quantum-photonic-knowledge-base",
@@ -664,6 +670,12 @@ def default_skill_root() -> Path:
 
 
 def main(argv: list[str] | None = None) -> int:
+    # MCP stdio is UTF-8 regardless of the Windows console/redirected locale.
+    # StringIO test transports have no reconfigure method and already use str.
+    for stream in (sys.stdin, sys.stdout):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if callable(reconfigure):
+            reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description="stdio MCP transport for photonic-workflow.")
     parser.add_argument("--skill-root", type=Path, default=default_skill_root())
     parser.add_argument("--allow-root", action="append", default=[], help="Legacy writable/readable root.")

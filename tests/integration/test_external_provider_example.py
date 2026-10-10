@@ -24,7 +24,7 @@ class ExternalProviderExampleTests(unittest.TestCase):
         )
         self.assertEqual(
             metadata["project"]["dependencies"],
-            ["photonic-workflow>=0.5,<0.6"],
+            ["photonic-workflow>=0.5,<0.7"],
         )
 
         example_source = str(EXAMPLE_ROOT / "src")

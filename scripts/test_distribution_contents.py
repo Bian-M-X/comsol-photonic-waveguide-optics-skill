@@ -9,6 +9,11 @@ import zipfile
 from pathlib import Path, PurePosixPath
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+NATIVE_EXAMPLE_NAMES = {
+    "README.md", "HadamardNative.java", "run.py", "campaign.py",
+    "analyze.py", "extract_mask.py", "plot_results.py",
+    "CvfDiscreteGradientProbe.java", "check_discrete_gradient.py",
+}
 
 WHEEL_REQUIRED_SUFFIXES = (
     "photonic_workflow/adapters/testing.py",
@@ -21,9 +26,18 @@ WHEEL_REQUIRED_SUFFIXES = (
 SDIST_REQUIRED_RELATIVE_PATHS = (
     "SKILL.md",
     "CHANGELOG.md",
+    "README.zh.md",
     "photonic.toml.example",
     "docs/maintenance.md",
+    "docs/research/workflow-upgrade-2026-09-results.json",
     "docs/providers/authoring-third-party-adapter.md",
+    "docs/showcases/hadamard-2d/README.md",
+    "docs/showcases/hadamard-2d/verify.py",
+    "docs/showcases/hadamard-2d/evidence/bundle.json",
+    "docs/showcases/hadamard-2d/evidence/mask.json",
+    "docs/showcases/hadamard-2d/evidence/manifest.json",
+    "docs/showcases/hadamard-2d/evidence/numeric-verification.json",
+    "docs/showcases/hadamard-2d/evidence/startup-gradient-audit.json",
     "examples/minimal-adapter-provider/pyproject.toml",
     "examples/minimal-adapter-provider/src/photonic_example_adapter/__init__.py",
     "examples/recipes/circular-route.json",
@@ -47,6 +61,16 @@ def main() -> int:
 
     with zipfile.ZipFile(wheels[0]) as archive:
         wheel_names = set(archive.namelist())
+        native_prefix = "photonic_workflow/data/skill/examples/comsol-hadamard-inverse/"
+        native_names = {name.removeprefix(native_prefix) for name in wheel_names if name.startswith(native_prefix)}
+        if native_names != NATIVE_EXAMPLE_NAMES:
+            raise RuntimeError(f"wheel native example file set differs: {sorted(native_names)}")
+        for name in NATIVE_EXAMPLE_NAMES:
+            original = REPOSITORY_ROOT / "examples/comsol-hadamard-inverse" / name
+            if archive.read(native_prefix + name) != original.read_bytes():
+                raise RuntimeError(f"wheel original native source differs: {name}")
+    if any("comsol-euler-bend" in name for name in wheel_names):
+        raise RuntimeError("wheel contains private Euler example")
     for suffix in WHEEL_REQUIRED_SUFFIXES:
         if not any(name.endswith(suffix) for name in wheel_names):
             raise RuntimeError(f"wheel is missing {suffix}")
@@ -75,6 +99,7 @@ def main() -> int:
             if len(PurePosixPath(name).parts) > 1
         }
     forbidden_sdist_prefixes = (
+        PurePosixPath("examples/comsol-euler-bend").parts,
         PurePosixPath("examples/minimal-adapter-provider/build").parts,
         PurePosixPath(
             "examples/minimal-adapter-provider/src/"
@@ -92,6 +117,15 @@ def main() -> int:
         parts = PurePosixPath(relative).parts
         if parts not in sdist_names:
             raise RuntimeError(f"sdist is missing {relative}")
+    native_sdist_prefix = PurePosixPath("examples/comsol-hadamard-inverse").parts
+    native_sdist_files = {
+        name[-1] for name in sdist_names
+        if name[:2] == native_sdist_prefix and len(name) == 3
+    }
+    if native_sdist_files != NATIVE_EXAMPLE_NAMES or any(
+        name[:2] == native_sdist_prefix and len(name) > 3 for name in sdist_names
+    ):
+        raise RuntimeError("sdist native example is not the finite original file set")
 
     print(
         json.dumps(

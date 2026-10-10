@@ -2,6 +2,12 @@
 
 Use this reference for parameter sweeps, inverse-design workflows, energy diagnostics, model comparison, 2D-to-3D progression, and reproducible reporting.
 
+For an expensive search, choose a representation and budget using
+`low-cost-optimization.md`. High-dimensional design uses `adjoint-and-fabrication.md`;
+cross-fidelity ranking uses `multifidelity-and-error-budgets.md`. Solver/hardware
+choices are in `comsol-performance.md`, and paper-to-method decisions are in
+`inverse-design-evidence.md`. Load only the route needed for the task.
+
 ## Contents
 
 - [Sweep Strategy](#sweep-strategy)
@@ -68,8 +74,8 @@ For an LT-aMZI:
 ```text
 score = max(T21)
         - penalty(peak_nonuniformity)
-        - penalty(S11_at_peak)
-        - penalty(radiation_or_uncollected)
+        - penalty(R11_at_peak)
+        - penalty(integrated_radiation_and_absorption)
         - penalty(FSR_error)
 ```
 
@@ -80,11 +86,13 @@ Possible metrics:
 - extinction ratio
 - insertion loss
 - FSR mean and standard deviation
-- `S11` at peaks
-- `T21 + S11`
+- `R11 = abs(S11)^2` at peaks
+- `T21 + R11` (collected modal power for this two-channel example)
 - peak-to-peak nonuniformity
 
-Correct FSR with low peak transmission usually means the topology and phase are working, but coupling, return matching, boundary loss, bend loss, or mesh still need optimization.
+Correct FSR with low peak transmission is consistent with the expected delay,
+but does not by itself validate topology, absolute phase, loss or boundary settings.
+Check coupling, return matching and numerical convergence before attributing loss.
 
 ## Energy Diagnostics
 
@@ -94,13 +102,14 @@ For a low-loss two-port reflected-output model:
 T21 = abs(S21)^2
 R11 = abs(S11)^2
 Ssum = T21 + R11
-radiation_or_uncollected = 1 - Ssum
+unaccounted_power_fraction = 1 - Ssum
 ```
 
 Interpretation:
 
 - high `R11`: reflection, port mismatch, or poor round-trip coupler matching
-- low `Ssum`: radiation, boundary absorption, bend loss, or uncollected channels
+- low `Ssum`: investigate missing guided channels, radiation, absorption and
+  numerical imbalance separately; the residual alone identifies none of them
 - correct FSR but low T21: optimize couplers and losses, do not rebuild topology first
 - no fringes: check `DeltaL`, couplers, ports, and sweep range
 
@@ -118,7 +127,9 @@ For parameter sweeps or inverse design:
 7. Best candidates and summaries are saved for restartability.
 
 The current runtime plans this external loop and records generic optimization
-contracts. It does not expose a native COMSOL/Lumerical/Tidy3D adjoint gradient,
+contracts. Its read-only `optimize suggest` now supplies bounded low-dimensional
+GP-EI candidates from frozen trial records; see `low-cost-optimization.md`.
+It does not expose a native COMSOL/Lumerical/Tidy3D adjoint gradient,
 differentiate the solver, or provide a qualified topology optimizer. Treat
 `optimize run`/`resume` execution as unavailable until a backend-specific
 gradient interface, versioned fixture, failure cleanup, and claim boundary pass
@@ -157,9 +168,11 @@ claimed; exploratory optical screening remains labeled accordingly.
 
 For expensive or noisy objectives:
 
-- start with coarse sweeps
-- then local refinement
-- use SPSA or small NSGA only after the objective is stable
+- measure a small pilot and reserve final verification budget
+- choose GP/local search for a few expensive variables, or a checked adjoint for
+  high-dimensional smooth design; do not default to a population method
+- use SPSA or a small population only when gradient access/noise/discreteness
+  warrants it and a matched-budget pilot supports the choice
 - limit parallelism unless runtime directories and license behavior are well understood
 - treat foreground timeouts as inconclusive until logs and output folders are checked
 

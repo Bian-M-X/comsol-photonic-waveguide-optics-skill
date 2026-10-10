@@ -1,0 +1,7 @@
+{
+  "schema": "hadamard-2d-export-manifest-v1",
+  "files": {
+    "bundle.json": "316cf8787c2775c0b07d1a3f3735f581b061f899f8e1cddbb9f12fd2f00ba30f",
+    "mask.json": "90bdfde4ff488e0e64b05933d9d9428ee6cc712d09a19f7f228b03b7ce3d4dc7"
+  }
+}

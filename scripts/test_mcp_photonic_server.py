@@ -119,6 +119,19 @@ def main() -> None:
             )
             resources = send(proc, {"jsonrpc": "2.0", "id": 2, "method": "resources/list"})
             tools = send(proc, {"jsonrpc": "2.0", "id": 3, "method": "tools/list"})
+            optimization_references = [
+                "low-cost-optimization", "adjoint-and-fabrication", "multifidelity-and-error-budgets",
+                "comsol-performance", "inverse-design-evidence", "comsol-adjoint-inverse-design",
+            ]
+            for index, name in enumerate(optimization_references):
+                reference = send(proc, {
+                    "jsonrpc": "2.0", "id": 1000 + index, "method": "resources/read",
+                    "params": {"uri": f"photonic://skill/reference/{name}"},
+                })
+                actual_text = reference["result"]["contents"][0]["text"]
+                expected_text = (Path(args.skill_root) / "references" / f"{name}.md").read_text(encoding="utf-8")
+                if actual_text != expected_text:
+                    raise RuntimeError(f"MCP optimization reference content mismatch: {name}")
             source_sweep_reference = send(
                 proc,
                 {
@@ -373,6 +386,7 @@ def main() -> None:
         "recipe_artifact_verified": True,
         "tool_names": [tool["name"] for tool in tools["result"]["tools"]],
         "manifest_bytes": len(manifest["result"]["contents"][0]["text"]),
+        "optimization_references_verified": optimization_references,
         "parse_summary": summary,
         "regressions": {
             "array_request_error": invalid_array.get("error"),

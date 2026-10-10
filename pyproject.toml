@@ -33,6 +33,7 @@ Changelog = "https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/
 Releases = "https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/releases"
 
 [project.optional-dependencies]
+inverse-design = ["scipy>=1.11,<2", "matplotlib>=3.8,<4", "contourpy>=1.2,<2"]
 layout = ["gdsfactory", "kfactory", "gplugins"]
 circuit = ["sax"]
 sparams = ["scikit-rf"]
@@ -84,6 +85,10 @@ photonic_workflow = [
   "data/matlab/**/*.m",
   "data/skill/references/*.md",
   "data/skill/agents/*.md",
+  "data/skill/examples/comsol-hadamard-inverse/*.py",
+  "data/skill/examples/comsol-hadamard-inverse/*.java",
+  "data/skill/examples/comsol-hadamard-inverse/*.md",
+  "data/skill/examples/comsol-hadamard-inverse/*.json",
 ]
 
 [tool.pytest.ini_options]

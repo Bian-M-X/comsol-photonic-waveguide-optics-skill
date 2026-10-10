@@ -2075,16 +2075,22 @@
   "mcp": {
     "resources": [
       "photonic://server/manifest",
+      "photonic://skill/reference/adjoint-and-fabrication",
+      "photonic://skill/reference/comsol-adjoint-inverse-design",
       "photonic://skill/reference/comsol-field-physical-audit",
       "photonic://skill/reference/comsol-mcp-evaluation",
+      "photonic://skill/reference/comsol-performance",
       "photonic://skill/reference/device-family-workflows",
       "photonic://skill/reference/engineering-workflow",
       "photonic://skill/reference/environment-and-runner",
       "photonic://skill/reference/frequency-domain-source-sweeps",
       "photonic://skill/reference/hierarchical-device-workflow",
       "photonic://skill/reference/interferometer-workflows",
+      "photonic://skill/reference/inverse-design-evidence",
       "photonic://skill/reference/legal-and-trademark-notes",
+      "photonic://skill/reference/low-cost-optimization",
       "photonic://skill/reference/modeling-recipes",
+      "photonic://skill/reference/multifidelity-and-error-budgets",
       "photonic://skill/reference/optimization-and-reporting",
       "photonic://skill/reference/project-structure-and-git",
       "photonic://skill/reference/quantum-photonic-knowledge-base",
@@ -4523,6 +4529,76 @@
           "default": true,
           "options": [
             "--dry-run"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "json_output",
+          "kind": "Option",
+          "type": "boolean",
+          "required": false,
+          "nargs": 1,
+          "default": false,
+          "options": [
+            "--json"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        }
+      ]
+    },
+    "photonic optimize suggest": {
+      "kind": "Command",
+      "parameters": [
+        {
+          "name": "spec",
+          "kind": "Argument",
+          "type": "file",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "spec"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "trials",
+          "kind": "Option",
+          "type": "directory",
+          "required": true,
+          "nargs": 1,
+          "default": null,
+          "options": [
+            "--trials"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "pool_size",
+          "kind": "Option",
+          "type": "integer range",
+          "required": false,
+          "nargs": 1,
+          "default": 1024,
+          "options": [
+            "--pool-size"
+          ],
+          "secondary_options": [],
+          "multiple": false
+        },
+        {
+          "name": "local_radius",
+          "kind": "Option",
+          "type": "float range",
+          "required": false,
+          "nargs": 1,
+          "default": 0.25,
+          "options": [
+            "--local-radius"
           ],
           "secondary_options": [],
           "multiple": false

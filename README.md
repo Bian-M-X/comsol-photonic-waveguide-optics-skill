@@ -24,6 +24,43 @@ remote services are bounded adapters; this project does not replace an
 electromagnetic solver, foundry signoff, calibrated measurement, or engineering
 judgment.
 
+## New in 0.6.0: Lower-cost inverse design
+
+The skill now routes by design representation and measured evaluation cost:
+[budgeted search](references/low-cost-optimization.md),
+[adjoint and fabrication](references/adjoint-and-fabrication.md),
+[multi-fidelity and error budgets](references/multifidelity-and-error-budgets.md),
+and [COMSOL performance](references/comsol-performance.md).
+The [evidence review](references/inverse-design-evidence.md) separates implemented
+tools, published methods and local solver evidence.
+
+`photonic optimize suggest SPEC --trials TRIAL_DIRECTORY --json` proposes one
+candidate without running a solver. Failed attempts consume budget; pending
+trials block another ask; final validation is reserved. It is a small experimental
+single-fidelity GP-EI proposer, not a native adjoint or automated COMSOL campaign.
+Run `python examples/optimization/analytic_coupler.py --output NEW_DIRECTORY`
+for a matched-budget software experiment. Analytic coefficients are uncalibrated.
+
+The [native Hadamard example](examples/comsol-hadamard-inverse/README.md) adds an
+executable COMSOL adjoint/MMA route: a filtered density field, projection and mesh
+continuation, a worst-wavelength complex gate objective, binary reconstruction,
+and a locked validation campaign. It measures all eight guided-mode source
+columns, checks an independent flux contour and incoming-mode normalization,
+and keeps solver execution separate from device acceptance. The 0.6.0
+[qualified 2D Hadamard showcase](docs/showcases/hadamard-2d/README.md) passed
+all 19 locked checks and 13 convergence comparisons on 2026-10-10, with an
+independent raw-matrix completion audit. This qualifies the selected binary
+bulk-index surrogate at seven discrete wavelengths; it establishes no continuous
+band, 3D-stack or fabrication result. Earlier failures and the selected design
+lineage remain documented separately from the final validation cost.
+
+One public skill routes to these methods because they share optical conventions,
+solver infrastructure and evidence contracts. Independently installed copies
+would duplicate those rules. A new family member is justified only when its
+invocation, dependencies and behavioral tests can stand alone.
+The MCP surface is now 13 tools / 35 resources.
+See the [implementation and validation report](docs/research/workflow-upgrade-2026-09.md).
+
 ## New in 0.5.0: Task-Scoped Engineering
 
 The skill starts from the requested model, code or data and loads the relevant
@@ -59,7 +96,7 @@ profiles in the project contract or handoff.
 **Tools and structure:** a compact entrypoint, on-demand qualification/tool
 references, and three new MCP tools—`list_recipes`, `inspect_recipe`,
 `render_recipe`—expose six existing deterministic recipes. The server now has
-13 tools and 29 resources. Rendering creates bounded files; it does not execute
+13 tools and 29 resources in that release. Rendering creates bounded files; it does not execute
 a solver. Direct, authorized Java/Python/MATLAB model development remains
 available beyond recipe coverage.
 
@@ -151,11 +188,11 @@ bookkeeping.
 >
 > Python package and CLI: `photonic-workflow` / `photonic`
 >
-> Current package version: `0.5.0` (alpha)
+> Current package version: `0.6.0` (alpha)
 >
 > Repository: `Bian-M-X/comsol-photonic-waveguide-optics-skill`
 
-## What Version 0.5.0 Provides
+## What Version 0.6.0 Provides
 
 | Surface | Current role |
 |---|---|

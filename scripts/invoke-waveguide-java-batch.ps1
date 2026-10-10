@@ -16,6 +16,8 @@ param(
   # Backward-compatible alias retained for callers of the pre-0.4 wrapper.
   [string]$JavacExecutable,
   [string]$BatchExecutable,
+  [ValidateRange(0, 256)]
+  [int]$Processors = 0,
   [switch]$DryRun,
   [switch]$ShowFullPaths
 )
@@ -61,6 +63,7 @@ $batchArgs = @(
   "-outputfile", $OutputFile,
   "-batchlog", $BatchLog
 )
+if ($Processors -gt 0) { $batchArgs = @("-np", [string]$Processors) + $batchArgs }
 $outputDirectory = Split-Path -Parent $OutputFile
 $outputStem = [System.IO.Path]::GetFileNameWithoutExtension($OutputFile)
 
@@ -75,7 +78,8 @@ if ($DryRun) {
   if ($ShowFullPaths) {
     Write-Host "`"$batch`" $($batchArgs -join ' ')"
   } else {
-    Write-Host "batch-executable -prefsdir <runtime prefs> -configuration <runtime config> -tmpdir <runtime tmp> -inputfile `"$classFile`" -outputfile `"$OutputFile`" -batchlog `"$BatchLog`""
+    $processorPreview = if ($Processors -gt 0) { " -np $Processors" } else { "" }
+    Write-Host "batch-executable$processorPreview -prefsdir <runtime prefs> -configuration <runtime config> -tmpdir <runtime tmp> -inputfile `"$classFile`" -outputfile `"$OutputFile`" -batchlog `"$BatchLog`""
   }
   return
 }

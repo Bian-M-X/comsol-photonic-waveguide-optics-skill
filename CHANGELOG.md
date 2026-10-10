@@ -4,7 +4,64 @@ All notable changes are recorded here. Versions follow Semantic Versioning;
 recipe schema and recipe semantic versions are maintained independently from
 the host package version.
 
-## [Unreleased]
+## [0.6.0] - 2026-10-10
+
+### Added
+
+- Read-only `photonic optimize suggest` for bounded continuous, single-fidelity
+  GP-EI candidate suggestions, with frozen-spec provenance, pending/failure
+  accounting, observed constraints and a reserved final-validation budget.
+- Solver-independent filter/projection derivatives, complex matrix metrics,
+  sampled gradient checks, smooth worst-case loss and conditional error-budget
+  comparison/allocation; no new core dependencies or automatic solver execution.
+- Weighted physical-density grayness and threshold-discrepancy diagnostics;
+  material-field bounds are kept separate from optical-error and fabrication claims.
+- Six on-demand inverse-design references linking four supplied papers and
+  recent primary sources to representation, fabrication, fidelity and cost decisions.
+- Reproducible analytic ask/tell comparison and a serial Windows COMSOL direct-
+  solver benchmark with isolated runtime directories and owned-process timeout.
+- Original native COMSOL adjoint/MMA example with a Helmholtz-filtered density
+  field, mirror mapping, projection/mesh continuation, binary contour extraction,
+  source-conditioned eight-mode scattering and a bounded qualification campaign.
+- Domain-backed slit/PML termination, independent bidirectional modal projection,
+  signed flux closure and all-input logical throughput from the smallest singular
+  value; a failed incoming-mode check cannot be repaired by matrix inversion.
+- Qualified [2D Hadamard showcase](docs/showcases/hadamard-2d/README.md), completed
+  2026-10-10: all nineteen locked checks and thirteen convergence comparisons pass,
+  independently recomputed from the raw eight-mode matrices and flux records.
+  Qualification covers the selected binary bulk-index surrogate at seven discrete
+  wavelengths; it makes no continuous-band, 3D or fabrication claim.
+
+### Changed
+
+- Added optional `-Processors` to the Java batch wrapper. Retained default
+  behavior, one-worker execution and existing project-specific physics gates.
+- Corrected two-channel power accounting to distinguish `R11=abs(S11)^2` from
+  amplitude and unaccounted power from physically identified loss.
+- Exposed six new MCP references (35 resources, still 13 tools), with explicit
+  resource-read and installed-package verification. Contract schemas remain 1.0.
+- Added optional inverse-design dependencies and solver-free coverage for mask
+  extraction, complex Hadamard metrics and the native COMSOL runner contract.
+  Software coverage alone does not establish physical acceptance; the separately
+  audited native showcase supplies the declared 2D qualification evidence.
+- Required solution-error termination for the coupled filter/Maxwell Newton solve:
+  a small residual could leave sensitivity using the preceding field's Jacobian.
+  Two-step finite differences verify the repaired chain before optimization.
+- Exposed bounded MMA/GCMMA, move-limit and per-stage evaluation-limit controls
+  with native readback. Five-frequency checkpoints can use frozen export recovery;
+  this rechecks the original training settings and does not rerun optimization.
+- Preserve completed and partial native evaluation costs, and reconstruct both
+  objective profiles from receipt-bound training amplitudes. Observed evaluation
+  overruns stop later jobs without discarding the physical result.
+- Explicitly restore the example's mirror constraint during contour extraction;
+  bind previews to the actual mask, field and freshly analyzed native evidence.
+- Run the unchanged nineteen locked checks with training/numerical checks first
+  and holdouts last; stop on the first failed gate and never report partial PASS.
+- Align campaign schema 3 with the independently exercised coherent restart
+  lineage, six observed binary-threshold trials and a 36-job maximum. Preserve
+  the nineteen validation configurations, thirteen comparison pairs and gates.
+  The selected lineage and its later frozen-mask qualification are disclosed;
+  this is not a claim of a new uninterrupted default-campaign execution.
 
 ## [0.5.0] - 2026-09-09
 
@@ -106,6 +163,6 @@ Implementation and validation: OpenAI Codex.
   required normal interactive Windows context. LiveLink, Lumerical, instruments,
   and real PDK/DRC/LVS integrations remain separate Phase C adoption gates.
 
-[Unreleased]: https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/compare/v0.5.0...HEAD
+[0.6.0]: https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/compare/v0.5.0...main
 [0.5.0]: https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill/releases/tag/v0.4.0

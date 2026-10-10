@@ -21,6 +21,35 @@
 MATLAB、Lumerical、版图/PDK 工具、仪器和远程服务都只是受限 adapter；本项目
 不替代电磁求解器、晶圆厂签核、校准测量或工程师的物理裁决。
 
+## 0.6.0 更新：降低逆向设计的评估成本
+
+保留一个主 skill，按需读取四条路线：
+[预算与参数搜索](references/low-cost-optimization.md)、
+[伴随梯度与制造约束](references/adjoint-and-fabrication.md)、
+[多保真与误差预算](references/multifidelity-and-error-budgets.md)、
+[COMSOL 性能](references/comsol-performance.md)。
+[文献证据表](references/inverse-design-evidence.md)区分已实现工具、论文方法和本机实测。
+
+新增 `photonic optimize suggest SPEC --trials TRIAL_DIRECTORY --json`：只读建议下一个
+候选，失败尝试计入预算，未完成试验阻止重复派发，搜索保留最终验证预算。
+这是轻量、实验性的单保真 GP-EI 工具，不负责原生求解器执行。
+运行 `python examples/optimization/analytic_coupler.py --output NEW_DIRECTORY`
+可复现等预算软件对比；解析模型参数未经工艺校准。
+
+[原生 Hadamard 示例](examples/comsol-hadamard-inverse/README.md)另提供可执行的
+COMSOL 伴随/MMA 路线：密度场滤波、投影与网格延续、多波长复数门目标、二值重建
+和冻结掩模后的验证。它独立计算八个导模输入，检查通量闭合和入射归一化。
+0.6.0 的[二维 Hadamard 合格展示](docs/showcases/hadamard-2d/README.md)已于
+2026-10-10 完成十九项冻结掩模检查与十三组收敛比较，并通过独立原始矩阵
+复算审计。该结论限于选定二值材料折射率二维替代模型的七个离散波长，
+不构成连续带宽、三维堆栈或制造验收。历史失败、选定设计谱系与最终验证成本
+分别保留。
+
+保留一个主 skill 是因为这些路线共享光学约定、求解器和证据契约；拆成独立安装的
+skill 会重复这些规则。只有新成员具有独立调用意图、依赖和行为测试时才进一步拆分。
+MCP 现有 13 个工具、35 个资源，公共物理验收契约保持不变。
+具体实现、硬件实测与限制见[本轮更新报告](docs/research/workflow-upgrade-2026-09.md)。
+
 ## 0.5.0 更新：按任务选择工程验收范围
 
 新版从用户指定的模型、代码或数据出发，按需读取参考资料，让具备较强判断力的
@@ -120,11 +149,11 @@ MATLAB、Lumerical、版图/PDK 工具、仪器和远程服务都只是受限 ad
 >
 > Python 包与 CLI：`photonic-workflow` / `photonic`
 >
-> 当前包版本：`0.5.0`（alpha）
+> 当前包版本：`0.6.0`（alpha）
 >
 > 仓库：`Bian-M-X/comsol-photonic-waveguide-optics-skill`
 
-## 0.5.0 版本提供的能力
+## 0.6.0 版本提供的能力
 
 | 能力面 | 当前职责 |
 |---|---|

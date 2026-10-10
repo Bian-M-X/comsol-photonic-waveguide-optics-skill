@@ -2,6 +2,7 @@ include LICENSE
 include CHANGELOG.md
 include NOTICE.md
 include README.md
+include README.zh.md
 include SKILL.md
 include photonic.toml.example
 include requirements.txt
@@ -9,6 +10,8 @@ include requirements.txt
 recursive-include agents *.md *.yaml
 recursive-include assets *.json *.csv
 recursive-include docs *.md
+include docs/research/workflow-upgrade-2026-09-results.json
+recursive-include docs/showcases/hadamard-2d *.py *.json *.csv *.png *.svg *.pdf
 recursive-include examples *.py *.toml *.md *.json
 recursive-include matlab *.m
 recursive-include references *.md
@@ -17,3 +20,14 @@ recursive-include tests *.py *.json
 
 prune examples/minimal-adapter-provider/build
 prune examples/minimal-adapter-provider/src/photonic_example_adapter.egg-info
+prune examples/comsol-euler-bend
+prune examples/comsol-hadamard-inverse
+include examples/comsol-hadamard-inverse/README.md
+include examples/comsol-hadamard-inverse/HadamardNative.java
+include examples/comsol-hadamard-inverse/run.py
+include examples/comsol-hadamard-inverse/campaign.py
+include examples/comsol-hadamard-inverse/analyze.py
+include examples/comsol-hadamard-inverse/extract_mask.py
+include examples/comsol-hadamard-inverse/plot_results.py
+include examples/comsol-hadamard-inverse/CvfDiscreteGradientProbe.java
+include examples/comsol-hadamard-inverse/check_discrete_gradient.py

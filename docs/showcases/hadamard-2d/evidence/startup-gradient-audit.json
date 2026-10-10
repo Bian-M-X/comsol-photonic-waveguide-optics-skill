@@ -1,0 +1,536 @@
+{
+  "checked_utc": "2026-10-10T13:32:47.567520+00:00",
+  "status": "pass",
+  "independent_audit_pass": true,
+  "six_fixed_gradient_checks_pass": true,
+  "native_jobs": 6,
+  "checked_fd_comparisons": 12,
+  "gradient_acceptance": {
+    "steps": [
+      0.001,
+      0.0005
+    ],
+    "each_step": "absolute_error < 1e-6 OR relative_error < 0.002",
+    "relative_error": "abs(fd-adjoint)/max(1e-8,abs(fd),abs(adjoint))"
+  },
+  "checks": {
+    "gradient0_wave1520": {
+      "wavelength_nm": 1520.0,
+      "direction": 0,
+      "objective_profile": "coherent",
+      "base_objective": -0.633475254801396,
+      "steps": [
+        {
+          "step": 0.001,
+          "objective_minus": -0.6309118982604858,
+          "objective_plus": -0.6360442239881329,
+          "finite_difference": -2.566162863823551,
+          "adjoint": -2.566171293180301,
+          "absolute_error": 8.429356749939387e-06,
+          "relative_error": 3.284798942432536e-06,
+          "pass": true
+        },
+        {
+          "step": 0.0005,
+          "objective_minus": -0.6321928717905352,
+          "objective_plus": -0.6347590409763858,
+          "finite_difference": -2.5661691858506197,
+          "adjoint": -2.566171293180301,
+          "absolute_error": 2.107329681422243e-06,
+          "relative_error": 8.211960312324251e-07,
+          "pass": true
+        }
+      ],
+      "receipt_sha256": "bd3f2ff6b1a759b350ece24071b4a7355275779025d8ec09c0bd94c4a7a6f319",
+      "native_plan_sha256": "7ddd35ab874696e94c7088c6c99e7b9d926f8f84a90ec4ae92d8b9e876a1ac80",
+      "console_sha256": "ca8baa8a07f8888d7ccb74db41211e02e5da3a65e4e660df9f5a2c657b72770d",
+      "native_artifact_sha256": {
+        "batch.log": "8af597ad623400fb938cc3f110bb726ed4afe34b01fa3526a0f2e493287ec3df",
+        "compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "configured.mph": "c0a92e89b8cf001e03b64010f7e260357f415a4ffffbe1bf101893b0875fbd16",
+        "console.log": "ca8baa8a07f8888d7ccb74db41211e02e5da3a65e4e660df9f5a2c657b72770d",
+        "design.properties": "aff892472f4882f6796ccaa6b1ee661fd4a6161dbb3bcf449dda7b61ef732696",
+        "gradient.mph": "f33db5a9af3485554870df488ed659fc4ad4b96bbf0e35e83b261769c214e188",
+        "HadamardNative.class": "af65fc7808240ac36e443694f445c642196481d73e19a9af2f56d04a9036ac32",
+        "HadamardNative.class.status": "61fb14ee63a041a522e0c568c4271ee9c953c757a34de6dda27bda88b458d75d",
+        "HadamardNative.java": "f9988e0047b212d72795cfb8b466174d242e5895d128e465f5d5b874288b8165",
+        "HadamardNative_Hadamard.mph": "49c7752460eae6bbb7b156b60d9037d1b756b9294eef525bb18ed38559979a5e",
+        "plan.json": "7ddd35ab874696e94c7088c6c99e7b9d926f8f84a90ec4ae92d8b9e876a1ac80"
+      },
+      "receipt_artifacts_verified": 11,
+      "pass": true
+    },
+    "gradient0_wave1536": {
+      "wavelength_nm": 1536.61,
+      "direction": 0,
+      "objective_profile": "coherent",
+      "base_objective": -0.6296105766305591,
+      "steps": [
+        {
+          "step": 0.001,
+          "objective_minus": -0.6271415902769674,
+          "objective_plus": -0.632085055525036,
+          "finite_difference": -2.4717326240343285,
+          "adjoint": -2.471740534553411,
+          "absolute_error": 7.910519082443557e-06,
+          "relative_error": 3.2003840904250953e-06,
+          "pass": true
+        },
+        {
+          "step": 0.0005,
+          "objective_minus": -0.6283753939202787,
+          "objective_plus": -0.6308471324771987,
+          "finite_difference": -2.4717385569199557,
+          "adjoint": -2.471740534553411,
+          "absolute_error": 1.9776334552190633e-06,
+          "relative_error": 8.000975133000269e-07,
+          "pass": true
+        }
+      ],
+      "receipt_sha256": "33b670dea90df20f65de93f167b237a66b07c2a681190ba8c915280455932499",
+      "native_plan_sha256": "c672fe3ebcab81d4e623891cd7434b93ce7e1dcfa2adc6f73633de714dce9764",
+      "console_sha256": "66714432044e643272af420d7d7ccd434545452253e168e9610734d435a9b317",
+      "native_artifact_sha256": {
+        "batch.log": "f1fa6c0e61ce78e756b2b2257719c25cce69d36e6e0b9edda231abf6c218cce9",
+        "compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "configured.mph": "4104a8802a8a17a82e0ec50a4693853e7a59b42004edf0b3fe618095d8feb72c",
+        "console.log": "66714432044e643272af420d7d7ccd434545452253e168e9610734d435a9b317",
+        "design.properties": "7bf04f657d8a7d9b72538ad4be24b393a042e5bddb913c037d5481e78482738b",
+        "gradient.mph": "9364119907203499e4edd9ae126df61d00a4e431811bf938ca4f362d9ca1134c",
+        "HadamardNative.class": "d1b7c8a3480b9d07d23c390c2b20b9480de373f144a98101a20b95e782455627",
+        "HadamardNative.class.status": "c90516e52c8062154553edbd8b9ebbff5d4a3d066f281d0e4465add28c1ca629",
+        "HadamardNative.java": "df1cd1b94e8778da9572561793d749aa3ec8bcf40ce48dde41e81c673a466c0a",
+        "HadamardNative_Hadamard.mph": "3c699e87a251792f7a7260cd92fd5a593039871583eb65d10aa1413bf62870f8",
+        "plan.json": "c672fe3ebcab81d4e623891cd7434b93ce7e1dcfa2adc6f73633de714dce9764"
+      },
+      "receipt_artifacts_verified": 11,
+      "pass": true
+    },
+    "gradient0": {
+      "wavelength_nm": 1550.0,
+      "direction": 0,
+      "objective_profile": "coherent",
+      "base_objective": -0.6265025599527606,
+      "steps": [
+        {
+          "step": 0.001,
+          "objective_minus": -0.6241152290376621,
+          "objective_plus": -0.6288953527240966,
+          "finite_difference": -2.390061843217217,
+          "adjoint": -2.3900695524215174,
+          "absolute_error": 7.709204300265782e-06,
+          "relative_error": 3.225514626741779e-06,
+          "pass": true
+        },
+        {
+          "step": 0.0005,
+          "objective_minus": -0.625308208872223,
+          "objective_plus": -0.6276982764973609,
+          "finite_difference": -2.390067625137826,
+          "adjoint": -2.3900695524215174,
+          "absolute_error": 1.927283691305348e-06,
+          "relative_error": 8.06371383356901e-07,
+          "pass": true
+        }
+      ],
+      "receipt_sha256": "9581bfe55d1a3477e9d15c9040f50ff9d30dacb1bfa31435529c63c660afb902",
+      "native_plan_sha256": "c456a79f34b6fd76eaacdb58214fdded84eb723314f61e00e80d1f467ff3151d",
+      "console_sha256": "b75095667d7a916634f99c67463e54db60116d8b97b20bb598603ec0166b335c",
+      "native_artifact_sha256": {
+        "batch.log": "577e31b16e6ad9a30c7c50888685ecc0a9d33dbcb78c9d5cb96ee39853e29ad0",
+        "compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "configured.mph": "becf2852f3680a154cf263c3b01d27671a594c20f7cc4e994d292fad854b4812",
+        "console.log": "b75095667d7a916634f99c67463e54db60116d8b97b20bb598603ec0166b335c",
+        "design.properties": "e75bed847205b068d4a195cde65c3f8f1e08fa6bf62b030b223ec249f1a05a6e",
+        "gradient.mph": "c4ea407225e8720939c8712133d44a2f94e2e42d10eed1866e16d6696310d953",
+        "HadamardNative.class": "175eee7dd164ffa577aa32c57754a5ca653f8dd044c2ff68eba2e7502a0155cb",
+        "HadamardNative.class.status": "025e8af3035871a5f74bbb89773c77bddf821c269a4994e8cb422b86a5a0f4d6",
+        "HadamardNative.java": "9f07217ba4b199ec7f92b45de5d9eb1b19e55ddf8f119f71660657e168d21704",
+        "HadamardNative_Hadamard.mph": "e5f60dc9e72048874e809e1d6523f2c60dc70dcb40daa9a066eb8db8d06edc81",
+        "plan.json": "c456a79f34b6fd76eaacdb58214fdded84eb723314f61e00e80d1f467ff3151d"
+      },
+      "receipt_artifacts_verified": 11,
+      "pass": true
+    },
+    "gradient0_wave1565": {
+      "wavelength_nm": 1565.0,
+      "direction": 0,
+      "objective_profile": "coherent",
+      "base_objective": -0.6223147376515974,
+      "steps": [
+        {
+          "step": 0.001,
+          "objective_minus": -0.6200191319525123,
+          "objective_plus": -0.6246159086457083,
+          "finite_difference": -2.298388346597957,
+          "adjoint": -2.2983960901918206,
+          "absolute_error": 7.743593863462905e-06,
+          "relative_error": 3.3691294100733685e-06,
+          "pass": true
+        },
+        {
+          "step": 0.0005,
+          "objective_minus": -0.6211662362358921,
+          "objective_plus": -0.6234646303901842,
+          "finite_difference": -2.298394154292116,
+          "adjoint": -2.2983960901918206,
+          "absolute_error": 1.935899704541555e-06,
+          "relative_error": 8.422828914488746e-07,
+          "pass": true
+        }
+      ],
+      "receipt_sha256": "5d06b8477a657c6bb1a68e8b60dbf6059920988bffe80911a428a40ba90b3afb",
+      "native_plan_sha256": "2b0bbd0f9ac9a792afe3e74aa4ae8da6d4b8da35fb6504231a766a135ecd8edf",
+      "console_sha256": "c1ad8dca68a89b6b28858500227f9e92d7f3006143a2ad8842e01ca0f0a90cd4",
+      "native_artifact_sha256": {
+        "batch.log": "8f52288ab61d6ca93bfd55e55112760aed97c3bc27921b8120721cae161da513",
+        "compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "configured.mph": "df89e639ebfcc12b929ef3e7c6215c96730bdb34059874901fd5532196f9c477",
+        "console.log": "c1ad8dca68a89b6b28858500227f9e92d7f3006143a2ad8842e01ca0f0a90cd4",
+        "design.properties": "74cf42b237772add8ffada693e5e313dab7c9beaa93dee3b58f2e411cec30205",
+        "gradient.mph": "1d4eb98a79959bcfc762c4772104293fd86af33437b008590898eb256b6f32a8",
+        "HadamardNative.class": "3049ac8e13fa4935cff9e2ab1aa804634b7b563d80a14fd72f77f8fe6b2458b7",
+        "HadamardNative.class.status": "a13e86ea9914eded82ae4236b3f9155e1e90c4354a4cc830068d2a7be9050766",
+        "HadamardNative.java": "bea900b411328c2107095ee63c77e2eec39edc52aea378823883f2fee57ebe76",
+        "HadamardNative_Hadamard.mph": "5003d4882889c7104bc3bd22cee83d3620b16a388069ba5d94569ec955da2f80",
+        "plan.json": "2b0bbd0f9ac9a792afe3e74aa4ae8da6d4b8da35fb6504231a766a135ecd8edf"
+      },
+      "receipt_artifacts_verified": 11,
+      "pass": true
+    },
+    "gradient0_wave1580": {
+      "wavelength_nm": 1580.0,
+      "direction": 0,
+      "objective_profile": "coherent",
+      "base_objective": -0.6167958544371346,
+      "steps": [
+        {
+          "step": 0.001,
+          "objective_minus": -0.6145892872920344,
+          "objective_plus": -0.6190082632167369,
+          "finite_difference": -2.2094879623512087,
+          "adjoint": -2.2094959381398187,
+          "absolute_error": 7.975788610004031e-06,
+          "relative_error": 3.609777448479435e-06,
+          "pass": true
+        },
+        {
+          "step": 0.0005,
+          "objective_minus": -0.6156918376687656,
+          "objective_plus": -0.6179013316129385,
+          "finite_difference": -2.2094939441729133,
+          "adjoint": -2.2094959381398187,
+          "absolute_error": 1.9939669053670173e-06,
+          "relative_error": 9.024533021073323e-07,
+          "pass": true
+        }
+      ],
+      "receipt_sha256": "a3c2d3cbf49dc2eea693c02aa059861c3b591424372e258f0510627303e28548",
+      "native_plan_sha256": "c246c3cf999ca11bcc7e0992113a2536e511cacafdbbb67896f19da669826011",
+      "console_sha256": "fe8bd376e4fca8873fbff7f5316e5c2b7a26117bd34cc4f174e5c1bcddf17d3a",
+      "native_artifact_sha256": {
+        "batch.log": "4fd5043cd35c5ba03c656043714cae01a0c46c927c796f76a7eaa909ad7ac88a",
+        "compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "configured.mph": "0533d4fa5e10b3222b7a55f2c27f24e9959cda38b5641cd5c52ba82133032f1b",
+        "console.log": "fe8bd376e4fca8873fbff7f5316e5c2b7a26117bd34cc4f174e5c1bcddf17d3a",
+        "design.properties": "613a0620ed6a79be8c0e92b686f313d205e76a0b220c27215b0519aaf172e7c1",
+        "gradient.mph": "16cae17fcae94314d6318839516621033f89a34de8821a025a218c355bb1a04f",
+        "HadamardNative.class": "abe51e537274f8eafdc32d422126f2456bd0aa961b2dbca2aadb9a10e9339509",
+        "HadamardNative.class.status": "f3c6a3dc1e99192a40b0f8c0f717040f2b0b8c1d1da92483e52eb0004e575620",
+        "HadamardNative.java": "75807826c3c2a840e9138d0e2e5acc2a865bbaa867bf76d0ec76a323d0ae66de",
+        "HadamardNative_Hadamard.mph": "a15b4e14d72734bf4e1c76574364d579ab2dd2a54e223b091e889d5ff0b4cceb",
+        "plan.json": "c246c3cf999ca11bcc7e0992113a2536e511cacafdbbb67896f19da669826011"
+      },
+      "receipt_artifacts_verified": 11,
+      "pass": true
+    },
+    "gradient1": {
+      "wavelength_nm": 1550,
+      "direction": 1,
+      "objective_profile": "coherent",
+      "base_objective": -0.6265025599527603,
+      "steps": [
+        {
+          "step": 0.001,
+          "objective_minus": -0.626671098060148,
+          "objective_plus": -0.6263204655274167,
+          "finite_difference": 0.1753162663656327,
+          "adjoint": 0.17531155790471872,
+          "absolute_error": 4.708460913965817e-06,
+          "relative_error": 2.6856954072624596e-05,
+          "pass": true
+        },
+        {
+          "step": 0.0005,
+          "objective_minus": -0.6265885217494213,
+          "objective_plus": -0.6264132090143512,
+          "finite_difference": 0.17531273507009892,
+          "adjoint": 0.17531155790471872,
+          "absolute_error": 1.1771653802006288e-06,
+          "relative_error": 6.714659831928002e-06,
+          "pass": true
+        }
+      ],
+      "receipt_sha256": "3d65bce941beffc3d82811ef67bfe0704f71c132d4f25dd403f04e5e9960323c",
+      "native_plan_sha256": "3654859226e6706e72d2ada5df4bf1b0ea3963f0b269bba14c0f8f6ce6d78d55",
+      "console_sha256": "bf149174c6a499f8e5b263a3a1706af718c0c00a3fb03115598e9b86be5c8c9d",
+      "native_artifact_sha256": {
+        "batch.log": "0c581b45d428d4bfab67b555d1e263c6df1875af162d3f6973d9f8316a678e31",
+        "compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "configured.mph": "a4e9823c9b9ad84f1104102661958ce9131f768aad03ee4fcbec19a11b7e7b9a",
+        "console.log": "bf149174c6a499f8e5b263a3a1706af718c0c00a3fb03115598e9b86be5c8c9d",
+        "design.properties": "d87020a6cee8d044668fcf67cc50c71fce629e758978613df14fc6db4f544b85",
+        "gradient.mph": "1cec74022b27f976843f22efb5803857968d7739dccf60607a641c78985fe9e5",
+        "HadamardNative.class": "2ff02cf737445efa4d813f5a9b24bf8f8257bcbf3e126cb10eaaba4c0b51e3d3",
+        "HadamardNative.class.status": "eaec143c9addfabfcfcbbc77cb218cd9cf9178afd7837f337803898ec2710495",
+        "HadamardNative.java": "dccd98e784e95ea793956e908dbbb58573421cb1e09b906c87bc1ace13d4b78c",
+        "HadamardNative_Hadamard.mph": "b9a88898f2432f41cf370cb9c7a8d218d0a2799ea0af52ffe586a6f12127a09f",
+        "plan.json": "3654859226e6706e72d2ada5df4bf1b0ea3963f0b269bba14c0f8f6ce6d78d55"
+      },
+      "receipt_artifacts_verified": 11,
+      "pass": true
+    }
+  },
+  "maximum_relative_error": 2.6856954072624596e-05,
+  "maximum_absolute_error": 8.429356749939387e-06,
+  "new_six_check_costs_only": {
+    "jobs": [
+      {
+        "name": "gradient0_wave1520",
+        "compile_seconds": 4.552023200001713,
+        "batch_seconds": 63.17223709999962
+      },
+      {
+        "name": "gradient0_wave1536",
+        "compile_seconds": 4.92069679999986,
+        "batch_seconds": 62.7237105000022
+      },
+      {
+        "name": "gradient0",
+        "compile_seconds": 4.891445100001874,
+        "batch_seconds": 64.6082568999991
+      },
+      {
+        "name": "gradient0_wave1565",
+        "compile_seconds": 4.930167300000903,
+        "batch_seconds": 63.619643899997754
+      },
+      {
+        "name": "gradient0_wave1580",
+        "compile_seconds": 5.115285200001381,
+        "batch_seconds": 64.79630840000027
+      },
+      {
+        "name": "gradient1",
+        "compile_seconds": 4.7266220999990765,
+        "batch_seconds": 63.990686999997706
+      }
+    ],
+    "compile_seconds": 29.136239700004808,
+    "batch_seconds": 382.91084379999666,
+    "optimization_jobs": 0,
+    "candidate_trials": 0,
+    "scope": "Only these six new native gradient jobs; excludes prior design, mask selection, center and nineteen-job qualification costs"
+  },
+  "source_sha256": {
+    "analyze.py": "a74cd483971d6acd546a668bcd3833ab0df311097c82ce063c455c13d7c64fff",
+    "campaign.py": "f0a1b41cf54b980ba546429920bbf924883c484fa74be95af84dbbbb07dfc340",
+    "check_discrete_gradient.py": "2eb7aa1cf83529a3fc13aa220c0a57f716ae305a1d42f087b22ebd15d16f1d55",
+    "CvfDiscreteGradientProbe.java": "0d9e447a1a04a1cf3f7db3fd4e59aa36e618ce883ede51ac26c64f41c7474499",
+    "extract_mask.py": "8964d9afcbff58d001d0abf4bf94cc0bd160e22a92cce03b22d0a4504bc70d81",
+    "HadamardNative.java": "50618f298dee18ac8f35c679cd17a795e158e94712240f844ae9c1957390eb78",
+    "plot_results.py": "b03aa4b55270d2e7e754b282340522c885d0527361ebc7dcd74f3f7e3f2ab536",
+    "run.py": "b775df66f0722f3c3ab5f715f4fb4f986125dc33a8137d80b6bb4a183f9fb1ec"
+  },
+  "frozen_dependency_manifest_sha256": "60fbabfd1a51fc809b1e42159b4e9c11fac647a641d02b8fe6682e299e444414",
+  "frozen_plan_sha256": "e5a7f3cc59ee085f9d3ce181f04675e2d9082dbe4d7618b7192e3f1ab262bd5b",
+  "driver_sha256": "7eddec0d24326a17f8367b19422ed0839f64c32f83925c60d14561eae8f692e8",
+  "all_frozen_inputs_unchanged": true,
+  "worker_released": true,
+  "remaining_native_workers": [],
+  "errors": [],
+  "launch_provenance": "Root exec session56157 launched unchanged prepared six-check driver through normal automatic approval review; independent subagent performed this read-only analysis and launched no native job.",
+  "claim_limits": [
+    "Exact coherent-default initial-density directional checks only",
+    "Five wavelengths for direction0; direction1 at1550nm only",
+    "Does not prove all control directions, full optimization convergence, fabrication, or 3D accuracy",
+    "Separate supplemental evidence; the nineteen-job locked binary qualification retains its original frozen provenance"
+  ],
+  "audit_script_sha256": "cac79f7d79d557e20af37b4157f41f83ffd61fa1d1771d096a8c0ec7a722792b",
+  "final_canonical_recipe_binding": {
+    "campaign_sha256": "519bc430a2a773bc17b8ccd60a3072811396525b3961b2b245e4983947e75666",
+    "first_six_gradient_configs_equal": true,
+    "method": "AST-extract only plan() and its literal constants; no canonical runner or package import",
+    "scope": "Only first-six gradient config equality; current full campaign differs from frozen run source outside these configurations"
+  },
+  "fixed_six_configurations": [
+    [
+      "gradient0_wave1520",
+      {
+        "wavelength_nm": 1520.0,
+        "mesh_um": 0.045,
+        "rf_um": 0.05,
+        "beta": 2,
+        "eps_core": 12.1,
+        "eps_clad": 2.1,
+        "guided_modes": 2,
+        "outer_half_um": 3.15,
+        "port_half_um": 1.5,
+        "cladding_mesh_um": 0.1,
+        "fidelity_weight": 10,
+        "training_band": "single",
+        "objective_profile": "coherent",
+        "optimizer": "mma",
+        "move_limit": 0.05,
+        "boundary_model": "slit_pml",
+        "pml_thickness_um": 0.8,
+        "pml_scale": 1,
+        "pml_curvature": 3,
+        "projection_offset_um": 0.2,
+        "mode": "gradient",
+        "direction": 0
+      }
+    ],
+    [
+      "gradient0_wave1536",
+      {
+        "wavelength_nm": 1536.61,
+        "mesh_um": 0.045,
+        "rf_um": 0.05,
+        "beta": 2,
+        "eps_core": 12.1,
+        "eps_clad": 2.1,
+        "guided_modes": 2,
+        "outer_half_um": 3.15,
+        "port_half_um": 1.5,
+        "cladding_mesh_um": 0.1,
+        "fidelity_weight": 10,
+        "training_band": "single",
+        "objective_profile": "coherent",
+        "optimizer": "mma",
+        "move_limit": 0.05,
+        "boundary_model": "slit_pml",
+        "pml_thickness_um": 0.8,
+        "pml_scale": 1,
+        "pml_curvature": 3,
+        "projection_offset_um": 0.2,
+        "mode": "gradient",
+        "direction": 0
+      }
+    ],
+    [
+      "gradient0",
+      {
+        "wavelength_nm": 1550.0,
+        "mesh_um": 0.045,
+        "rf_um": 0.05,
+        "beta": 2,
+        "eps_core": 12.1,
+        "eps_clad": 2.1,
+        "guided_modes": 2,
+        "outer_half_um": 3.15,
+        "port_half_um": 1.5,
+        "cladding_mesh_um": 0.1,
+        "fidelity_weight": 10,
+        "training_band": "single",
+        "objective_profile": "coherent",
+        "optimizer": "mma",
+        "move_limit": 0.05,
+        "boundary_model": "slit_pml",
+        "pml_thickness_um": 0.8,
+        "pml_scale": 1,
+        "pml_curvature": 3,
+        "projection_offset_um": 0.2,
+        "mode": "gradient",
+        "direction": 0
+      }
+    ],
+    [
+      "gradient0_wave1565",
+      {
+        "wavelength_nm": 1565.0,
+        "mesh_um": 0.045,
+        "rf_um": 0.05,
+        "beta": 2,
+        "eps_core": 12.1,
+        "eps_clad": 2.1,
+        "guided_modes": 2,
+        "outer_half_um": 3.15,
+        "port_half_um": 1.5,
+        "cladding_mesh_um": 0.1,
+        "fidelity_weight": 10,
+        "training_band": "single",
+        "objective_profile": "coherent",
+        "optimizer": "mma",
+        "move_limit": 0.05,
+        "boundary_model": "slit_pml",
+        "pml_thickness_um": 0.8,
+        "pml_scale": 1,
+        "pml_curvature": 3,
+        "projection_offset_um": 0.2,
+        "mode": "gradient",
+        "direction": 0
+      }
+    ],
+    [
+      "gradient0_wave1580",
+      {
+        "wavelength_nm": 1580.0,
+        "mesh_um": 0.045,
+        "rf_um": 0.05,
+        "beta": 2,
+        "eps_core": 12.1,
+        "eps_clad": 2.1,
+        "guided_modes": 2,
+        "outer_half_um": 3.15,
+        "port_half_um": 1.5,
+        "cladding_mesh_um": 0.1,
+        "fidelity_weight": 10,
+        "training_band": "single",
+        "objective_profile": "coherent",
+        "optimizer": "mma",
+        "move_limit": 0.05,
+        "boundary_model": "slit_pml",
+        "pml_thickness_um": 0.8,
+        "pml_scale": 1,
+        "pml_curvature": 3,
+        "projection_offset_um": 0.2,
+        "mode": "gradient",
+        "direction": 0
+      }
+    ],
+    [
+      "gradient1",
+      {
+        "wavelength_nm": 1550,
+        "mesh_um": 0.045,
+        "rf_um": 0.05,
+        "beta": 2,
+        "eps_core": 12.1,
+        "eps_clad": 2.1,
+        "guided_modes": 2,
+        "outer_half_um": 3.15,
+        "port_half_um": 1.5,
+        "cladding_mesh_um": 0.1,
+        "fidelity_weight": 10,
+        "training_band": "single",
+        "objective_profile": "coherent",
+        "optimizer": "mma",
+        "move_limit": 0.05,
+        "boundary_model": "slit_pml",
+        "pml_thickness_um": 0.8,
+        "pml_scale": 1,
+        "pml_curvature": 3,
+        "projection_offset_um": 0.2,
+        "mode": "gradient",
+        "direction": 1
+      }
+    ]
+  ],
+  "public_artifact_boundary": {
+    "native_files_included": false,
+    "local_native_receipts_and_artifacts_verified": true,
+    "offline_native_authentication_established_by_this_json": false,
+    "scope": "This reduced supplemental record preserves raw finite-difference observations and native artifact hash references. Native models, classes, logs and original receipts are omitted; their authenticity cannot be established from this JSON alone."
+  }
+}

@@ -51,7 +51,7 @@ EXPECTED_CLI_SURFACE = {
     "measurement": ("inspect",),
     "model": ("build", "compare", "ingest", "inspect", "release", "validate"),
     "netlist": ("backannotate", "compare", "extract", "validate"),
-    "optimize": ("compare", "inspect", "plan", "promote", "resume", "run"),
+    "optimize": ("compare", "inspect", "plan", "promote", "resume", "run", "suggest"),
     "package": ("inspect",),
     "pdk": ("inspect", "validate"),
     "recipe": ("inspect", "list", "render"),

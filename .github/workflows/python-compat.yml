@@ -14,6 +14,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  inverse-design:
+    name: Optional inverse-design numerics
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.13"
+      - name: Install optional inverse-design dependencies
+        run: python -m pip install --disable-pip-version-check -e ".[inverse-design]"
+      - name: Exercise solver-free inverse-design services
+        run: python -B -m unittest tests.unit.test_hadamard_analysis tests.unit.test_hadamard_mask tests.unit.test_hadamard_metrics tests.unit.test_hadamard_runner tests.unit.test_optimization_numerics tests.unit.test_optimization_search
+      - name: Recompute the public Hadamard numerical showcase
+        run: python -B docs/showcases/hadamard-2d/verify.py
+
   quality:
     name: Static quality
     runs-on: ubuntu-latest

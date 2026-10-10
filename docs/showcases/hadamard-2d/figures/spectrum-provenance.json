@@ -1,0 +1,28 @@
+{
+  "bundle_sha256": "316cf8787c2775c0b07d1a3f3735f581b061f899f8e1cddbb9f12fd2f00ba30f",
+  "script_sha256": "ecef4735e7a88aa875135adbeb988ff0fc37453f25dbe6e88444329b9f9d73a8",
+  "artifacts_sha256": {
+    "spectrum-source-data.csv": "1f535dee2d4f8367a72d414f7aacc2ba59eff800243918de29021ee88a46fb2c",
+    "spectrum-discrete.png": "d952e0b887692d05180aeacddcc0da57b6bd3fa3857a414effe53f892104b243",
+    "spectrum-discrete.svg": "8a3f2c7ff2e0ef9ebd07d9a79608fd3a16c65a4aae6ac71f8856a6048b044f8c",
+    "spectrum-discrete.pdf": "a6b6dbfacba1125d9c4dd65eb5febf7ad4271d0aceffa01961078d88b2205988",
+    "spectrum-discrete.alignment.json": "924b5b057168c4577b96eeb25f9c9dd78d69a0912bcaf3f7e41e0b2d5853e053",
+    "spectrum-discrete.alignment.svg": "5e1bb619ac2978a22b366b50d836812a7e3b260dac63ed2eb215bad49ea74dd9"
+  },
+  "text_normalization": "Generated text uses LF; SVG trailing spaces/tabs are removed before hashing",
+  "points": 7,
+  "source_runs": [
+    "wave1520",
+    "wave1536",
+    "holdout1543_3",
+    "mesh020",
+    "wave1565",
+    "holdout1572_3",
+    "wave1580"
+  ],
+  "interpolation": false,
+  "replicates": "One deterministic run per configuration; no statistical uncertainty inferred",
+  "mesh_um": 0.02,
+  "cladding_mesh_um": 0.08,
+  "scope": "Seven discrete wavelength checks, not a continuous spectrum or bandwidth proof"
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "scope": "Single-run binary preview; not multi-wavelength qualification",
+  "mask_sha256": "90bdfde4ff488e0e64b05933d9d9428ee6cc712d09a19f7f228b03b7ce3d4dc7",
+  "field_sha256": "42f6db8829a7d5386f6a389daf3008c6929ea2d7389cea5833012292ab040d2a",
+  "receipt_sha256": "a3ee68a667e4ba7401d60a2a0f831ca0c3dcb0f9783f27606f207b8aac844806",
+  "analyzer_sha256": "a74cd483971d6acd546a668bcd3833ab0df311097c82ce063c455c13d7c64fff",
+  "plotter_sha256": "b03aa4b55270d2e7e754b282340522c885d0527361ebc7dcd74f3f7e3f2ab536",
+  "raw_evidence_sha256": {
+    "plan.json": "bf639c9af26c5ca63d63a24684cdaff931e34965e49acb74d16ed74ddce01cc3",
+    "metrics.csv": "7dc88bc011caa764b11fec28c4d7902eefd35abf62e64b54cd89c43b2928d1a6",
+    "power.csv": "037b14b922559e3256066098acfc29cdcebe7b14e382515c019d18706b70dcab",
+    "console.log": "804810d908ff342e159cb9514043ae50717d6133bb507fbe120cb629097b7968"
+  },
+  "acceptance_pass": true,
+  "artifacts": {
+    "design.png": "528bc3c2e96933afaa822c8d7e8fc0aa3325899f8bf55c3528b96ca7c410505e",
+    "field_db.png": "278fe00caf20bd38d9c46313faed8560e5be1b8dbc7ec58a57abeee854f20e79",
+    "field_linear.png": "33157cb81a3a00c31c7f42c2e88c45f83ebd7bb94bedb563f97286ff7414959b",
+    "metrics.md": "a87012f9a6700c92fffd375230ea1fbbce6a81dbf64ced14e44e0bc5cd14bc02",
+    "verification.json": "430ada2ec01e79e97fc8aeb5a218453ea31f26aace4d377cd74b55c80e1e0f62"
+  }
+}
