@@ -73,6 +73,10 @@ and [PDF](figures/spectrum-discrete.pdf).
 The frozen logical target is `U = [[1,i],[i,1]] / sqrt(2)`. With
 `T = A[rows 3,4; columns 1,2]` in one-based indexing:
 
+采用事先固定的输入/输出相位矩阵 `D = diag(1, -i)`，有 `D U D = H`，
+其中 `H = [[1,1],[1,-1]] / sqrt(2)`。因此本例在该明确相位约定下等效于 Hadamard；
+这些固定相位不是根据仿真结果拟合得到的器件补偿。
+
 - `eta_all = sigma_min(T)^2`, minimizing output power over every normalized complex logical input.
 - `F6` is the minimum of `|(U psi)† T psi|² / ||T psi||²` over `0, 1, +, −, +i, −i`.
 - Conditional Choi overlap is `|Tr(U†T)|² / (2 Tr(T†T))`; this is not experimental process tomography.

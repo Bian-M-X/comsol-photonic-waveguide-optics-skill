@@ -14,14 +14,7 @@ import importlib.util
 import json
 from pathlib import Path
 
-import matplotlib
-
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-import matplotlib.tri as mtri
 import numpy as np
-from matplotlib.patches import PathPatch, Rectangle
-from matplotlib.path import Path as MplPath
 
 
 def load_json(path):
@@ -113,6 +106,8 @@ def display_field_samples(path, configuration):
 
 
 def polygon_path(polygon):
+    from matplotlib.path import Path as MplPath
+
     vertices, codes = [], []
     for index, raw in enumerate([polygon["outer"], *polygon["holes"]]):
         ring = np.asarray(raw, dtype=float)
@@ -130,6 +125,8 @@ def polygon_path(polygon):
 
 
 def geometry(ax, paths, extent, filled=False):
+    from matplotlib.patches import PathPatch, Rectangle
+
     xmin, xmax, ymin, ymax = extent
     if filled:
         for bounds in (
@@ -170,6 +167,12 @@ def metric_rows(report):
 
 
 def render(run, mask_path, output):
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import matplotlib.tri as mtri
+
     if output.exists():
         raise ValueError("Output directory must be new")
     mask, report, provenance = verified_inputs(run, mask_path)

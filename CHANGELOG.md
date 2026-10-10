@@ -34,6 +34,10 @@ the host package version.
 
 ### Changed
 
+- Load plotting dependencies only when drawing, so numerical preview helpers
+  work in the core-only installation. Recomputed showcase residuals use a
+  roundoff-only comparison; physical gates and literal configurations stay exact.
+
 - Added optional `-Processors` to the Java batch wrapper. Retained default
   behavior, one-worker execution and existing project-specific physics gates.
 - Corrected two-channel power accounting to distinguish `R11=abs(S11)^2` from

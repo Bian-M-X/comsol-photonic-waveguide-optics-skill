@@ -198,9 +198,13 @@ def recompute(row, temporary):
         ("mirror_symmetry_required", True),
         ("objective_profile", "state_floor"),
         ("mirror_symmetry_pass", checks["state_floor_mirror_assumption_pass"]),
-        ("mirror_matrix_max_absolute_residual", report["mirror_matrix_max_absolute_residual"]),
     ):
         exact(recorded["objective_assumption_evidence"][field], expected, "objective_assumption." + field)
+    same(
+        recorded["objective_assumption_evidence"]["mirror_matrix_max_absolute_residual"],
+        report["mirror_matrix_max_absolute_residual"],
+        "objective_assumption.mirror_matrix_max_absolute_residual",
+    )
     return report | {"checks": checks, "acceptance_pass": all(checks.values())}
 
 
