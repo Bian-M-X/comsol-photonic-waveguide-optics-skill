@@ -22,3 +22,7 @@
 *.mph binary
 *.oas binary
 *.oasis binary
+
+# Preserve exact exported bytes bound to native mask and bundle SHA-256 values.
+docs/showcases/hadamard-2d/evidence/mask.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+docs/showcases/hadamard-2d/evidence/bundle.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

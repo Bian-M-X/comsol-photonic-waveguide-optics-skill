@@ -482,6 +482,13 @@ class OptimizationSpec(ContractBase):
     promotion_rule: dict[str, Any] = Field(default_factory=dict)
     process_corners: list[str] = Field(default_factory=list)
 
+    @field_validator("evaluation_budget", "random_seed", mode="before")
+    @classmethod
+    def _no_boolean_counts(cls, value: Any) -> Any:
+        if isinstance(value, bool):
+            raise ValueError("optimization budget and seed must not be boolean")
+        return value
+
 
 class OptimizationTrial(ContractBase):
     contract_type = "OptimizationTrial"
@@ -491,6 +498,13 @@ class OptimizationTrial(ContractBase):
     objectives: dict[str, float] = Field(default_factory=dict)
     constraint_results: dict[str, float | bool] = Field(default_factory=dict)
     failure: str | None = None
+
+    @field_validator("objectives", mode="before")
+    @classmethod
+    def _no_boolean_objectives(cls, value: Any) -> Any:
+        if isinstance(value, dict) and any(isinstance(item, bool) for item in value.values()):
+            raise ValueError("optimization objective values must be numeric, not boolean")
+        return value
 
 
 class PromotionDecision(ContractBase):

@@ -1,0 +1,593 @@
+{
+  "numeric_self_consistency_pass": true,
+  "full_numerical_suite_pass": true,
+  "native_receipts_reverified": false,
+  "native_execution_reproduced": false,
+  "completed_numeric_runs": 20,
+  "completed_convergence_pairs": 13,
+  "mask_sha256": "90bdfde4ff488e0e64b05933d9d9428ee6cc712d09a19f7f228b03b7ce3d4dc7",
+  "scope": "Exported numerical self-consistency only. Native marker assertions and original receipt/artifact hashes are provenance links, not reverified native evidence. Fresh licensed COMSOL runs are required for full reproduction.",
+  "checks": {
+    "selected_binary": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "mesh020": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "mesh015": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "wave1520": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "wave1536": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "wave1565": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "wave1580": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "boundary": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "wave1520_boundary": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "wave1536_boundary": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "wave1580_boundary": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "pml": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "wave1536_pml": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "projection": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "wave1536_projection": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "wave1520_mesh015": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "wave1536_mesh015": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "wave1580_mesh015": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "holdout1543_3": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    },
+    "holdout1572_3": {
+      "fidelity_pass": true,
+      "throughput_pass": true,
+      "both_input_split_pass": true,
+      "observed_passivity_pass": true,
+      "observed_reciprocity_pass": true,
+      "modal_incoming_normalization_pass": true,
+      "state_floor_mirror_assumption_pass": true,
+      "signed_flux_closure_pass": true,
+      "propagating_mode_coverage_pass": true,
+      "interior_flux_partition_pass": true,
+      "pml_configuration_pass": true,
+      "slit_ports_pass": true
+    }
+  },
+  "convergence": {
+    "mesh020": {
+      "eta": {
+        "max_absolute_change": 0.0013321886395446514,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "all_input_eta": {
+        "max_absolute_change": 0.0013321936513716048,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "fidelity": {
+        "max_absolute_change": 7.65203943542403e-08,
+        "tolerance": 0.002,
+        "pass": true
+      },
+      "ratio": {
+        "max_absolute_change": 1.9698539887036404e-05,
+        "tolerance": 0.02,
+        "pass": true
+      },
+      "pass": true
+    },
+    "mesh015": {
+      "eta": {
+        "max_absolute_change": 0.0023809986553444684,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "all_input_eta": {
+        "max_absolute_change": 0.0023809987080162243,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "fidelity": {
+        "max_absolute_change": 1.2513928449031653e-07,
+        "tolerance": 0.002,
+        "pass": true
+      },
+      "ratio": {
+        "max_absolute_change": 7.555791996960437e-06,
+        "tolerance": 0.02,
+        "pass": true
+      },
+      "pass": true
+    },
+    "boundary": {
+      "eta": {
+        "max_absolute_change": 0.00010074430170625703,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "all_input_eta": {
+        "max_absolute_change": 0.00010073926758935592,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "fidelity": {
+        "max_absolute_change": 2.1504070935041142e-07,
+        "tolerance": 0.002,
+        "pass": true
+      },
+      "ratio": {
+        "max_absolute_change": 2.625070505801741e-05,
+        "tolerance": 0.02,
+        "pass": true
+      },
+      "pass": true
+    },
+    "wave1520_boundary": {
+      "eta": {
+        "max_absolute_change": 5.201778450136807e-05,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "all_input_eta": {
+        "max_absolute_change": 3.674246494900224e-05,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "fidelity": {
+        "max_absolute_change": 4.554680105295361e-07,
+        "tolerance": 0.002,
+        "pass": true
+      },
+      "ratio": {
+        "max_absolute_change": 8.624669572054877e-05,
+        "tolerance": 0.02,
+        "pass": true
+      },
+      "pass": true
+    },
+    "wave1536_boundary": {
+      "eta": {
+        "max_absolute_change": 8.155728771663817e-05,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "all_input_eta": {
+        "max_absolute_change": 2.906649073386447e-05,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "fidelity": {
+        "max_absolute_change": 3.426897521308092e-08,
+        "tolerance": 0.002,
+        "pass": true
+      },
+      "ratio": {
+        "max_absolute_change": 4.5401955033330665e-05,
+        "tolerance": 0.02,
+        "pass": true
+      },
+      "pass": true
+    },
+    "wave1580_boundary": {
+      "eta": {
+        "max_absolute_change": 0.00010997421231639937,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "all_input_eta": {
+        "max_absolute_change": 0.00010997216950736632,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "fidelity": {
+        "max_absolute_change": 8.429061587600373e-07,
+        "tolerance": 0.002,
+        "pass": true
+      },
+      "ratio": {
+        "max_absolute_change": 9.068343198814777e-05,
+        "tolerance": 0.02,
+        "pass": true
+      },
+      "pass": true
+    },
+    "pml": {
+      "eta": {
+        "max_absolute_change": 8.581463510237697e-06,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "all_input_eta": {
+        "max_absolute_change": 4.430682232992034e-06,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "fidelity": {
+        "max_absolute_change": 8.97612517647417e-09,
+        "tolerance": 0.002,
+        "pass": true
+      },
+      "ratio": {
+        "max_absolute_change": 1.3953671505584353e-05,
+        "tolerance": 0.02,
+        "pass": true
+      },
+      "pass": true
+    },
+    "wave1536_pml": {
+      "eta": {
+        "max_absolute_change": 9.107393204810244e-06,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "all_input_eta": {
+        "max_absolute_change": 1.8466111144643804e-06,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "fidelity": {
+        "max_absolute_change": 3.230848344415449e-08,
+        "tolerance": 0.002,
+        "pass": true
+      },
+      "ratio": {
+        "max_absolute_change": 1.3226830574364357e-05,
+        "tolerance": 0.02,
+        "pass": true
+      },
+      "pass": true
+    },
+    "projection": {
+      "eta": {
+        "max_absolute_change": 4.817988471672585e-05,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "all_input_eta": {
+        "max_absolute_change": 4.1935832357453684e-05,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "fidelity": {
+        "max_absolute_change": 6.162936949660747e-08,
+        "tolerance": 0.002,
+        "pass": true
+      },
+      "ratio": {
+        "max_absolute_change": 3.0219054813152013e-05,
+        "tolerance": 0.02,
+        "pass": true
+      },
+      "pass": true
+    },
+    "wave1536_projection": {
+      "eta": {
+        "max_absolute_change": 4.791237951828897e-05,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "all_input_eta": {
+        "max_absolute_change": 3.2348273435123254e-05,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "fidelity": {
+        "max_absolute_change": 2.1420731965982043e-08,
+        "tolerance": 0.002,
+        "pass": true
+      },
+      "ratio": {
+        "max_absolute_change": 2.6932972419291268e-05,
+        "tolerance": 0.02,
+        "pass": true
+      },
+      "pass": true
+    },
+    "wave1520_mesh015": {
+      "eta": {
+        "max_absolute_change": 0.0010911700148361625,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "all_input_eta": {
+        "max_absolute_change": 0.001045305654006734,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "fidelity": {
+        "max_absolute_change": 2.96625418561014e-07,
+        "tolerance": 0.002,
+        "pass": true
+      },
+      "ratio": {
+        "max_absolute_change": 2.6963067311536193e-05,
+        "tolerance": 0.02,
+        "pass": true
+      },
+      "pass": true
+    },
+    "wave1536_mesh015": {
+      "eta": {
+        "max_absolute_change": 0.001070885536373467,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "all_input_eta": {
+        "max_absolute_change": 0.001038165847923822,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "fidelity": {
+        "max_absolute_change": 8.677877982865567e-08,
+        "tolerance": 0.002,
+        "pass": true
+      },
+      "ratio": {
+        "max_absolute_change": 3.0464066637980736e-05,
+        "tolerance": 0.02,
+        "pass": true
+      },
+      "pass": true
+    },
+    "wave1580_mesh015": {
+      "eta": {
+        "max_absolute_change": 0.0010231698107227016,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "all_input_eta": {
+        "max_absolute_change": 0.000997188950261907,
+        "tolerance": 0.005,
+        "pass": true
+      },
+      "fidelity": {
+        "max_absolute_change": 1.532122926306556e-07,
+        "tolerance": 0.002,
+        "pass": true
+      },
+      "ratio": {
+        "max_absolute_change": 3.829865018689649e-05,
+        "tolerance": 0.02,
+        "pass": true
+      },
+      "pass": true
+    }
+  }
+}

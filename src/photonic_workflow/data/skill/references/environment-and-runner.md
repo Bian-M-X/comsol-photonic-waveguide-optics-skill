@@ -147,7 +147,10 @@ Privacy-safe preview:
 ```
 
 `-DryRun` hides the local solver root by default. Use `-ShowFullPaths` only in
-private local debugging. The wrapper removes a stale target `.class` before
+private local debugging. Optional `-Processors 8` passes `-np 8` for this job;
+zero leaves the vendor default unchanged. Benchmark core counts and CPU/GPU
+choices as described in `comsol-performance.md`; more cores are not always faster.
+The wrapper removes a stale target `.class` before
 compilation, stops immediately on a nonzero `comsolcompile` exit, requires a
 newly generated class file, rejects unchanged stale MPH/log artifacts, and
 propagates a nonzero batch exit. The deprecated
@@ -177,6 +180,14 @@ zero native exit codes. It proves runtime activation only, not Wave Optics
 availability, correct ports, convergence, or physical validity.
 
 ## Long-Run Discipline
+
+In an agent or CI host, child processes can inherit a Windows Job configured to
+terminate them when the host closes. `Start-Process` and a hidden window do not
+prove independence from that job. Keep long runs under an active supervisor;
+use completed-stage checkpoints when the host cannot guarantee session survival.
+An approved persistent scheduler is a separate deployment choice, not something
+the solver runner installs. A short heartbeat after a tool call proves only that
+interval, not survival after the chat, host, or machine exits.
 
 - Start with a single wavelength.
 - Then run a small wavelength sweep.

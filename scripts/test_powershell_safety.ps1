@@ -140,6 +140,8 @@ try {
   Remove-Item -LiteralPath $traceFile -Force
   Set-Content -LiteralPath $classFile -Value "dry-run-sentinel" -Encoding ASCII
   & $runner @runnerArgs -DryRun *> $null
+  $processorPreview = (& $runner @runnerArgs -Processors 8 -DryRun 6>&1 | Out-String)
+  Assert-Contains -Text $processorPreview -Expected "-np 8" -Message "Explicit processor budget was not forwarded."
   Assert-True -Condition (-not (Test-Path -LiteralPath $traceFile)) -Message "Dry-run executed a native command."
   Assert-True -Condition ((Get-Content -LiteralPath $classFile -Raw).Trim() -eq "dry-run-sentinel") -Message "Dry-run modified the class file."
 

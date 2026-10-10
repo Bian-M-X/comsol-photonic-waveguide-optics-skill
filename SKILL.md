@@ -52,6 +52,12 @@ do not load the entire reference library or all agent cards by default.
 | MZI/aMZI/LT-aMZI, imbalance, FSR | `references/interferometer-workflows.md`; quantum-source work also `references/quantum-photonic-knowledge-base.md` |
 | Complex-S circuit composition or layout/connectivity | `references/hierarchical-device-workflow.md` |
 | Sweeps, optimization, corners or reports | `references/optimization-and-reporting.md` |
+| Choose an optimizer or reduce full-wave evaluation count | `references/low-cost-optimization.md` |
+| Topology/shape gradients, filtering, robustness or fabrication | `references/adjoint-and-fabrication.md` |
+| Execute native COMSOL adjoint/MMA or reproduce the 2D Hadamard example | `references/comsol-adjoint-inverse-design.md` |
+| Coarse-to-fine transfer, uncertain rankings or circuit error allocation | `references/multifidelity-and-error-budgets.md` |
+| CPU/GPU, memory, core count or solver timing | `references/comsol-performance.md` |
+| Paper-based method selection or recent inverse-design techniques | `references/inverse-design-evidence.md` |
 | Project provenance, git and handoffs | `references/project-structure-and-git.md` |
 | Runtime internals, MATLAB, adapters, PDKs or maintenance | Follow the developer-document links in `references/tool-selection.md` |
 | Publication, attribution or third-party assets | `references/source-notes.md`, `references/legal-and-trademark-notes.md` |
@@ -66,6 +72,9 @@ exists. MCP prefixes and installed versions may differ between hosts.
 
 - Existing project: `photonic status --project-root <project> --json`.
 - Environment diagnosis: `photonic doctor --project-root <project> --json`.
+- Budgeted candidate suggestion: `photonic optimize suggest <spec> --trials
+  <directory> --json`; read the budget route for its supported subset. This is
+  read-only and never executes a solver or promotes evidence.
 - Reusable code: `photonic recipe list --json`, then inspect only the selected
   recipe; MCP equivalents are `list_recipes`, `inspect_recipe`, `render_recipe`.
 - MCP discovery: read `photonic://server/manifest` and use `list_allowed_roots`
@@ -85,9 +94,15 @@ use reviewed source code for model construction beyond recipe coverage.
   validation; full-device 3D is justified by the claim and convergence budget.
 - Before a large full-wave campaign, qualify the relevant straight-waveguide
   and port baseline. Numeric ports need correctly bound Boundary Mode Analysis
-  steps before the driven study. Audit the finalized exterior partition:
-  disjoint ports, no port/open-boundary overlap, complete coverage, no internal
-  faces. Use justified local modal windows, not an arbitrary device side.
+  steps before the driven study. For exterior ports, audit their complete,
+  disjoint partition with the open boundary. For internal slit ports, qualify
+  the backing absorber and its outer termination, and use a separate source-free
+  control surface for flux closure. Distinct modal Port features can share a
+  physical face. Include every propagating mode in its termination or qualify a
+  backing absorber; complete guided-mode coverage alone does not absorb the
+  radiation continuum. Use justified local modal windows and verify incoming
+  power normalization. Do not silently invert a contaminated incoming matrix to
+  make a raw response pass.
 - Material, boundary/PML, mesh or port changes invalidate dependent mode/phase
   evidence. Boundary Mode fields support port-mode plots; a no-solve model has
   no driven field. Check dataset, physics tag, expression and source index

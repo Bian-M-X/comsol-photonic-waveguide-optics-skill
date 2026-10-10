@@ -16,6 +16,14 @@ $resourceSets = @(
         Source = Join-Path $repositoryRoot 'agents'
         Target = Join-Path $packageRoot 'agents'
         Filter = '*-agent.md'
+    },
+    @{
+        Source = Join-Path $repositoryRoot 'examples\comsol-hadamard-inverse'
+        Target = Join-Path $packageRoot 'examples\comsol-hadamard-inverse'
+        Filter = '*'
+        Names = @('README.md', 'HadamardNative.java', 'run.py', 'campaign.py',
+                  'analyze.py', 'extract_mask.py', 'plot_results.py',
+                  'CvfDiscreteGradientProbe.java', 'check_discrete_gradient.py')
     }
 )
 
@@ -37,11 +45,19 @@ foreach ($resourceSet in $resourceSets) {
         Get-ChildItem -LiteralPath $sourceRoot -Filter $resourceSet.Filter -File |
             Sort-Object Name
     )
+    if ($resourceSet.Names) {
+        $sourceFiles = @($sourceFiles | Where-Object { $_.Name -in $resourceSet.Names })
+        foreach ($requiredName in $resourceSet.Names) {
+            if ($requiredName -notin $sourceFiles.Name) {
+                throw "Missing allowlisted example source: $requiredName"
+            }
+        }
+    }
     $sourceNames = @($sourceFiles.Name)
     $targetFiles = @()
     if (Test-Path -LiteralPath $targetRoot -PathType Container) {
         $targetFiles = @(
-            Get-ChildItem -LiteralPath $targetRoot -Filter '*.md' -File |
+            Get-ChildItem -LiteralPath $targetRoot -Filter $resourceSet.Filter -File |
                 Sort-Object Name
         )
     }
@@ -63,7 +79,7 @@ foreach ($resourceSet in $resourceSets) {
             }
         }
         $targetFiles = @(
-            Get-ChildItem -LiteralPath $targetRoot -Filter '*.md' -File |
+            Get-ChildItem -LiteralPath $targetRoot -Filter $resourceSet.Filter -File |
                 Sort-Object Name
         )
     }
