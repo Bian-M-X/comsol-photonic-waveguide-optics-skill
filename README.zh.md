@@ -10,20 +10,56 @@
 
 **[English](README.md) | [简体中文](README.zh.md)**
 
-## 本项目的实际定位
+## 项目定位
 
-`photonic-workflow` 是可安装的本地运行时与 agent skill，用于构建可审计的
+`photonic-workflow` 是可安装的本地运行时与 agent skill，用于支持可审计的
 光子集成电路设计闭环。它连接设计意图、器件与紧凑模型契约、复数 S 参数
-电路、版图/网表比对、受控求解器计划、优化、封装、流片、测量、来源追踪
-与证据门禁。
+电路、版图与网表比对、受约束的求解器计划、优化、封装、流片、测量、来源追踪
+与证据门。
 
 仓库保留了历史上的 COMSOL 导向名称，但运行时本身与求解器无关。COMSOL、
-MATLAB、Lumerical、版图/PDK 工具、仪器和远程服务都只是受限 adapter；本项目
-不替代电磁求解器、晶圆厂签核、校准测量或工程师的物理裁决。
+MATLAB、Lumerical、版图/PDK 工具、仪器和远程服务均通过受约束的适配器接入；本项目
+不替代电磁求解器、晶圆厂签核、校准测量或工程判断。
+
+## 图文用例：二维 Hadamard 逆向设计
+
+本案例报告了二维体材料折射率替代模型的离散波长工程验收结果。它不是 220 nm SOI 的有效折射率模型或三维器件，也不是加工结果或实验过程层析。2026-10-10，冻结掩膜的 19 次验证运行和 13 组收敛比较均通过；公开证据包完成了原始矩阵的独立数值复算。该公开复核检查数值自洽性，但没有重新验证原生 COMSOL 收据，也没有重新运行 COMSOL。
+
+| 冻结设计 | 1550 nm 场分布 |
+|---|---|
+| ![二维 Hadamard 冻结二值设计掩膜](docs/showcases/hadamard-2d/figures/design.png) | ![二维 Hadamard 中心波长线性场分布](docs/showcases/hadamard-2d/figures/field-linear.png) |
+
+下图仅展示七个实际计算的离散波长点；点间没有连线或插值，不能据此推断连续带宽。五个训练点为 1520、1536.61、1550、1565 和 1580 nm；1543.3 和 1572.3 nm 是未用于掩膜调参的保留点。
+
+![二维 Hadamard 七个离散波长验收指标](docs/showcases/hadamard-2d/figures/spectrum-discrete.png)
+
+| 指标 | 名义中心点 | 19 次验证中的最差值 | 冻结工程门限 |
+|---|---:|---:|---:|
+| 全逻辑输入最差目标端口吞吐 `eta_all` | 0.9475064821 | **0.9246576286** | ≥ 0.9 |
+| 六态最小条件保真度 `F6` | 0.9999822474 | **0.9995299555** | ≥ 0.987 |
+
+这里的 `eta_all` 是任意归一化复逻辑输入中最差的目标输出功率比例；`F6` 是六个指定输入态上的最小条件保真度。它们是本案例预先声明的工程指标，不等同于论文中的实验保真度或实验过程层析，也不构成三维、制造或连续带宽验收。
+
+目标固定为 `U = [[1,i],[i,1]] / sqrt(2)`；预先声明的相位矩阵 `D = diag(1,-i)` 满足 `D U D = H`。没有根据仿真结果拟合端口相位。光谱图统一采用 20/80 nm 核心/包层网格，表中的名义中心点采用 25/100 nm 网格。场图是归一化的传播预览，功率和相位指标由原始数值计算。
+
+![预算约束下的原生逆向设计流程](docs/images/showcase/hadamard-workflow/workflow.png)
+
+流程包括六个方向导数任务、五个分阶段伴随优化任务、最多六次二值阈值试验和十九次冻结验收，合计最多 36 个原生任务。一个任务可能包含多次频率与线性求解。新版默认配置已对照成功设计谱系核对，但没有从零重跑整轮新版一键原生流程。
+
+[项目图文技术报告](docs/research/inverse-design-project-report.zh.md)解释目标、伴随链、失败诊断、二值化、成本和复现方法。
+
+从仓库根目录可复核公开数值包并绘制光谱图：
+
+```console
+python docs/showcases/hadamard-2d/verify.py
+python docs/showcases/hadamard-2d/plot_spectrum.py
+```
+
+复核器会重算原始矩阵、入射归一化、符号通量和 13 组收敛比较。数值自洽性通过不表示原生收据已重新核验，也不表示 COMSOL 已重跑；详细范围、配置和复现步骤见[二维 Hadamard 展示说明](docs/showcases/hadamard-2d/README.md)。
 
 ## 0.6.0 更新：降低逆向设计的评估成本
 
-保留一个主 skill，按需读取四条路线：
+本项目保留一个主 skill，按需读取四条路线：
 [预算与参数搜索](references/low-cost-optimization.md)、
 [伴随梯度与制造约束](references/adjoint-and-fabrication.md)、
 [多保真与误差预算](references/multifidelity-and-error-budgets.md)、
@@ -38,14 +74,14 @@ MATLAB、Lumerical、版图/PDK 工具、仪器和远程服务都只是受限 ad
 
 [原生 Hadamard 示例](examples/comsol-hadamard-inverse/README.md)另提供可执行的
 COMSOL 伴随/MMA 路线：密度场滤波、投影与网格延续、多波长复数门目标、二值重建
-和冻结掩模后的验证。它独立计算八个导模输入，检查通量闭合和入射归一化。
-0.6.0 的[二维 Hadamard 合格展示](docs/showcases/hadamard-2d/README.md)已于
-2026-10-10 完成十九项冻结掩模检查与十三组收敛比较，并通过独立原始矩阵
+和冻结掩膜后的验证。它独立计算八个导模输入，检查通量闭合和入射归一化。
+0.6.0 的[二维 Hadamard 验收展示](docs/showcases/hadamard-2d/README.md)已于
+2026-10-10 完成十九项冻结掩膜检查与十三组收敛比较，并通过独立原始矩阵
 复算审计。该结论限于选定二值材料折射率二维替代模型的七个离散波长，
 不构成连续带宽、三维堆栈或制造验收。历史失败、选定设计谱系与最终验证成本
 分别保留。
 
-保留一个主 skill 是因为这些路线共享光学约定、求解器和证据契约；拆成独立安装的
+本项目保留一个主 skill 是因为这些路线共享光学约定、求解器和证据契约；拆成独立安装的
 skill 会重复这些规则。只有新成员具有独立调用意图、依赖和行为测试时才进一步拆分。
 MCP 现有 13 个工具、35 个资源，公共物理验收契约保持不变。
 具体实现、硬件实测与限制见[本轮更新报告](docs/research/workflow-upgrade-2026-09.md)。
@@ -53,24 +89,24 @@ MCP 现有 13 个工具、35 个资源，公共物理验收契约保持不变。
 ## 0.5.0 更新：按任务选择工程验收范围
 
 新版从用户指定的模型、代码或数据出发，按需读取参考资料，让具备较强判断力的
-模型选择能解决问题的实验，同时保持结论与实际证据相匹配。
+模型选择有助于回答问题的实验，同时保持结论与实际证据相匹配。
 
 | 工作模式 | 示例 | 所需流程 |
 |---|---|---|
-| `advisory` | 解释 FSR、审阅 Java、诊断场图 | 说明假设，无需门限台账 |
-| `exploratory` | 已授权的单点求解、粗参数搜索 | 记录设置、输出与限制；除非项目明确要求，否则无需门限台账 |
+| `advisory` | 解释 FSR、审阅 Java、诊断场图 | 说明假设，无需验收台账 |
+| `exploratory` | 已授权的单点求解、粗参数搜索 | 记录设置、输出与限制；除非项目明确要求，否则无需验收台账 |
 | `evidence` | 验收可复用 S 模型、校准测量或布局连接 | 选择对应声明的验收范围，逐项审阅证据 |
 
 这些是 skill 的任务路由模式，不是 CLI 参数。G1 尚未通过不会阻止已获授权的
 诊断实验；项目明确规定的“G1 前禁止优化”等要求仍然有效。求解成功是一项观察，
 不会自动成为器件资格通过的依据。
 
-**保留的门限：**端口、模式及参考面一致性，可复用散射模型的完整复数 S 数据，
+**保留的验收要求：**端口、模式及参考面一致性，可复用散射模型的完整复数 S 数据，
 逐输入功率核算，与声明相匹配的收敛检查，不可变测量来源，以及 SHA-256 绑定的
 证据。无源性、互易性、幺正性、三维比对与工艺角按物理条件和声明适用；数值容差
 由决策需求和误差预算确定，不设全器件通用阈值。
 
-**精简的流程：**不再把 G0–G8 当作所有任务的执行顺序，不要求探索实验先建台账，
+**精简的流程：**不再要求所有任务都按 G0–G8 顺序执行，不要求探索实验先建台账，
 也不要求普通回答或软件发布提交 G8 工程证据包。新增 `layout-connectivity`
 （G0/G5）与 `measurement-capture`（M0/M1），分别支持布局连接和原始测量采集的
 独立验收；它们不代表光学/流片或校准测量通过。原有 profile 的含义与持久化 schema
@@ -78,12 +114,12 @@ MCP 现有 13 个工具、35 个资源，公共物理验收契约保持不变。
 本次选择的 profile。
 
 **工具与结构：**精简入口，按需加载工程验收及工具选择参考；MCP 新增
-`list_recipes`、`inspect_recipe`、`render_recipe`，复用已有六类确定性配方。
-当前共 13 个工具、29 个资源。渲染只生成受约束文件，不执行求解器；超出配方覆盖的
+`list_recipes`、`inspect_recipe`、`render_recipe`，复用已有六种确定性配方。
+0.5.0 当时共 13 个工具、29 个资源；0.6.0 已扩展为 35 个资源。渲染只生成受约束文件，不执行求解器；超出配方覆盖的
 建模工作仍可通过已授权的 Java/Python/MATLAB 开发流程完成。
 
-详见[门限定义](references/verification-gates.md)、[工具选择](references/tool-selection.md)
-和[工程门限评估](docs/research/engineering-gates-0.5-review.md)。
+详见[证据门定义](references/verification-gates.md)、[工具选择](references/tool-selection.md)
+和[工程验收门评估](docs/research/engineering-gates-0.5-review.md)。
 
 ## 效果展示：从提示词到 COMSOL SOI 欧拉弯 50:50 分束器
 
@@ -160,12 +196,12 @@ MCP 现有 13 个工具、35 个资源，公共物理验收契约保持不变。
 | 可安装核心 | Click CLI、Pydantic 契约、NumPy 电路组合、项目配置、运行记录、来源追踪、产物审计，以及 G0-G8/M0-M4 台账 |
 | PIC 与 PDK 契约 | 设计意图、器件、端口、组件、网表、版图、PDK/工艺/工艺角模型、model card、封装、测试、流片和测量记录 |
 | 电路兼容性 | 验证和组合旧版 `assembly.json` 1.0 与长表复数 S 参数 CSV |
-| 可复用建模配方 | 从已审查 LT-aMZI 工作流提炼并版本化的圆弯/欧拉弯几何、分段端口窗口、体材料色散和公共基底双端口诊断；默认 fail-closed |
+| 可复用建模配方 | 从已审查 LT-aMZI 工作流提炼并版本化的圆弯/欧拉弯几何、分段端口窗口、体材料色散和共同模态基准下的双端口诊断；默认采用 fail-closed（证据不足时不通过）策略 |
 | 外部后端 | 能力探测与受限计划；商业软件的实际执行仍需单独授权并通过测试门 |
-| MATLAB | Phase A 检查、清单、计划、受控 wrapper、结果与 Engine 探测界面；真实本地 smoke test 属于 Phase B |
-| MCP | 低依赖 stdio JSON-RPC 传输；manifest 列出全部已注册 skill 资源，有 13 个窄接口工具；不执行求解器、MATLAB、仪器或任意 shell |
+| MATLAB | Phase A 检查、清单、计划、受控封装（wrapper）、结果与 Engine 探测界面；真实本地冒烟测试属于 Phase B |
+| MCP | 低依赖 stdio JSON-RPC 传输；manifest（清单）列出全部已注册 skill 资源，有 13 个职责明确的工具；不执行求解器、MATLAB、仪器或任意 shell |
 | 旧入口 | 在包服务等价性回归测试期间，保留现有 Python 与 PowerShell 命令作为兼容入口 |
-| 研究记录 | 官方/项目维护的 PIC 与 MATLAB 工具调研，明确区分本地可用性和物理验证边界 |
+| 研究记录 | 官方/项目维护的 PIC 与 MATLAB 工具调研，明确区分本地可用性与物理验证边界 |
 
 实现状态和本地可用性分开报告：
 
@@ -176,7 +212,7 @@ MCP 现有 13 个工具、35 个资源，公共物理验收契约保持不变。
 
 ## 安装
 
-需要 Python 3.11 或更高版本。请从经过审查的 checkout 安装与求解器无关的核心：
+需要 Python 3.11 或更高版本。请从经过审查的代码检出目录中安装与求解器无关的核心：
 
 ```powershell
 git clone https://github.com/Bian-M-X/comsol-photonic-waveguide-optics-skill.git
@@ -186,7 +222,7 @@ python -m pip install -e .
 photonic --version
 ```
 
-核心只安装 Click、Pydantic 和 NumPy。可选 extras 仅描述集成类别，不会下载商业产品、许可证、PDK、MATLAB 工具箱或仪器软件：
+核心只安装 Click、Pydantic 和 NumPy。可选依赖组仅声明集成类别，不会下载商业产品、许可证、PDK、MATLAB 工具箱或仪器软件：
 
 ```powershell
 python -m pip install -e ".[layout,circuit,sparams]"
@@ -221,7 +257,7 @@ photonic circuit compose "$ProjectRoot\circuits\assembly.json" `
 photonic status --project-root $ProjectRoot --json
 ```
 
-随附 fixture 是确定性的解析示例，用于测试契约和网络组合；它们不是合格 PDK、已制造器件或全波验证。
+随附测试样例是确定性的解析示例，用于测试契约校验和网络组合；它们不是合格 PDK、已制造器件或全波验证。
 
 可用初始化配置包括：
 
@@ -235,7 +271,7 @@ photonic status --project-root $ProjectRoot --json
 
 ## CLI 地图
 
-运行 `photonic <group> --help` 查看权威命令结构。
+运行 `photonic <group> --help` 查看完整命令列表。
 
 | 范畴 | 命令组 |
 |---|---|
@@ -262,7 +298,7 @@ photonic gate adoption evaluate matlab-runtime --project-root . --json
 
 记录存放在 `verification/adoption/`。初始化不会覆盖已有记录，`--dry-run` 不写文件。提供给 CLI 的通过/失败证据必须是可读取的项目相对路径文件；只填写一个非空引用不被接受为证明。
 
-JSON 响应使用稳定信封结构，包含命令、状态、退出码、数据、警告和错误。重要退出码如下：
+JSON 响应采用统一结构，包含命令、状态、退出码、数据、警告和错误。重要退出码如下：
 
 | 代码 | 含义 |
 |---:|---|
@@ -304,7 +340,7 @@ photonic recipe render geometry.symmetric-euler-bend `
   -> 完整复数多端口 S 数据
   -> 已验证电路与敏感性
   -> 端口感知版图和提取连通性
-  -> 选定并晋级的全波检查
+  -> 选定并纳入后续验收的全波检查
   -> 鲁棒性与证据包
   -> 测试准备、测量、相关与再校准
 ```
@@ -319,7 +355,7 @@ G0-G8 跟踪从设计到证据打包的过程，M0-M4 是独立的制造后流�
 | `G3` | 组装契约 |
 | `G4` | 电路行为 |
 | `G5` | 版图与连通性 |
-| `G6` | 晋级的全波子组件 |
+| `G6` | 纳入后续验收的全波子组件 |
 | `G7` | 鲁棒性与优化 |
 | `G8` | 可复现证据包 |
 | `M0` | 测试准备 |
@@ -335,8 +371,8 @@ G0-G8 跟踪从设计到证据打包的过程，M0-M4 是独立的制造后流�
 阶段标签描述集成成熟度，不代表器件验收：
 
 - **Phase A——可靠本地核心：**可安装包、契约、安全计划、mock fixture、运行恢复、证据门、旧接口等价性、MATLAB 检查/计划界面、薄 MCP 和适合公开 CI 的测试。
-- **Phase B——已授权本地验证：**使用有许可证的 `matlab -batch` 和 `matlab.unittest` smoke test、可选 Engine 检查、数据往返、旧版版图/FDFD/RF fixture 与本地数值等价性。
-- **Phase C——受限外部集成：**COMSOL LiveLink、Lumerical、仪器、Simulink、商业 PDK/流片、封装/测试执行、测量相关，以及通过后端专用 adoption gate 后的大规模或远程优化。
+- **Phase B——已授权本地验证：**使用有许可证的 `matlab -batch` 和 `matlab.unittest` 冒烟测试、可选 Engine 检查、数据往返、旧版版图/FDFD/RF fixture 与本地数值等价性。
+- **Phase C——受限外部集成：**COMSOL LiveLink、Lumerical、仪器、Simulink、商业 PDK/流片、封装/测试执行、测量相关，以及通过后端专用接入验收门（adoption gate） 后的大规模或远程优化。
 
 文件、描述符、schema、产品列表、import 和 dry-run 计划不能证明 Phase B/C 已执行。MATLAB FDFD 结果不是三维全波证据；生成 GDS 不是晶圆厂 DRC 签核；求解器收敛也不是测量相关。
 
@@ -355,7 +391,7 @@ photonic matlab plan .\runs\example\run_spec.json --project-root . --json
 
 Phase A 计划只接受已注册入口 ID，并围绕仓库自带的固定 MATLAB 函数组装参数数组，不接受任意 MATLAB 代码。找不到可执行文件时必须结构化报告 `unavailable`；Engine 包可导入不证明存在兼容、已授权且可信的会话。
 
-在 Phase A 运行时，未带 `--execute` 的 `matlab run` 也是计划界面；真实执行和 `matlab test` 保持为 fail-closed 的 Phase B hook。后续版本若启用明确授权的本地 Phase B 验证，应记录 MATLAB release、产品/工具箱清单、wrapper 与输入哈希、结果 manifest、预期产物、容差和声明边界。LiveLink、Lumerical、仪器、Simulink 和真实流片工作流在各自 adoption gate 通过前都属于 Phase C。
+在 Phase A 运行时，未带 `--execute` 的 `matlab run` 也是计划界面；真实执行和 `matlab test` 保持为 fail-closed 的 Phase B hook。后续版本若启用明确授权的本地 Phase B 验证，应记录 MATLAB release、产品与工具箱清单、封装脚本（wrapper）与输入哈希、结果 manifest、预期产物、容差和声明边界。LiveLink、Lumerical、仪器、Simulink 和真实流片工作流在各自后端接入验收门 通过前都属于 Phase C。
 
 参见 `docs/architecture/matlab-integration.md`、`docs/architecture/matlab-security.md` 和 `docs/research/matlab-tool-landscape.md`。
 
@@ -380,10 +416,10 @@ $env:PHOTONIC_SOLVER_ROOT = 'C:\Path\To\LicensedSolverRoot'
 
 ## MCP 接口
 
-`scripts/mcp_photonic_server.py` 是包传输层的兼容启动器。当前版本提供：
+`scripts/mcp_photonic_server.py` 是包传输层的兼容启动器。当前版本提供以下接口：
 
 - 由单一权威 registry 声明的资源：一个 server manifest、所有已注册参考文档，以及所有受限 agent role contract；
-- 有 13 个工具：新增 `list_recipes`、`inspect_recipe`、`render_recipe`，以及原有 `list_allowed_roots`、`create_project_scaffold`、`audit_project_artifacts`、`parse_sweep_table`、`validate_contract`、`inspect_project`、`validate_circuit`、`compose_circuit`、`gate_status` 和为兼容保留名称的 `run_java_batch`。
+- 13 个工具：新增 `list_recipes`、`inspect_recipe`、`render_recipe`，以及原有 `list_allowed_roots`、`create_project_scaffold`、`audit_project_artifacts`、`parse_sweep_table`、`validate_contract`、`inspect_project`、`validate_circuit`、`compose_circuit`、`gate_status` 和为兼容保留名称的 `run_java_batch`。
 
 入口按用户指定的模型、代码或数据选择参考资料；完整资格验证流程按需读取。
 新增配方工具复用已有数值实现，返回紧凑目录或带 SHA-256 的文件回执，
@@ -391,9 +427,9 @@ $env:PHOTONIC_SOLVER_ROOT = 'C:\Path\To\LicensedSolverRoot'
 `references/tool-selection.md`，重构审阅说明见
 `docs/research/skill-refactor-review.md`。已运行的旧 MCP 进程仍需重启才能重新发现工具。
 
-`run_java_batch` 只渲染脱敏的 dry-run 计划。MCP 不暴露任意 shell/Python/MATLAB 执行，也不实际执行求解器或仪器。读根目录与写根目录分开；未配置可写根目录时写操作失败。已安装 wheel 包含所有 MCP 参考资料和 agent 资源的只读镜像，因此 `photonic-mcp` 不依赖当前工作目录或源码 checkout。`PHOTONIC_SKILL_ROOT` 仍可作为指向经审查 skill 树的显式覆盖。
+`run_java_batch` 只渲染脱敏的 dry-run 计划。MCP 不暴露任意 shell/Python/MATLAB 执行，也不实际执行求解器或仪器。读根目录与写根目录分开；未配置可写根目录时写操作失败。已安装 wheel 包含所有 MCP 参考资料和 agent 资源的只读镜像，因此 `photonic-mcp` 不依赖当前工作目录或源码 checkout。`PHOTONIC_SKILL_ROOT` 仍可作为指向经审查 skill 树的显式指定的覆盖路径。
 
-adoption 边界参见 `references/comsol-mcp-evaluation.md`。
+后端接入边界参见 `references/comsol-mcp-evaluation.md`。
 
 ## 旧接口兼容
 
@@ -410,7 +446,7 @@ v1 assembly schema、端口顺序、模型等级词汇、精确波长网格、�
 
 ## 验证 checkout
 
-公开核心验证刻意不依赖 MATLAB、COMSOL、Lumerical、商业 PDK、仪器、网络 API 或云账号：
+公开核心的验证刻意不依赖 MATLAB、COMSOL、Lumerical、商业 PDK、仪器、网络 API 或云账号：
 
 ```powershell
 python -m pip install -e '.[dev]'

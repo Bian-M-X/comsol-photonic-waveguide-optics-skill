@@ -24,6 +24,58 @@ remote services are bounded adapters; this project does not replace an
 electromagnetic solver, foundry signoff, calibrated measurement, or engineering
 judgment.
 
+## Illustrated example: 2D Hadamard inverse design
+
+A 1.3 × 1.3 µm binary design passed **19 locked-mask COMSOL checks and 13
+convergence comparisons** on 2026-10-10, followed by an independent raw-matrix
+audit. The model is a **2D bulk-index surrogate** with 400 nm access guides.
+Its scope is seven sampled wavelengths and the declared engineering gates;
+3D SOI performance, fabrication and experimental process tomography require
+additional evidence.
+
+| Frozen binary design | Field preview at 1550 nm |
+|---|---|
+| ![Frozen binary Hadamard-equivalent geometry](docs/showcases/hadamard-2d/figures/design.png) | ![Normalized center-wavelength field preview](docs/showcases/hadamard-2d/figures/field-linear.png) |
+
+![Performance at seven computed wavelengths](docs/showcases/hadamard-2d/figures/spectrum-discrete.png)
+
+The spectrum shows computed points without interpolation: five training
+wavelengths and two held-out wavelengths, 1543.3 and 1572.3 nm. All plotted
+points use a 20/80 nm core/cladding mesh; the nominal center below uses 25/100 nm.
+The field image is a normalized propagation preview; numerical records supply
+the power and phase metrics.
+
+| Metric | Nominal center | Worst of 19 checks | Fixed gate |
+|---|---:|---:|---:|
+| Minimum target-port throughput over all logical inputs, `eta_all` | 0.9475064821 | **0.9246576286** | ≥ 0.9 |
+| Minimum six-state conditional fidelity, `F6` | 0.9999822474 | **0.9995299555** | ≥ 0.987 |
+
+The fixed target is `U = [[1,i],[i,1]] / sqrt(2)`. With the declared phase matrix
+`D = diag(1,-i)`, `D U D = H`; no port phases were fitted to the simulation.
+Conditional fidelity and Choi overlap are distinct from the paper's
+experimental process fidelity, and throughput is reported separately.
+
+![Budgeted native inverse-design workflow](docs/images/showcase/hadamard-workflow/workflow.png)
+
+The default budget is six gradient jobs, five continuation jobs, at most six
+binary threshold trials and nineteen reserved checks: at most **36 native
+jobs**. Each job can contain many frequency and linear solves. The new default
+was checked against the observed successful lineage; a fresh one-command
+end-to-end native run of that default was not performed.
+
+From an installed checkout, verify the public numerical bundle without
+starting COMSOL:
+
+```console
+python docs/showcases/hadamard-2d/verify.py
+python docs/showcases/hadamard-2d/plot_spectrum.py
+```
+
+This recomputes numerical self-consistency; it does not reauthenticate omitted
+native files or rerun COMSOL. See the [full case and replay instructions](docs/showcases/hadamard-2d/README.md),
+the [native optimization example](examples/comsol-hadamard-inverse/README.md),
+and the [illustrated technical report (Chinese)](docs/research/inverse-design-project-report.zh.md).
+
 ## New in 0.6.0: Lower-cost inverse design
 
 The skill now routes by design representation and measured evaluation cost:
