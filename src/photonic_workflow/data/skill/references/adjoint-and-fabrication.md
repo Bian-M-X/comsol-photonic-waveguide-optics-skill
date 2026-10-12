@@ -185,5 +185,10 @@ Use a feasible geometry generator or a calibrated fabrication model when repeate
 fabrication justifies the setup cost. Straight-through estimators and learned
 latent gradients can be biased and need full-wave holdouts. A learned manifold
 may exclude better designs. Never call synthetic process corners measured yield.
+For process-to-optics gradients, axial sampling with interaction checks,
+per-corner loss aggregation and sensitivity-guided mask correction, use
+[fabrication-aware robust design](fabrication-aware-robust-design.md). Its
+portable helpers do not implement a calibrated process model or replace the
+native Hadamard acceptance suite.
 See [evidence and current sources](inverse-design-evidence.md) for the four supplied
 papers and the 2025–2026 methods motivating these distinctions.

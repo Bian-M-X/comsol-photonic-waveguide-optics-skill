@@ -21,6 +21,8 @@ WHEEL_REQUIRED_SUFFIXES = (
     "photonic_workflow/data/templates/mzi-4port/assembly.json",
     "photonic_workflow/data/matlab/tests/TestPhotonicRuntime.m",
     "photonic_workflow/data/recipes/provenance-v1.json",
+    "photonic_workflow/optimization/robustness.py",
+    "photonic_workflow/data/skill/references/fabrication-aware-robust-design.md",
 )
 
 SDIST_REQUIRED_RELATIVE_PATHS = (
@@ -30,6 +32,10 @@ SDIST_REQUIRED_RELATIVE_PATHS = (
     "photonic.toml.example",
     "docs/maintenance.md",
     "docs/research/workflow-upgrade-2026-09-results.json",
+    "docs/research/literature-methods-2026-10.md",
+    "references/fabrication-aware-robust-design.md",
+    "examples/optimization/fabrication_robustness.py",
+    "tests/unit/test_optimization_robustness.py",
     "docs/providers/authoring-third-party-adapter.md",
     "docs/showcases/hadamard-2d/README.md",
     "docs/showcases/hadamard-2d/verify.py",

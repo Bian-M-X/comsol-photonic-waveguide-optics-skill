@@ -101,3 +101,10 @@ and periodically inspect the full declared set. Freeze the final validation set
 before selecting the winner. Statistical yield requires a declared distribution,
 correlations and confidence analysis; a few erosion/dilation cases are not a yield
 estimate. Stop if the remaining compute budget cannot establish the intended claim.
+
+For process perturbations, see the [axial-interaction and corner-cancellation
+counterexamples](fabrication-aware-robust-design.md). Keep each geometry and its
+optical response distinct until the loss/metric aggregation. An averaged wafer
+image can cancel opposite process errors and does not represent the expected or
+worst optical response. Sampling density, solver fidelity and process-model
+accuracy are three separate budget axes.

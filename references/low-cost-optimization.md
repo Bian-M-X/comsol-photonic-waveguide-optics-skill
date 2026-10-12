@@ -51,6 +51,13 @@ identical fidelity and compare optimizer baselines under identical total budgets
 starting sets and success criteria. Report variability across seeds when claiming
 an algorithmic benefit. A single good winner does not establish superiority.
 
+When process scenarios dominate cost, start with the
+[fabrication-aware route](fabrication-aware-robust-design.md): `2d+1` axial points
+can screen `d` normalized factors, but mixed interactions require additional
+probes. Budget scenario discovery, process-model calibration and gradient refresh
+separately. Neither equal axial weights nor one adversarial step certify a
+distribution expectation, global worst case or manufacturing yield.
+
 ## Runnable low-dimensional proposer
 
 `photonic optimize suggest SPEC --trials TRIAL_DIRECTORY --json` is a **read-only**

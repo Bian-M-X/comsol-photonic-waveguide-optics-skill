@@ -2083,6 +2083,7 @@
       "photonic://skill/reference/device-family-workflows",
       "photonic://skill/reference/engineering-workflow",
       "photonic://skill/reference/environment-and-runner",
+      "photonic://skill/reference/fabrication-aware-robust-design",
       "photonic://skill/reference/frequency-domain-source-sweeps",
       "photonic://skill/reference/hierarchical-device-workflow",
       "photonic://skill/reference/interferometer-workflows",

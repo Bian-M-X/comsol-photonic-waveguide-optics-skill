@@ -1,6 +1,6 @@
 # Inverse-design evidence and adoption decisions
 
-Reviewed 2026-09-29 with targeted literature refreshes through 2026-10-10; native
+Reviewed 2026-09-29 with targeted literature refreshes through 2026-10-12; native
 Hadamard route reviewed through 2026-10-10. Distinguish paper results, reusable mathematics, implemented
 software, and local full-wave evidence. This is a targeted research update, not
 an exhaustive systematic review or a novelty certificate. Public resources below
@@ -40,11 +40,11 @@ pages. Reported speedups in those works are not local measured speedups.
 | Schubert et al., [ACS Photonics 2022 / author record](https://arxiv.org/abs/2201.12965v2), DOI 10.1021/acsphotonics.2c00313 | Conditional feasible-design generation and straight-through gradients for strict length scales | Candidate route when ordinary density/contour design repeatedly fails DRC; separately check the generator's precise rule set and biased gradient behavior. |
 | Ballew et al., [ACS Photonics **10**, 836–844 (2023)](https://doi.org/10.1021/acsphotonics.2c00862); [2021 author derivation](https://arxiv.org/pdf/2107.09468) inspected | Constrain local permittivity steps to improve binarization while using the optical gradient | Candidate for persistent gray-to-binary degradation. The author derivation does not establish native COMSOL/filter-chain integration, fabrication rules or a local speedup; publisher full-page access returned 403. |
 | Schul et al., [Nature Reviews Materials **11**, 621–631 (2026)](https://doi.org/10.1038/s41578-026-00915-5), published 20 April; [author-hosted article](https://web.stanford.edu/group/nqp/jv_files/papers/InvDesRev.pdf) inspected for scaling/foundry sections | Updated overview of large 3D design, manufacturability, alternative materials and quantum/nonlinear systems | Keep inexpensive 2D experiments within their model scope, and budget fabrication constraints and targeted 3D adoption separately. A newer survey is not device acceptance or a reason to install another solver. |
-| [BOSON inverse](https://arxiv.org/abs/2411.08210), author preprint record (2024 submission) | Variation-aware subspace optimization | Motivate active process scenarios and reduced search spaces; not installed or reproduced here. |
+| Ma et al., [BOSON inverse](https://arxiv.org/abs/2411.08210), [DATE 2025 DOI](https://doi.org/10.23919/DATE64628.2025.10993227); supplied 7-page full text inspected | Process-aware topology mapping, auxiliary constraints, conditional ideal/process-objective relaxation and axial/adversarial sampling | Adopt explicit process maps and economical screening with mixed-interaction checks. The numerical axial helper is not the full optimizer; estimated etch gradients, 20-sample simulated averages and modal-direction contrast do not establish foundry yield or nonreciprocity. |
 | [MAPS](https://arxiv.org/abs/2503.01046), author preprint (2025) | Multi-fidelity data, AI-assisted simulation and fabrication-aware inverse-design infrastructure | Retain explicit fidelity labels and reusable data. Training, dataset generation and port-convention adoption remain real costs. |
 | Sofronov et al., [Accelerated inverse design of passive Si Photonics](https://arxiv.org/abs/2505.03352), preprint (2025) | Differentiable geometry-to-Yee-grid mapping and GPU FDTD | Evaluate for large repeated campaigns only after backend setup and independent COMSOL comparison. No new solver dependency in the core. |
 | Seo et al., [physics-guided fabrication-aware diffusion](https://arxiv.org/abs/2504.17077), author preprint; publisher DOI 10.1021/acsphotonics.5c00993 listed in 2026 literature | Generative initialization combined with physics feedback | Conditional, amortized-use option. The publisher page returned HTTP 403 in this review; do not treat its full text as inspected. |
-| Zhou et al., [PRISM v2](https://arxiv.org/html/2602.15762v2), revised 2026-06-01; author record says accepted to ACM TODAES | Compact calibration patterns, differentiable process models and optical-sensitivity-weighted mask correction | A strong long-term fabrication route. The reported virtual-foundry studies are controlled proxies, not qualification of our foundry; requires independent mask/SEM calibration and held-out devices. |
+| Zhou et al., [PRISM](https://doi.org/10.1145/3831710); supplied 25-page DOI-bearing ACM version inspected, distinguished from [arXiv v2](https://arxiv.org/html/2602.15762v2) | Compact calibration patterns, differentiable process models and optical-sensitivity-weighted mask correction | Adopt gradient/OOD-mask validation and a documented weighted pattern-loss helper. Preserve scenario identity: the paper's mean-image loss can cancel opposite errors for gray targets and dilute bad corners for binary targets. Virtual-foundry results do not qualify our process; morphology does not guarantee DRC/MRC. |
 | Danis et al., [learned design-rule-compliant manifolds](https://doi.org/10.1002/lpor.71486), *Laser & Photonics Reviews* Early View (2026) | Search in a learned feasible geometry manifold | Useful when reusable training amortizes; account for training cost, excluded design families and foundry-specific DRC. Retain a direct shape/adjoint baseline. |
 | He et al., [hyper-spectral recursive inverse design](https://www.nature.com/articles/s41467-026-76328-3), *Nature Communications* **17**, 9613 (2026); [author version](https://arxiv.org/html/2510.12104v1) | Decompose system targets, design local scattering elements, then optimize interconnect phases with compact models | Adopt this hierarchy for large circuits with meaningful feedback; retain complex reflection and phase in the compact model. The paper's spectral-complexity scaling is task-specific, not a general inverse-design speedup or quantum-gate result. |
 | Rodionov et al., [MOCLIP](https://www.nature.com/articles/s41467-026-76714-x), September 2026 version of record; [author version](https://arxiv.org/html/2511.18980v1) | Contrastively learned geometry/spectrum representations from a large experimental metasurface dataset | An amortized design-family option, not a replacement for this gate's complex modal matrix. Published amplitude-spectrum prediction does not establish phase or coherent-gate fidelity; count data acquisition and training before claiming low total cost. |
@@ -70,10 +70,20 @@ inferences from the identified methods, not local reproductions.
 
 ## Implementation status
 
+The three additional local PDFs (BOSON, PRISM and the Schul review) were read in
+full on 2026-10-12. See the [page-grounded adoption assessment](../docs/research/literature-methods-2026-10.md)
+and [operational route](fabrication-aware-robust-design.md). The review was already
+known; this update adds actionable conditions and original counterexamples rather
+than treating another citation as new physical validation. Paper PDFs remain local.
+
 - **Implemented and software-tested:** low-dimensional candidate suggestions,
   exact conic-filter transpose, projection derivatives, smooth worst-case loss,
   fixed-basis matrix metrics, directional checks, conditional interval comparison,
   task-weighted error allocation, serial Windows solver benchmark.
+- **New software-only primitives:** normalized nominal/axial scenarios and a
+  quadrature-weighted sensitivity-guided fourth-power pattern loss with its wafer
+  derivative. Interaction, gray-target cancellation and binary-target dilution examples establish
+  mathematical limits, not a native BOSON/PRISM reproduction or a speedup.
 - **Local licensed pilot:** CPU and actual cuDSS solves on an official 2D optical
   scatterer fixture; accuracy agreement within that fixed model is separate from
   convergence and from any user's research-device gates.

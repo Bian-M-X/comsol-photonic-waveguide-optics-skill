@@ -4,6 +4,21 @@ All notable changes are recorded here. Versions follow Semantic Versioning;
 recipe schema and recipe semantic versions are maintained independently from
 the host package version.
 
+## [Unreleased]
+
+### Added
+
+- On-demand fabrication-aware robust design guidance and a full-text assessment
+  of BOSON, PRISM and scalable photonic inverse design, with explicit adoption
+  conditions and separate paper-faithful and engineering objective expressions.
+- NumPy-only axial scenarios and sensitivity-weighted fourth-power pattern loss,
+  with area quadrature, checked wafer derivatives and interaction/cancellation
+  counterexamples, including diluted bad-scenario loss for binary targets.
+  These diagnostics do not implement full paper backends or
+  certify process models, fabrication yield or new native device performance.
+- Readable packaged fabrication reference: 36 MCP resources, still 13 tools.
+  Package version remains 0.6.0; persisted schemas and CLI are unchanged.
+
 ## [0.6.0] - 2026-10-10
 
 ### Added
