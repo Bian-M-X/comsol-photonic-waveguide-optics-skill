@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" role="img" aria-labelledby="title desc">
+  <title id="title">循光而行。 — Photonic Waveguide Optics</title>
+  <desc id="desc">从一个问题出发，让设计与证据相遇。 右侧为概念波导示意，不是仿真场图。</desc>
+  <defs>
+    <linearGradient id="paper" x2="1" y2="1"><stop stop-color="#fffaf1"/><stop offset="1" stop-color="#f1f4e9"/></linearGradient>
+    <linearGradient id="sun" x2="0" y2="1"><stop stop-color="#efc988"/><stop offset="1" stop-color="#f3debc"/></linearGradient>
+    <linearGradient id="upper"><stop stop-color="#a5b7a0"/><stop offset=".55" stop-color="#6b907b"/><stop offset="1" stop-color="#a5b7a0"/></linearGradient>
+    <linearGradient id="lower"><stop stop-color="#deb8a0"/><stop offset=".55" stop-color="#c07b61"/><stop offset="1" stop-color="#deb8a0"/></linearGradient>
+  </defs>
+  <rect x="1" y="1" width="1278" height="358" rx="20" fill="url(#paper)" stroke="#e9e5d9"/>
+  <path d="M730 359c96-54 169-10 245-39s167-52 304-19v38q0 20-20 20Z" fill="#e3eade" opacity=".65"/>
+  <circle cx="1108" cy="104" r="59" fill="url(#sun)" opacity=".74"/>
+  <circle cx="1108" cy="104" r="77" fill="none" stroke="#ddc99e" stroke-opacity=".35"/>
+  <path d="M56 61h25" stroke="#bd795d" stroke-width="2" stroke-linecap="round"/>
+  <g font-family="Segoe UI, Noto Sans SC, Microsoft YaHei, sans-serif">
+    <text x="95" y="66" fill="#7b846f" font-size="13" letter-spacing="2.3">PHOTONIC WAVEGUIDE OPTICS</text>
+  </g>
+  <g font-family="Georgia, Noto Serif SC, Songti SC, SimSun, serif">
+    <text x="56" y="165" fill="#364b40" font-size="72" letter-spacing="3">循光而行。</text>
+  </g>
+  <g font-family="Segoe UI, Noto Sans SC, Microsoft YaHei, sans-serif">
+    <text x="59" y="214" fill="#747967" font-size="22">从一个问题出发，让设计与证据相遇。</text>
+    <text x="59" y="296" fill="#9a765a" font-size="13" letter-spacing="3">想法  /  模型  /  证据</text>
+  </g>
+  <g fill="none" stroke-linecap="round">
+    <path d="M787 184h68c43 0 50-63 94-63h67c43 0 51 63 95 63h104" stroke="#e1e8d8" stroke-width="18"/>
+    <path d="M787 184h68c43 0 50 63 94 63h67c43 0 51-63 95-63h104" stroke="#f0dfd0" stroke-width="18"/>
+    <path d="M787 184h68c43 0 50-63 94-63h67c43 0 51 63 95 63h104" stroke="url(#upper)" stroke-width="3"/>
+    <path d="M787 184h68c43 0 50 63 94 63h67c43 0 51-63 95-63h104" stroke="url(#lower)" stroke-width="3"/>
+    <path d="M954 121h37" stroke="#fffdf6" stroke-width="5"/>
+    <path d="M976 247h37" stroke="#fffdf6" stroke-width="5"/>
+    <path d="M779 164v40 M1223 164v40" stroke="#aab59a" stroke-width="1"/>
+  </g>
+  <g fill="#fffaf1" stroke="#8b9e80" stroke-width="2"><circle cx="787" cy="184" r="5"/><circle cx="1215" cy="184" r="5"/></g>
+  <text x="790" y="314" fill="#919581" font-family="Segoe UI, Noto Sans SC, Microsoft YaHei, sans-serif" font-size="11" letter-spacing="1">波导概念示意 · 非仿真场图</text>
+</svg>
