@@ -54,6 +54,7 @@ do not load the entire reference library or all agent cards by default.
 | Sweeps, optimization, corners or reports | `references/optimization-and-reporting.md` |
 | Choose an optimizer or reduce full-wave evaluation count | `references/low-cost-optimization.md` |
 | Topology/shape gradients, filtering, robustness or fabrication | `references/adjoint-and-fabrication.md` |
+| Process variation, sensitivity-guided mask correction, or manufacturing-model adoption | `references/fabrication-aware-robust-design.md` |
 | Execute native COMSOL adjoint/MMA or reproduce the 2D Hadamard example | `references/comsol-adjoint-inverse-design.md` |
 | Coarse-to-fine transfer, uncertain rankings or circuit error allocation | `references/multifidelity-and-error-budgets.md` |
 | CPU/GPU, memory, core count or solver timing | `references/comsol-performance.md` |

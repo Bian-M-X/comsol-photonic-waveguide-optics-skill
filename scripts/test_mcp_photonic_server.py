@@ -122,6 +122,7 @@ def main() -> None:
             optimization_references = [
                 "low-cost-optimization", "adjoint-and-fabrication", "multifidelity-and-error-budgets",
                 "comsol-performance", "inverse-design-evidence", "comsol-adjoint-inverse-design",
+                "fabrication-aware-robust-design",
             ]
             for index, name in enumerate(optimization_references):
                 reference = send(proc, {

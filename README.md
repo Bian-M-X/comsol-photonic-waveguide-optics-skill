@@ -106,11 +106,19 @@ bulk-index surrogate at seven discrete wavelengths; it establishes no continuous
 band, 3D-stack or fabrication result. Earlier failures and the selected design
 lineage remain documented separately from the final validation cost.
 
+The October [fabrication-aware robust design route](references/fabrication-aware-robust-design.md)
+and [full-text method assessment](docs/research/literature-methods-2026-10.md)
+connect BOSON, PRISM and scalable inverse-design guidance to the existing workflow.
+NumPy-only helpers and an [analytic demo](examples/optimization/fabrication_robustness.py)
+show how axial sampling misses interactions and averaged wafer images can
+underweight bad scenarios. They do not implement either full framework or establish
+process-model validity, fabrication yield or new native device acceptance.
+
 One public skill routes to these methods because they share optical conventions,
 solver infrastructure and evidence contracts. Independently installed copies
 would duplicate those rules. A new family member is justified only when its
 invocation, dependencies and behavioral tests can stand alone.
-The MCP surface is now 13 tools / 35 resources.
+The MCP surface is now 13 tools / 36 resources.
 See the [implementation and validation report](docs/research/workflow-upgrade-2026-09.md).
 
 ## New in 0.5.0: Task-Scoped Engineering
